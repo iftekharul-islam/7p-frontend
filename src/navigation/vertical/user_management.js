@@ -23,7 +23,7 @@ export default [
     id: 'users',
     title: 'User',
     icon: <User size={20} />,
-    isAccess: check(['employees_access']),
+    isAccess: true,
     navLink: '/apps/user'
   }, 
   {

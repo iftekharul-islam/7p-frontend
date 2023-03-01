@@ -1,6 +1,7 @@
 // ** Navigation imports
 import dashboards from './dashboards'
 import user_management from './user_management'
+import demo from './demo'
 
 // import pages from './pages'
 // import apps from './apps'
@@ -13,7 +14,8 @@ import user_management from './user_management'
 // ** Merge & Export
 export default [
     ...dashboards, 
-    ...user_management
+    ...user_management,
+    ...demo
     // ...pages,
     // ...apps,     
     // ...uiElements, 
