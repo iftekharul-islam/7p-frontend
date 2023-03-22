@@ -1,27 +1,28 @@
-// ** Navigation imports
-import dashboards from './dashboards'
-import user_management from './user_management'
-import demo from './demo'
+import { Circle, Home, User, Users } from "react-feather";
 
-// import pages from './pages'
-// import apps from './apps'
-// import forms from './forms'
-// import tables from './tables'
-// import others from './others'
-// import charts from './charts'
-// import uiElements from './ui-elements'
-
-// ** Merge & Export
 export default [
-    ...dashboards, 
-    ...user_management,
-    ...demo
-    // ...pages,
-    // ...apps,     
-    // ...uiElements, 
-    // ...forms, 
-    // ...tables, 
-    // ...charts, 
-    // ...others
-]
-
+  {
+    id: "home",
+    title: "Home",
+    icon: <Home size={20} />,
+    navLink: "/home",
+  },
+  {
+    id: "users",
+    title: "Users",
+    icon: <Users size={20} />,
+    navLink: "/user",
+  },
+  {
+    id: "roles",
+    title: "Role",
+    icon: <User size={20} />,
+    navLink: "/role",
+  },
+  {
+    id: "permission-list",
+    title: "Permission List",
+    icon: <Circle size={20} />,
+    navLink: "/permission-list",
+  }
+];
