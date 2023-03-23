@@ -38,6 +38,8 @@ const Login = () => {
   const source = skin === "dark" ? illustrationsDark : illustrationsLight;
 
   const [data, setData] = useState(null)
+  const [errors, setErrors] = useState(null);
+
   
   const onChange = (e) => {
     setData({...data, [e?.target?.name]: e.target?.value})
@@ -46,15 +48,17 @@ const Login = () => {
   const LogIn = async(e) => {
     e.preventDefault();
     const res = await dispatch(Signin(data));
-    if(res?.payload?.accessToken){
+    if (res?.payload?.status) {
       navigate('/home')
-    }
+    } else {
+      setErrors(res?.payload?.data?.errors)
+    }   
   };
 
   return (
     <div className="auth-wrapper auth-cover">
       <Row className="auth-inner m-0">
-        <Link className="brand-logo" to="/" onClick={(e) => e.preventDefault()}>
+        <Link className="brand-logo" onClick={(e) => e.preventDefault()}>
           <svg viewBox="0 0 139 95" version="1.1" height="28">
             <defs>
               <linearGradient
@@ -140,7 +144,7 @@ const Login = () => {
             <CardText className="mb-2">
               Please sign-in to your account and start the adventure
             </CardText>
-            <Form className="auth-login-form mt-2" onSubmit={LogIn}>
+            <Form className="auth-login-form mt-2">
               <div className="mb-1">
                 <Label className="form-label" for="email">
                   Email
@@ -153,6 +157,8 @@ const Login = () => {
                   autoFocus
                   onChange={onChange}
                 />
+                    <small className="text-danger">{errors?.email}</small>
+
               </div>
               <div className="mb-1">
                 <div className="d-flex justify-content-between">
@@ -169,6 +175,8 @@ const Login = () => {
                   name="password"
                   onChange={onChange}
                 />
+                    <small className="text-danger">{errors?.password}</small>
+
               </div>
               <div className="form-check mb-1">                  
                 <Input type="checkbox" id="remember-me" name="remember_me" onChange={onChange}/>
@@ -176,7 +184,7 @@ const Login = () => {
                   Remember Me
                 </Label>
               </div>
-              <Button to="/" color="primary" block name="signin">
+              <Button color="primary" name="signin"  onClick={LogIn}>
                 Sign in
               </Button>
             </Form>

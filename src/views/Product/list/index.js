@@ -6,14 +6,16 @@ import { Button, Card, Col, Row } from "reactstrap";
 import { columns } from "./columns";
 import { getAllData } from "./../store/index";
 import { useNavigate } from "react-router-dom";
+import ReactPaginate from "react-paginate";
 
 const index = () => {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.products);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    dispatch(getAllData());
-  }, []);
+    dispatch(getAllData({ page: currentPage }));
+  }, [currentPage]);
 
   const CustomHeader = () => {
     const navigate = useNavigate();
@@ -26,16 +28,44 @@ const index = () => {
             className="d-flex align-items-sm-center justify-content-xl-end justify-content-start flex-xl-nowrap flex-wrap flex-sm-row flex-column pe-xl-1 p-0 mt-xl-0 mt-1"
           >
             <div className="d-flex align-items-center table-header-actions">
-              <Button className="add-new-user" color="primary" onClick={e=>{
-                e.preventDefault()
-                navigate('/product-add')
-              }}>
+              <Button
+                className="add-new-user"
+                color="primary"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate("/product-add");
+                }}
+              >
                 <UserPlus size={14} /> Product
               </Button>
             </div>
           </Col>
         </Row>
       </div>
+    );
+  };
+
+  const CustomPagination = () => {
+    const count = Number(Math.ceil(store.total / 10));
+
+    return (
+      <ReactPaginate
+        previousLabel={""}
+        nextLabel={""}
+        pageCount={count || 1}
+        activeClassName="active"
+        forcePage={currentPage !== 0 ? currentPage - 1 : 0}
+        onPageChange={(page) => setCurrentPage(page.selected + 1)}
+        pageClassName={"page-item"}
+        nextLinkClassName={"page-link"}
+        nextClassName={"page-item next"}
+        previousClassName={"page-item prev"}
+        previousLinkClassName={"page-link"}
+        pageLinkClassName={"page-link"}
+        containerClassName={
+          "pagination react-paginate justify-content-end my-2 pe-1"
+        }
+      />
     );
   };
 
@@ -55,7 +85,7 @@ const index = () => {
               //   onSort={handleSort}
               sortIcon={<ChevronDown />}
               className="react-dataTable"
-              //   paginationComponent={CustomPagination}
+              paginationComponent={CustomPagination}
               data={store.data}
               subHeaderComponent={<CustomHeader />}
             />
@@ -63,7 +93,6 @@ const index = () => {
         </Card>
       </Fragment>
     </div>
-    
   );
 };
 export default index;

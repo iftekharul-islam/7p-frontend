@@ -20,11 +20,20 @@ const VerticalMenuNavItems = (props) => {
     if (item.children) {
       return (
         canViewMenuGroup(item) && (
-          <TagName item={item} index={index} key={item.id} {...props} />
+          <>
+           {/* <TagName item={item} index={index} key={item.id} {...props} /> */}
+           {/*to active permission*/}
+          {item.isAccess && <TagName item={item} index={index} key={item.id} {...props} />}
+          </>
         )
       );
     }
-    return <TagName key={item.id || item.header} item={item} {...props} />;
+    return (
+      <>
+        {/* <TagName key={item.id || item.header} item={item} {...props} /> */}
+        {item.isAccess && <TagName key={item.id || item.header} item={item} {...props} />}
+      </>
+    )
   });
 
   return RenderNavItems;

@@ -5,26 +5,16 @@ import { getAllData } from "../store";
 
 const index = () => {
   const dispatch = useDispatch();
-  const store = useSelector((state) => state.permission);
+  const store = useSelector((state) => state.permissions);
   useEffect(() => {
     dispatch(getAllData());
   }, []);
   return (
     <div className="app-user-list">
-      {store?.data?.roles?.map((item) => {
-        return (
-          <div>
-            {item?.permissions?.map((permission) => {
-              return (
-                <div className="m-2">
-                  <Badge pill color="light-primary" className="me-1">
-                    {permission?.name}
-                  </Badge>
-                </div>
-              );
-            })}
-          </div>
-        );
+      {store?.data?.map((item) => {
+        <Badge pill color="light-primary" className="me-1">
+          {item}
+        </Badge>;
       })}
     </div>
   );

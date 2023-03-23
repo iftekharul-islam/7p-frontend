@@ -55,7 +55,7 @@ export const formatDateToMonthShort = (value, toTimeForCurrentDay = true) => {
  *  ? e.g. If you are using cookies to store the application please update this function
  */
 export const isUserLoggedIn = () => localStorage.getItem("userData");
-export const getUserData = () => JSON.parse(localStorage.getItem("userData"));
+export const getUserData = () => JSON.parse(localStorage.getItem("userData") ?? null);
 
 /**
  ** This function is used for demo purpose route navigation

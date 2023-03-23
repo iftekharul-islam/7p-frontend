@@ -6,14 +6,17 @@ import { Button, Card, Col, Row } from "reactstrap";
 import { columns } from "./columns";
 import { getAllData } from "../store/index";
 import { useNavigate } from "react-router-dom";
+import ReactPaginate from 'react-paginate';
 
 const index = () => {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.roles);
+  const [currentPage, setCurrentPage] = useState(1)
+
 
   useEffect(() => {
-    dispatch(getAllData());
-  }, []);
+    dispatch(getAllData({page: currentPage}));
+  }, [currentPage]);
 
   const CustomHeader = () => {
     const navigate = useNavigate();
@@ -39,6 +42,28 @@ const index = () => {
     );
   };
 
+  const CustomPagination = () => {
+    const count = Number(Math.ceil(store.total / 10))
+
+    return (
+      <ReactPaginate
+        previousLabel={''}
+        nextLabel={''}
+        pageCount={count || 1}
+        activeClassName='active'
+        forcePage={currentPage !== 0 ? currentPage - 1 : 0}
+        onPageChange={page => setCurrentPage(page.selected + 1)}
+        pageClassName={'page-item'}
+        nextLinkClassName={'page-link'}
+        nextClassName={'page-item next'}
+        previousClassName={'page-item prev'}
+        previousLinkClassName={'page-link'}
+        pageLinkClassName={'page-link'}
+        containerClassName={'pagination react-paginate justify-content-end my-2 pe-1'}
+      />
+    )
+  }
+
   return (
     <div className="app-user-list">
       <Fragment>
@@ -55,7 +80,7 @@ const index = () => {
               //   onSort={handleSort}
               sortIcon={<ChevronDown />}
               className="react-dataTable"
-              //   paginationComponent={CustomPagination}
+                paginationComponent={CustomPagination}
               data={store.data}
               subHeaderComponent={<CustomHeader />}
             />

@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 
 const index = () => {
   const [data, setData] = useState(null);
+  const [errors, setErrors] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -27,9 +28,13 @@ const index = () => {
     });
   };
 
-  const onSubmit =() =>{
-    dispatch(AddRole(data))
-    navigate('/role')
+  const onSubmit =async() =>{
+    const res = await dispatch(AddRole(data))
+    if (res?.payload?.status) {
+      navigate('/role')
+    } else {
+      setErrors(res?.payload?.data?.errors)
+    }   
   }
 
   return (
@@ -55,6 +60,7 @@ const index = () => {
                       value={data?.name}
                       onChange={onChange}
                     />
+                    <small className="text-danger">{errors?.name}</small>
                   </Col>
                 </Row>
                 <Row>

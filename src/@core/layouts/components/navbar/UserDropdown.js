@@ -1,5 +1,5 @@
 // ** React Imports
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // ** Custom Components
 import Avatar from "@components/avatar";
@@ -29,11 +29,19 @@ import defaultAvatar from "@src/assets/images/portrait/small/avatar-s-11.jpg";
 import { useEffect, useState } from "react";
 
 const UserDropdown = () => {
-  const [userData, setuserData] = useState(null)
+  const [userData, setuserData] = useState(null);
+  const navigate = useNavigate();
   useEffect(() => {
-    setuserData(JSON.parse(localStorage.getItem('userData')))
-  }, [])
-  
+    setuserData(JSON.parse(localStorage.getItem("userData") ?? null));
+  }, []);
+
+  const logout = (e) => {
+    e.preventDefault();
+    localStorage.removeItem("userData");
+    localStorage.removeItem("accessToken");
+    navigate("/login");
+  };
+
   return (
     <UncontrolledDropdown tag="li" className="dropdown-user nav-item">
       <DropdownToggle
@@ -44,7 +52,7 @@ const UserDropdown = () => {
       >
         <div className="user-nav d-sm-flex d-none">
           <span className="user-name fw-bold">{userData?.name}</span>
-          <span className="user-status">Admin</span>
+          <span className="user-status">{userData?.role}</span>
         </div>
         <Avatar
           img={defaultAvatar}
@@ -87,7 +95,7 @@ const UserDropdown = () => {
           <HelpCircle size={14} className="me-75" />
           <span className="align-middle">FAQ</span>
         </DropdownItem>
-        <DropdownItem tag={Link} to="/login">
+        <DropdownItem tag={Link} onClick={logout}>
           <Power size={14} className="me-75" />
           <span className="align-middle">Logout</span>
         </DropdownItem>

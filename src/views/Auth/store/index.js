@@ -3,8 +3,12 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import Api from '../../../http'
 
 export const Signin = createAsyncThunk('Auth/Signin', async (data) => {
-  const response = await Api.post('login', data)  
-  return response.data
+  const response = await Api.post('login', data) 
+  if (response?.status == 200) {
+    return { 'status': true, 'data': response?.data};
+  } else {
+    return { 'status': false, 'data': response?.data };
+  }
 })
 
 export const AuthSlice = createSlice({
@@ -16,10 +20,15 @@ export const AuthSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(Signin.fulfilled, (state, action) => {
-        localStorage.setItem('userData', JSON.stringify(action.payload?.user))
-        localStorage.setItem('accessToken', JSON.stringify(action.payload?.accessToken))
-        state.UserData = action.payload?.user
-        state.accessToken = action.payload?.accessToken
+        console.log("🚀 ~ file: index.js:23 ~ .addCase ~ action:", action.payload)
+        if(action?.payload?.status) {
+          localStorage.setItem('userData', JSON.stringify(action.payload?.data?.user))
+          localStorage.setItem('accessToken', JSON.stringify(action.payload?.data?.accessToken))
+          localStorage.setItem("permissions", JSON.stringify(action.payload?.data?.permissions));
+
+          state.UserData = action.payload?.user
+          state.accessToken = action.payload?.accessToken
+        }
       })
     }
 })

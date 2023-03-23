@@ -4,7 +4,7 @@ import { Navigate } from 'react-router-dom'
 
 const ProductList = lazy(() => import('./list'))
 const ProductAdd = lazy(() => import('./add'))
-// const UserView = lazy(() => import('./view'))
+const StockAdd = lazy(() => import('./addStock'))
 
 
 const UserRoute = [  
@@ -15,11 +15,11 @@ const UserRoute = [
   {
     element: <ProductAdd />,
     path: '/product-add',
+  },
+  {
+    element: <StockAdd />,
+    path: '/stock-add'
   }
-  // {
-  //   element: <UserView />,
-  //   path: '/apps/user/view/:id'
-  // }
 ]
 
 export default UserRoute

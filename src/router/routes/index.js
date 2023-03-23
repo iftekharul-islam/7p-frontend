@@ -27,7 +27,7 @@ const getLayout = {
 const TemplateTitle = "%s - Vuexy React Admin Template";
 
 // ** Default Route
-const DefaultRoute = "/home";
+const DefaultRoute = "/login";
 
 const Home = lazy(() => import("../../views/Home"));
 const SecondPage = lazy(() => import("../../views/SecondPage"));
@@ -46,7 +46,7 @@ const Routes = [
   {
     path: "/",
     index: true,
-    element: <Navigate replace to={DefaultRoute} />,
+    element: <Navigate replace to={localStorage.getItem('accessToken') ? '/home' : DefaultRoute} />,
   },
   {
     path: "/home",
@@ -79,6 +79,13 @@ const Routes = [
   },
   {
     path: "/error",
+    element: <Error />,
+    meta: {
+      layout: "blank",
+    },
+  },
+  {
+    path: "/*",
     element: <Error />,
     meta: {
       layout: "blank",

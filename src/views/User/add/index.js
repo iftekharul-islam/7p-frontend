@@ -20,6 +20,7 @@ import { useNavigate } from "react-router-dom";
 
 const index = () => {
   const [data, setData] = useState(null);
+  const [errors, setErrors] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const store = useSelector((state) => state.users);
@@ -35,9 +36,13 @@ const index = () => {
     });
   };
 
-  const onSubmit =() =>{
-    dispatch(AddUser(data))
-    navigate('/user')
+  const onSubmit =async() =>{
+    const res = await dispatch(AddUser(data))
+    if (res?.payload?.status) {
+      navigate('/user')
+    } else {
+      setErrors(res?.payload?.data?.errors)
+    }  
   }
 
   return (
@@ -63,6 +68,7 @@ const index = () => {
                       value={data?.name}
                       onChange={onChange}
                     />
+                    <small className="text-danger">{errors?.name}</small>
                   </Col>
                   <Col sm="12">
                     <Label className="form-label" for="email">
@@ -76,6 +82,7 @@ const index = () => {
                       value={data?.email}
                       onChange={onChange}
                     />
+                    <small className="text-danger">{errors?.email}</small>
                   </Col>
                   <Col sm="12" className="mb-1">
                     <Label className="form-label" for="nameVertical">
@@ -108,6 +115,7 @@ const index = () => {
                       value={data?.password}
                       onChange={onChange}
                     />
+                    <small className="text-danger">{errors?.password}</small>
                   </Col>
                 </Row>
                 <Row>
