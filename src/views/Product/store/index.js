@@ -2,10 +2,21 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import Api from "@src/http";
 
-export const getAllData = createAsyncThunk("Product/getAllData", async (data) => {
-  const response = await Api.get("products",{params: data});
-  return response.data;
-});
+export const getAllData = createAsyncThunk(
+  "Product/getAllData",
+  async (data) => {
+    const response = await Api.get("products", { params: data });
+    return response.data;
+  }
+);
+
+export const getProduct = createAsyncThunk(
+  "Product/getProduct",
+  async (id) => {
+    const response = await Api.get(`products/${id}`);
+    return response.data;
+  }
+);
 
 export const AddProduct = createAsyncThunk(
   "Product/AddProduct",
@@ -20,17 +31,40 @@ export const AddProduct = createAsyncThunk(
   }
 );
 
-export const AddStock = createAsyncThunk(
-  "Product/AddStock",
-  async (data) => {
-    const response = await Api.post("add-stock-products", data);
+export const UpdateProduct = createAsyncThunk(
+  "Product/UpdateProduct",
+  async (data, { dispatch }) => {
+    const response = await Api.post(`products/${data?.id}`, data?.data);
     if (response?.status == 201) {
+      dispatch(getAllData());
       return { status: true };
     } else {
       return { status: false, data: response?.data };
     }
   }
 );
+
+export const DeleteProduct = createAsyncThunk(
+  "Product/DeleteProduct",
+  async (id, { dispatch }) => {
+    const response = await Api.post(`destroy-products/${id}`);
+    if (response?.status == 201) {
+      dispatch(getAllData());
+      return { status: true };
+    } else {
+      return { status: false, data: response?.data };
+    }
+  }
+);
+
+export const AddStock = createAsyncThunk("Product/AddStock", async (data) => {
+  const response = await Api.post("add-stock-products", data);
+  if (response?.status == 201) {
+    return { status: true };
+  } else {
+    return { status: false, data: response?.data };
+  }
+});
 
 export const getAllStocks = createAsyncThunk(
   "Product/getAllStocks",
@@ -56,6 +90,8 @@ export const UserSlice = createSlice({
 
     params: {},
     allData: [],
+
+    product:{},
 
     stockOptions: [],
     vendorOptions: [],
@@ -87,6 +123,9 @@ export const UserSlice = createSlice({
       .addCase(getAllData.fulfilled, (state, action) => {
         state.data = action.payload?.data;
         state.total = action.payload?.total;
+      })
+      .addCase(getProduct.fulfilled, (state, action) => {
+        state.product = action.payload;
       })
       .addCase(getAllStocks.fulfilled, (state, action) => {
         state.stockOptions = action.payload;
