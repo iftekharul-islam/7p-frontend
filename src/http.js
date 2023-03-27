@@ -3,7 +3,7 @@ import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 
 let Api = axios.create({
-  baseURL: 'http://p-7.test/api',
+  baseURL: 'http://7p.test/api',
 
   headers: {
     "Content-type": "application/json",

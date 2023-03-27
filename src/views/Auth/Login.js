@@ -139,7 +139,7 @@ const Login = () => {
         >
           <Col className="px-xl-2 mx-auto" sm="8" md="6" lg="12">
             <CardTitle tag="h2" className="fw-bold mb-1">
-              Welcome to Vuexy! 👋
+              Welcome to 7P! 👋
             </CardTitle>
             <CardText className="mb-2">
               Please sign-in to your account and start the adventure

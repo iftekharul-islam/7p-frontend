@@ -50,7 +50,7 @@ export default [
   // },
   {
     id: "product",
-    title: "Product",
+    title: "Purchase Product",
     icon: <Circle size={20} />,
     isAccess: check([
       "product",
