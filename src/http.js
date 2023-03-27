@@ -11,7 +11,6 @@ let Api = axios.create({
   },
   transformResponse: (data) => {
     let response = JSON.parse(data);  
-    console.log("🚀 ~ file: http.js:14 ~ response:", response)
     if (response?.status == 201) {
       const MySwal = withReactContent(Swal)
       MySwal.fire({
@@ -22,14 +21,37 @@ let Api = axios.create({
         timer: 1500
       })
     }
+
+    if (response?.status == 203) {
+      const MySwal = withReactContent(Swal)
+      MySwal.fire({
+        position: 'top-end',
+        icon: 'error',
+        title: response?.message,
+        showConfirmButton: false,
+        timer: 1500
+      })
+    }
+    
     return response;
   },
 
   validateStatus: function (status) {
     if (status === 401) {
       localStorage.removeItem("user");
-      window.location.href = "/";
+      // window.location.href = "/";
     }
+
+    // if (response?.status == 402) {
+    //   const MySwal = withReactContent(Swal)
+    //   MySwal.fire({
+    //     position: 'top-end',
+    //     icon: 'error',
+    //     title: response?.message,
+    //     showConfirmButton: false,
+    //     timer: 1500
+    //   })
+    // }
     
     if (status === 422) {
       return status;

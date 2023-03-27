@@ -1,26 +1,33 @@
 import { useState } from "react";
-import { Edit, Trash2 } from "react-feather";
+import { Edit, Eye, Trash2 } from "react-feather";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { Button, Col, Modal, ModalBody, ModalHeader, Row } from "reactstrap";
-import { DeleteProduct } from "../store";
+import { DeleteVendor } from "../store";
 
 const renderAction = (row) => {
+
   const dispatch = useDispatch()
   const [deleteItem, setDeleteItem] = useState(null);
   const [deleteShow, setDeleteShow] = useState(false);
 
   const onSubmitDelete = (e) => {
     e.preventDefault()
-    dispatch(DeleteProduct(deleteItem.id))
+    dispatch(DeleteVendor(deleteItem.id))
     setDeleteShow(!deleteShow)
   }
-  
+
   return (
     <div className="column-action">
       <Link
         className="text-truncate text-capitalize align-middle"
-        to={`/product-edit/${row.id}`}
+        to={`/vendor-view/${row.id}`}
+      >
+        <Eye size={18} className={`text-primary me-50`} />
+      </Link>
+      <Link
+        className="text-truncate text-capitalize align-middle"
+        to={`/vendor-edit/${row.id}`}
       >
         <Edit size={18} className={`text-primary me-50`} />
       </Link>
@@ -65,77 +72,44 @@ const renderAction = (row) => {
         </ModalBody>
       </Modal>
     </div>
-  );
-};
+  )
+}
 
 export const columns = [
   {
-    name: "Stock",
-    sortable: true,
-    minWidth: "120px",
-    sortField: "stock_id",
-    selector: (row) => row?.stock?.stock_number,
-    cell: (row) => (
-      <div>
-        <div>
-          <span className="fw-bolder">{row?.stock?.stock_number}</span>
-        </div>
-        <div>
-          <span>{row?.stock?.description}</span>
-        </div>
-      </div>
-    ),
+    name: "Id",
+    sortable: false,
+    minWidth: "60px",
+    sortField: "id",
+    selector: (row) => row.id,
+    cell: (row) => <span className="fw-bolder">{row.id}</span>
+  },{
+    name: "Name",
+    sortable: false,
+    minWidth: "220px",
+    sortField: "name",
+    selector: (row) => row.name,
+    cell: (row) => <span className="fw-bolder">{row.name}</span>
   },
   {
-    name: "Price",
-    sortable: true,
-    minWidth: "120px",
-    sortField: "price",
-    selector: (row) => row.unit_price,
-    cell: (row) => (
-      <div>
-        <div>
-          <span className="fw-bolder">${row.unit_price}</span>
-        </div>
-        <div>
-          <span className="fw-bolder">
-            {row.qty}-{row.unit}
-          </span>
-        </div>
-      </div>
-    ),
+    name: "Email",
+    sortable: false,
+    minWidth: "220px",
+    sortField: "email",
+    selector: (row) => row.email,
+    cell: (row) => <span className="fw-bolder">{row.email}</span>
   },
   {
-    name: "Vendor",
-    sortable: true,
-    minWidth: "320px",
-    sortField: "vendor",
-    selector: (row) => row.vendor,
-    cell: (row) => (
-      <div>
-        <div>
-          <span className="fw-bolder">{row?.vendor?.name}:</span>
-          <span> {row?.vendor_sku}</span>
-        </div>
-        <div>
-          <span>{row?.sku_name}</span>
-        </div>
-      </div>
-    ),
-  },
-  {
-    name: "Lead Time",
-    sortable: true,
-    minWidth: "100px",
-    sortField: "lead_time_days",
-    selector: (row) => row.lead_time_days,
-    cell: (row) => (
-      <span className="text-capitalize">{row?.lead_time_days}</span>
-    ),
+    name: "Phone",
+    sortable: false,
+    minWidth: "220px",
+    sortField: "phone_number",
+    selector: (row) => row.phone_number,
+    cell: (row) => <span className="text-capitalize">{row?.phone_number}</span>
   },
   {
     name: "Actions",
     minWidth: "100px",
-    cell: (row) => renderAction(row),
-  },
-];
+    cell: (row) => renderAction(row)
+  }
+]

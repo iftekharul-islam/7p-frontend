@@ -19,13 +19,13 @@ const VerticalMenuNavItems = (props) => {
     const TagName = Components[resolveNavItemComponent(item)];
     if (item.children) {
       return (
-        canViewMenuGroup(item) && (
+        // canViewMenuGroup(item) && (
           <>
            {/* <TagName item={item} index={index} key={item.id} {...props} /> */}
            {/*to active permission*/}
           {item.isAccess && <TagName item={item} index={index} key={item.id} {...props} />}
           </>
-        )
+        // )
       );
     }
     return (
