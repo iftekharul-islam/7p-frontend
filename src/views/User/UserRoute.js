@@ -4,6 +4,7 @@ import { Navigate } from 'react-router-dom'
 
 const UserList = lazy(() => import('./list'))
 const UserAdd = lazy(() => import('./add'))
+const UserEdit = lazy(() => import('./edit'))
 // const UserView = lazy(() => import('./view'))
 
 
@@ -15,11 +16,11 @@ const UserRoute = [
   {
     element: <UserAdd />,
     path: '/user-add',
+  },
+  {
+    element: <UserEdit />,
+    path: '/user-edit/:id'
   }
-  // {
-  //   element: <UserView />,
-  //   path: '/apps/user/view/:id'
-  // }
 ]
 
 export default UserRoute

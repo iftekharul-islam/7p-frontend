@@ -4,7 +4,7 @@ import { ChevronDown, PlusCircle } from "react-feather";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Card, Col, Row } from "reactstrap";
 import { columns } from "./columns";
-import { getAllData } from "./../store/index";
+import { getAllData } from "../store/index";
 import { useNavigate } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import '@styles/react/libs/react-select/_react-select.scss'
@@ -12,7 +12,7 @@ import '@styles/react/libs/tables/react-dataTable-component.scss'
 
 const index = () => {
   const dispatch = useDispatch();
-  const store = useSelector((state) => state.vendors);
+  const store = useSelector((state) => state.orders);
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
@@ -35,10 +35,10 @@ const index = () => {
                 color="primary"
                 onClick={(e) => {
                   e.preventDefault();
-                  navigate("/vendor-add");
+                  navigate("/order-add");
                 }}
               >
-                <PlusCircle size={14} /> Vendor
+                <PlusCircle size={14} /> Purchase Order
               </Button>
             </div>
           </Col>

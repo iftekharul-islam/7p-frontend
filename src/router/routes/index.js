@@ -17,6 +17,7 @@ import RoleRoute from "../../views/Role/RoleRoute";
 import PermissionRoute from "../../views/Permission/PermissionRoute";
 import ProductRoute from "../../views/Product/ProductRoute";
 import VendorRoute from "../../views/Vendor/VendorRoute";
+import OrderRoute from "../../views/Order/OrderRoute";
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -45,6 +46,7 @@ const Routes = [
   ...PermissionRoute,
   ...ProductRoute,
   ...VendorRoute,
+  ...OrderRoute,
   {
     path: "/",
     index: true,

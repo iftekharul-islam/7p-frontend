@@ -7,6 +7,8 @@ import { columns } from "./columns";
 import { getAllData } from "./../store/index";
 import { useNavigate } from "react-router-dom";
 import ReactPaginate from 'react-paginate';
+import '@styles/react/libs/react-select/_react-select.scss'
+import '@styles/react/libs/tables/react-dataTable-component.scss'
 
 
 const index = () => {
