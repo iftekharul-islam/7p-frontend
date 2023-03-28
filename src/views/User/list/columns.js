@@ -5,13 +5,12 @@ const renderAction = (row) => {
 
   return (
     <div className="column-action">    
-        {/* <Link
+        <Link
           className="text-truncate text-capitalize align-middle"
-          to={`/apps/user/view/${row.id}`}
+          to={`/user-edit/${row.id}`}
         >
           <Edit size={18} className={`text-info me-50`} />
-        </Link> */}
-        <Edit size={18} className={`text-info me-50`} />
+        </Link>
     </div>
   )
 }

@@ -54,6 +54,13 @@ export default [
         isAccess: check(["vendor"]),
         navLink: "/vendor",
       },
+      {
+        id: "venorderdor",
+        title: "Purchase Order",
+        icon: <Circle size={20} />,
+        isAccess: check(["order"]),
+        navLink: "/order",
+      },
     ],
   },
 ];

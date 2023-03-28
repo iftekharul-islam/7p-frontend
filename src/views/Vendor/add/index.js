@@ -48,7 +48,7 @@ const index = () => {
           <Col sm="6">
             <Card>
               <CardHeader>
-                <CardTitle tag="h4">New Product</CardTitle>
+                <CardTitle tag="h4">New Vendor</CardTitle>
               </CardHeader>
               <CardBody>
                 <Row>

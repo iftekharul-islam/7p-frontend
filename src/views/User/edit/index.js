@@ -16,18 +16,21 @@ import { selectThemeColors } from "@utils";
 import Select from "react-select";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  AddUser,
   getAllPermits,
   getAllRoles,
   getAllSections,
   getAllStations,
   getAllVendors,
+  getUser,
+  UpdateUser,
 } from "../store";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const index = () => {
+  const { id } = useParams();
   const [data, setData] = useState(null);
   const [errors, setErrors] = useState(null);
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const store = useSelector((state) => state.users);
@@ -39,6 +42,21 @@ const index = () => {
     // dispatch(getAllStations());
     // dispatch(getAllPermits());
   }, []);
+
+  useEffect(() => {
+    if (id) {
+      dispatch(getUser(id));
+    }
+  }, [id]);
+
+  useEffect(() => {
+    if (store?.user) {
+      setData({
+        ...store?.user,
+        role: store?.user?.roles[0]?.id,
+      });
+    }
+  }, [store?.user]);
 
   const onChange = (e) => {
     setData({
@@ -55,12 +73,14 @@ const index = () => {
   };
 
   const onSubmit = async () => {
-    const res = await dispatch(AddUser(data));
+    setLoading(true)
+    const res = await dispatch(UpdateUser(data));
     if (res?.payload?.status) {
       navigate("/user");
     } else {
       setErrors(res?.payload?.data?.errors);
     }
+    setLoading(false)
   };
 
   return (
@@ -242,22 +262,7 @@ const index = () => {
                       onChange={(e) => onMultiChange("permit_manufactures", e)}
                       isClearable={false}
                     />
-                  </Col>
-
-                  <Col sm="12">
-                    <Label className="form-label" for="email">
-                      Password
-                    </Label>
-                    <Input
-                      type="text"
-                      name="password"
-                      id="password"
-                      placeholder="Password"
-                      value={data?.password}
-                      onChange={onChange}
-                    />
-                    <small className="text-danger">{errors?.password}</small>
-                  </Col>
+                  </Col>                  
                 </Row>
                 <Row>
                   <Col sm="12" className="mt-1">
@@ -270,8 +275,16 @@ const index = () => {
                           e.preventDefault();
                           onSubmit();
                         }}
+                        disabled={loading}
                       >
-                        Submit
+                        {loading ? (
+                          <>
+                            <Spinner className="me-25" size="sm" />
+                            Updating
+                          </>
+                        ) : (
+                          "Update"
+                        )}
                       </Button>
                     </div>
                   </Col>

@@ -20,7 +20,6 @@ export const AuthSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(Signin.fulfilled, (state, action) => {
-        console.log("🚀 ~ file: index.js:23 ~ .addCase ~ action:", action.payload)
         if(action?.payload?.status) {
           localStorage.setItem('userData', JSON.stringify(action.payload?.data?.user))
           localStorage.setItem('accessToken', JSON.stringify(action.payload?.data?.accessToken))

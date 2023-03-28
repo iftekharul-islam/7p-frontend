@@ -35,7 +35,6 @@ const Login = () => {
   const LogIn =(e) => {
     const data = e?.target
     e.preventDefault()
-    console.log("🚀 ~ file: Login.js:36 ~ LogIn ~ e:", data[0])
   }
 
   return (
