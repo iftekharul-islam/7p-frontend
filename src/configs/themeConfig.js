@@ -6,10 +6,10 @@ import logo from "@src/assets/images/logo/logo.svg";
 //Template config options
 const themeConfig = {
   app: {
-    appName: "Vuexy",
+    appName: "7P",
     appLogoImage: logo,
   },
-  layout: {
+  layout:
     isRTL: false,
     skin: "light", // light, dark, bordered, semi-dark
     type: "vertical", // vertical, horizontal
