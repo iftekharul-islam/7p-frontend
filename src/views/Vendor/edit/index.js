@@ -77,18 +77,18 @@ const index = () => {
                     />
                   </Col>
                   <Col sm="12">
-                    <Label className="form-label" for="name">
+                    <Label className="form-label" for="vendor_name">
                       Name
                     </Label>
                     <Input
                       type="text"
-                      name="name"
-                      id="name"
+                      name="vendor_name"
+                      id="vendor_name"
                       placeholder="Name"
-                      value={data?.name}
+                      value={data?.vendor_name}
                       onChange={onChange}
                     />
-                    <small className="text-danger">{errors?.name}</small>
+                    <small className="text-danger">{errors?.vendor_name}</small>
                   </Col>
 
                   <Col sm="12">
@@ -173,41 +173,41 @@ const index = () => {
                     />
                   </Col>
                   <Col sm="12">
-                    <Label className="form-label" for="account_link">
+                    <Label className="form-label" for="link">
                       Account Link
                     </Label>
                     <Input
                       type="text"
-                      name="account_link"
-                      id="account_link"
+                      name="link"
+                      id="link"
                       placeholder="Account Link"
-                      value={data?.account_link}
+                      value={data?.link}
                       onChange={onChange}
                     />
                   </Col>
                   <Col sm="12">
-                    <Label className="form-label" for="account_login">
+                    <Label className="form-label" for="login_id">
                       Account Login
                     </Label>
                     <Input
                       type="text"
-                      name="account_login"
-                      id="account_login"
+                      name="login_id"
+                      id="login_id"
                       placeholder="Account Login"
-                      value={data?.account_login}
+                      value={data?.login_id}
                       onChange={onChange}
                     />
                   </Col>
                   <Col sm="12">
-                    <Label className="form-label" for="account_password">
+                    <Label className="form-label" for="password">
                       Account Password
                     </Label>
                     <Input
                       type="text"
-                      name="account_password"
-                      id="account_password"
+                      name="password"
+                      id="password"
                       placeholder="Account Password"
-                      value={data?.account_password}
+                      value={data?.password}
                       onChange={onChange}
                     />
                   </Col>

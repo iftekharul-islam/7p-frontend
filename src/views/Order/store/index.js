@@ -12,12 +12,11 @@ export const getVendor = createAsyncThunk("Order/getVendor", async (id) => {
   return response.data;
 });
 
-export const AddVendor = createAsyncThunk(
-  "Order/AddVendor",
+export const AddPurchaseOrder = createAsyncThunk(
+  "Order/AddPurchaseOrder",
   async (data, { dispatch }) => {
-    const response = await Api.post("vendors", data);
+    const response = await Api.post("orders", data);
     if (response?.status == 201) {
-      dispatch(getAllData());
       return { status: true };
     } else {
       return { status: false, data: response?.data };
@@ -25,46 +24,16 @@ export const AddVendor = createAsyncThunk(
   }
 );
 
-export const UpdateVendor = createAsyncThunk(
-  "Order/UpdateVendor",
-  async (data, { dispatch }) => {
-    const response = await Api.post(`vendors/${data?.id}`, data?.data);
-    if (response?.status == 201) {
-      dispatch(getAllData());
-      return { status: true };
-    } else {
-      return { status: false, data: response?.data };
-    }
-  }
-);
-
-export const DeleteVendor = createAsyncThunk(
-  "Order/DeleteVendor",
+export const DeleteOrder = createAsyncThunk(
+  "Order/DeleteOrder",
   async (id, { dispatch }) => {
-    const response = await Api.post(`destroy-vendors/${id}`);
+    const response = await Api.post(`destroy-orders/${id}`);
     if (response?.status == 201) {
       dispatch(getAllData());
       return { status: true };
     } else {
       return { status: false, data: response?.data };
     }
-  }
-);
-
-export const AddStock = createAsyncThunk("Order/AddStock", async (data) => {
-  const response = await Api.post("add-stock-products", data);
-  if (response?.status == 201) {
-    return { status: true };
-  } else {
-    return { status: false, data: response?.data };
-  }
-});
-
-export const getAllStocks = createAsyncThunk(
-  "Order/getAllStocks",
-  async (data) => {
-    const response = await Api.get("stock-options", data);
-    return response.data;
   }
 );
 
@@ -75,7 +44,6 @@ export const getAllVendors = createAsyncThunk(
     return response.data;
   }
 );
-
 export const getAllProductByVendor = createAsyncThunk(
   "Order/getAllProductByVendor",
   async (id) => {

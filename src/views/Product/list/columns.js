@@ -73,22 +73,22 @@ export const columns = [
     name: "Stock",
     sortable: true,
     minWidth: "120px",
-    sortField: "stock_id",
-    selector: (row) => row?.stock?.stock_number,
+    sortField: "stock_no",
+    selector: (row) => row?.stock_no,
     cell: (row) => (
       <div>
         <div>
-          <span className="fw-bolder">{row?.stock?.stock_number}</span>
+          <span className="fw-bolder">{row?.stock_no}</span>
         </div>
         <div>
-          <span>{row?.stock?.description}</span>
+          <span>{row?.inventory?.stock_name_discription}</span>
         </div>
       </div>
     ),
   },
   {
     name: "Price",
-    sortable: true,
+    sortable: false,
     minWidth: "120px",
     sortField: "price",
     selector: (row) => row.unit_price,
@@ -99,7 +99,7 @@ export const columns = [
         </div>
         <div>
           <span className="fw-bolder">
-            {row.qty}-{row.unit}
+            {row.unit_qty}-{row.unit}
           </span>
         </div>
       </div>
@@ -107,18 +107,18 @@ export const columns = [
   },
   {
     name: "Vendor",
-    sortable: true,
+    sortable: false,
     minWidth: "320px",
     sortField: "vendor",
     selector: (row) => row.vendor,
     cell: (row) => (
       <div>
         <div>
-          <span className="fw-bolder">{row?.vendor?.name}:</span>
+          <span className="fw-bolder">{row?.vendor?.vendor_name}:</span>
           <span> {row?.vendor_sku}</span>
         </div>
         <div>
-          <span>{row?.sku_name}</span>
+          <span>{row?.vendor_sku_name}</span>
         </div>
       </div>
     ),

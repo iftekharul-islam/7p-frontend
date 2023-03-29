@@ -88,7 +88,7 @@ const index = () => {
                       <h5>:</h5>
                     </Col>
                     <Col sm="7">
-                      <h5>{data?.name}</h5>
+                      <h5>{data?.vendor_name}</h5>
                     </Col>
                   </Row>
                   <Row className="mb-1">
@@ -165,7 +165,7 @@ const index = () => {
                       <h5>:</h5>
                     </Col>
                     <Col sm="7">
-                      <h5>{data?.account_link}</h5>
+                      <h5>{data?.link}</h5>
                     </Col>
                   </Row>
                   <Row className="mb-1">
@@ -176,7 +176,7 @@ const index = () => {
                       <h5>:</h5>
                     </Col>
                     <Col sm="7">
-                      <h5>{data?.account_login}</h5>
+                      <h5>{data?.login_id}</h5>
                     </Col>
                   </Row>
                   <Row className="mb-1">
@@ -187,7 +187,7 @@ const index = () => {
                       <h5>:</h5>
                     </Col>
                     <Col sm="7">
-                      <h5>{data?.account_password}</h5>
+                      <h5>{data?.password}</h5>
                     </Col>
                   </Row>
                   <Row className="mb-1">

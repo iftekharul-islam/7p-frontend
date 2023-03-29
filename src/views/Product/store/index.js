@@ -5,6 +5,7 @@ import Api from "@src/http";
 export const getAllData = createAsyncThunk(
   "Product/getAllData",
   async (data) => {
+    console.log("🚀 ~ file: index.js:8 ~ data:", data)
     const response = await Api.get("products", { params: data });
     return response.data;
   }
@@ -116,6 +117,24 @@ export const UserSlice = createSlice({
         label: "Section E",
         value: 5,
       },
+    ],
+    unitOptions: [
+      {
+        label: "Each",
+        value: "Each",
+      },
+      {
+        label: "Case",
+        value: 'Case',
+      },
+      {
+        label: "Pack",
+        value: "Pack",
+      },
+      {
+        label: "Square Foot",
+        value: "Square Foot",
+      }
     ],
   },
   extraReducers: (builder) => {

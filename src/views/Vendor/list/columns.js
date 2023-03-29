@@ -87,9 +87,9 @@ export const columns = [
     name: "Name",
     sortable: false,
     minWidth: "220px",
-    sortField: "name",
-    selector: (row) => row.name,
-    cell: (row) => <span className="fw-bolder">{row.name}</span>
+    sortField: "vendor_name",
+    selector: (row) => row.vendor_name,
+    cell: (row) => <span className="fw-bolder">{row.vendor_name}</span>
   },
   {
     name: "Email",
