@@ -59,29 +59,29 @@ const index = () => {
               <CardBody>
                 <Row>
                   <Col sm="12">
-                    <Label className="form-label" for="stock_number">
+                    <Label className="form-label" for="stock_no_unique">
                       Stock Number
                     </Label>
                     <Input
                       type="number"
-                      name="stock_number"
-                      id="stock_number"
+                      name="stock_no_unique"
+                      id="stock_no_unique"
                       placeholder="Stock Number"
-                      value={data?.stock_number}
+                      value={data?.stock_no_unique}
                       onChange={onChange}
                     />
                   </Col>
-                  <small className="text-danger">{errors?.stock_number}</small>
+                  <small className="text-danger">{errors?.stock_no_unique}</small>
                   <Col sm="12">
-                    <Label className="form-label" for="description">
-                      Description
+                    <Label className="form-label" for="stock_name_discription">
+                      Discription
                     </Label>
                     <Input
                       type="text"
-                      name="description"
-                      id="description"
-                      placeholder="Description"
-                      value={data?.description}
+                      name="stock_name_discription"
+                      id="stock_name_discription"
+                      placeholder="Discription"
+                      value={data?.stock_name_discription}
                       onChange={onChange}
                     />
                   </Col>
@@ -109,42 +109,42 @@ const index = () => {
                   </Col>
 
                   <Col sm="12">
-                    <Label className="form-label" for="weight">
+                    <Label className="form-label" for="sku_weight">
                       Weight
                     </Label>
                     <Input
                       type="number"
-                      name="weight"
-                      id="weight"
+                      name="sku_weight"
+                      id="sku_weight"
                       placeholder="Weight"
-                      value={data?.weight}
+                      value={data?.sku_weight}
                       onChange={onChange}
                     />
                   </Col>
                   <Col sm="12">
-                    <Label className="form-label" for="order_quantity">
+                    <Label className="form-label" for="re_order_qty">
                       Order Quantity
                     </Label>
                     <Input
                       type="number"
-                      name="order_quantity"
-                      id="order_quantity"
+                      name="re_order_qty"
+                      id="re_order_qty"
                       placeholder="Order Quantity"
-                      value={data?.order_quantity}
+                      value={data?.re_order_qty}
                       onChange={onChange}
                     />
                   </Col>
 
                   <Col sm="12">
-                    <Label className="form-label" for="minimum_stock_quantity">
+                    <Label className="form-label" for="min_reorder">
                       Minimum Stock Quantity
                     </Label>
                     <Input
                       type="number"
-                      name="minimum_stock_quantity"
-                      id="minimum_stock_quantity"
+                      name="min_reorder"
+                      id="min_reorder"
                       placeholder="Minimum Stock Quantity"
-                      value={data?.minimum_stock_quantity}
+                      value={data?.min_reorder}
                       onChange={onChange}
                     />
                   </Col>
@@ -173,44 +173,31 @@ const index = () => {
                       value={data?.upc}
                       onChange={onChange}
                     />
-                  </Col>
+                  </Col>                  
                   
                   <Col sm="12">
-                    <Label className="form-label" for="vendor_sku">
-                      Vendor Sku
-                    </Label>
-                    <Input
-                      type="text"
-                      name="vendor_sku"
-                      id="vendor_sku"
-                      placeholder="vendor_sku"
-                      value={data?.vendor_sku}
-                      onChange={onChange}
-                    />
-                  </Col>
-                  <Col sm="12">
-                    <Label className="form-label" for="bin">
+                    <Label className="form-label" for="wh_bin">
                     BIN
                     </Label>
                     <Input
                       type="text"
-                      name="bin"
-                      id="bin"
+                      name="wh_bin"
+                      id="wh_bin"
                       placeholder="BIN"
-                      value={data?.bin}
+                      value={data?.wh_bin}
                       onChange={onChange}
                     />
                   </Col>
                   <Col sm="12">
-                    <Label className="form-label" for="image_url">
+                    <Label className="form-label" for="warehouse">
                     Image Url
                     </Label>
                     <Input
                       type="text"
-                      name="image_url"
-                      id="image_url"
+                      name="warehouse"
+                      id="warehouse"
                       placeholder="Image Url"
-                      value={data?.image_url}
+                      value={data?.warehouse}
                       onChange={onChange}
                     />
                   </Col>

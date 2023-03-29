@@ -9,24 +9,45 @@ import { useNavigate } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import '@styles/react/libs/react-select/_react-select.scss'
 import '@styles/react/libs/tables/react-dataTable-component.scss'
+import { DebounceInput } from "react-debounce-input";
 
 const index = () => {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.vendors);
   const [currentPage, setCurrentPage] = useState(1);
+  const [search, setSearch] = useState(null);
 
   useEffect(() => {
-    dispatch(getAllData({ page: currentPage }));
-  }, [currentPage]);
+    dispatch(getAllData({ page: currentPage,q: search }));
+  }, [currentPage, search]);
 
   const CustomHeader = () => {
     const navigate = useNavigate();
     return (
       <div className="invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75">
         <Row>
-          <Col xl="9"></Col>
+          <Col xl="6"></Col>
           <Col
-            xl="3"
+            xl="4"
+            className="d-flex align-items-sm-center justify-content-xl-end justify-content-start flex-xl-nowrap flex-wrap flex-sm-row flex-column pe-xl-1 p-0 mt-xl-0 mt-1"
+          >
+            <div className="d-flex align-items-center table-header-actions">
+              <DebounceInput
+                className="form-control"
+                color="primary"
+                debounceTimeout={300}
+                autoFocus
+                placeholder="Search by Vendor Name"
+                value={search}
+                onChange={e=>{
+                  e.preventDefault()
+                  setSearch(e.target.value)
+                }}
+              />
+            </div>
+          </Col>
+          <Col
+            xl="2"
             className="d-flex align-items-sm-center justify-content-xl-end justify-content-start flex-xl-nowrap flex-wrap flex-sm-row flex-column pe-xl-1 p-0 mt-xl-0 mt-1"
           >
             <div className="d-flex align-items-center table-header-actions">

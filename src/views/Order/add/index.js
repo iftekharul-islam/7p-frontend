@@ -15,8 +15,8 @@ import {
 import { selectThemeColors } from "@utils";
 import Select from "react-select";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  AddVendor,
+import {  
+  AddPurchaseOrder,
   getAllProductByVendor,
   getAllVendors,
   getVendor,
@@ -30,9 +30,11 @@ import "@styles/react/libs/flatpickr/flatpickr.scss";
 import { Plus } from "react-feather";
 
 const index = () => {
-  const [data, setData] = useState({ po_date: new Date() });
+  const [data, setData] = useState({ po_date: new Date(), grand_total: 0 });
+  console.log("🚀 ~ file: index.js:34 ~ index ~ data:", data)
+  const [loading, setLoading] = useState(false);
   const [lock, setLock] = useState(false);
-  const [sku, setSku] = useState([]);
+  const [sku, setSku] = useState([{}]);
   const [errors, setErrors] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -52,27 +54,62 @@ const index = () => {
     });
   };
 
-  const onSkuSelectChange = (name, value, i) => {
+  const onSkuSelectChange = (selectedItem, i) => {
     setLock(true);
-    const data = store?.skuOptions?.find((item) => item?.value === value);
-    const productData = {
-      vendor_sku: data?.data?.vendor_sku,
-      price: data?.data?.unit_price,
-      lead_time_days: data?.data?.lead_time_days,
-    };
-
+    const data = store?.skuOptions?.find(
+      (item) => item?.value === selectedItem?.value
+    );
     const updateData = sku?.map((item, index) => {
-      if (i === index) return productData;
+      if (i === index)
+        return {
+          product_id: data?.data?.id,
+          vendor_sku: data?.data?.vendor_sku,
+          vendor_sku_name: data?.data?.vendor_sku_name,
+          stock_no: data?.data?.stock_no,
+          unit_price: data?.data?.unit_price,
+          lead_time_days: data?.data?.lead_time_days,
+          sub_total: 0,
+          eta: new Date(),
+        };
       else return item;
     });
     setSku(updateData);
   };
 
   const onSkuChange = (name, value, i) => {
-    setLock(true);
-    console.log("🚀 ~ file: index.js:50 ~ onSkuChange ~ i:", i);
-    console.log("🚀 ~ file: index.js:50 ~ onSkuChange ~ value:", value);
-    console.log("🚀 ~ file: index.js:50 ~ onSkuChange ~ name:", name);
+    if (name == "unit_price") {
+      const updateData = sku?.map((item, index) => {
+        if (i === index) {
+          return {
+            ...item,
+            [name]: value,
+            sub_total: parseInt(value ?? 0) * parseInt(item?.quantity ?? 0),
+          };
+        } else return item;
+      });
+      setSku(updateData);
+    } else if (name == "quantity") {
+      const updateData = sku?.map((item, index) => {
+        if (i === index) {
+          return {
+            ...item,
+            [name]: value,
+            sub_total: parseInt(item?.unit_price ?? 0) * parseInt(value ?? 0),
+          };
+        } else return item;
+      });
+      setSku(updateData);
+    } else {
+      const updateData = sku?.map((item, index) => {
+        if (i === index)
+          return {
+            ...item,
+            [name]: value,
+          };
+        else return item;
+      });
+      setSku(updateData);
+    }
   };
 
   useEffect(() => {
@@ -88,8 +125,24 @@ const index = () => {
   }, [data?.vendor_id]);
 
   useEffect(() => {
-    setData({ ...data, ...store?.vendor });
+    setData({
+      ...data,
+      vendor_id: store?.vendor?.id,
+      vendor_name: store?.vendor?.vendor_name,
+      email: store?.vendor?.email,
+      zip_code: store?.vendor?.zip_code,
+      state: store?.vendor?.state,
+      phone_number: store?.vendor?.phone_number,
+    });
   }, [store?.vendor]);
+
+  useEffect(() => {
+    let grand_total = 0;
+    sku.forEach((element) => {
+      grand_total += parseInt(element?.sub_total ?? 0);
+    });
+    setData({ ...data, grand_total: grand_total });
+  }, [sku]);
 
   const increaseCount = () => {
     setSku([...sku, {}]);
@@ -106,12 +159,14 @@ const index = () => {
   };
 
   const onSubmit = async () => {
-    const res = await dispatch(AddVendor(data));
+    setLoading(true)
+    const res = await dispatch(AddPurchaseOrder({...data, skus: sku}));
     if (res?.payload?.status) {
       navigate("/order");
     } else {
       setErrors(res?.payload?.data?.errors);
     }
+    setLoading(false)
   };
 
   return (
@@ -180,15 +235,15 @@ const index = () => {
                     </small>
                   </Col>
                   <Col sm="4">
-                    <Label className="form-label" for="name">
+                    <Label className="form-label" for="vendor_name">
                       Vendor
                     </Label>
                     <Input
                       type="text"
-                      name="name"
-                      id="name"
+                      name="vendor_name"
+                      id="vendor_name"
                       placeholder="Vendor's Name"
-                      value={data?.name}
+                      value={data?.vendor_name}
                       disabled
                     />
                   </Col>
@@ -244,6 +299,19 @@ const index = () => {
                       disabled
                     />
                   </Col>
+                  <Col sm="12">
+                    <Label className="form-label" for="notes">
+                      Notes
+                    </Label>
+                    <Input
+                      type="text"
+                      name="notes"
+                      id="notes"
+                      placeholder="Notes"
+                      value={data?.notes}
+                      onChange={onChange}
+                    />
+                  </Col>
                 </Row>
                 {sku?.length > 0 && (
                   <>
@@ -288,10 +356,10 @@ const index = () => {
                                   <Col sm="1">
                                     <Input
                                       type="text"
-                                      name="phone_number"
-                                      id="phone_number"
-                                      placeholder="Vendor's Phone Number"
-                                      value={sku[i]?.phone_number}
+                                      name="vendor_sku"
+                                      id="vendor_sku"
+                                      placeholder="SKU"
+                                      value={sku[i]?.vendor_sku}
                                       onChange={(e) =>
                                         onSkuChange(
                                           e?.target?.name,
@@ -304,10 +372,10 @@ const index = () => {
                                   <Col sm="1">
                                     <Input
                                       type="text"
-                                      name="phone_number"
-                                      id="phone_number"
-                                      placeholder="Vendor's Phone Number"
-                                      value={data?.phone_number}
+                                      name="stock_no"
+                                      id="stock_no"
+                                      placeholder="Stock"
+                                      value={sku[i]?.stock_no}
                                       disabled
                                     />
                                   </Col>
@@ -321,58 +389,71 @@ const index = () => {
                                       value={store?.skuOptions?.find(
                                         (item) => item?.value === sku?.sku
                                       )}
-                                      onChange={(e) =>
-                                        onSkuSelectChange("sku", e?.value, i)
-                                      }
+                                      onChange={(e) => onSkuSelectChange(e, i)}
                                       isClearable={false}
                                     />
                                   </Col>
                                   <Col sm="1">
                                     <Input
                                       type="text"
-                                      name="phone_number"
-                                      id="phone_number"
-                                      placeholder="Vendor's Phone Number"
-                                      value={data?.phone_number}
+                                      name="quantity"
+                                      id="quantity"
+                                      placeholder="Quantity"
+                                      value={sku[i]?.quantity}
+                                      onChange={(e) =>
+                                        onSkuChange(
+                                          e?.target?.name,
+                                          e?.target?.value,
+                                          i
+                                        )
+                                      }
                                     />
                                   </Col>
                                   <Col sm="1">
                                     <Input
                                       type="text"
-                                      name="phone_number"
-                                      id="phone_number"
-                                      placeholder="Vendor's Phone Number"
-                                      value={sku[i]?.price}
+                                      name="unit_price"
+                                      id="unit_price"
+                                      placeholder="Price"
+                                      value={sku[i]?.unit_price}
+                                      onChange={(e) =>
+                                        onSkuChange(
+                                          e?.target?.name,
+                                          e?.target?.value,
+                                          i
+                                        )
+                                      }
                                     />
                                   </Col>
                                   <Col sm="1">
                                     <Input
                                       type="text"
-                                      name="phone_number"
-                                      id="phone_number"
-                                      placeholder="Vendor's Phone Number"
-                                      value={data?.phone_number}
+                                      name="sub_total"
+                                      id="sub_total"
+                                      placeholder="Subtotal"
+                                      value={sku[i]?.sub_total}
+                                      disabled
                                     />
                                   </Col>
                                   <Col sm="1">
                                     <Input
                                       type="text"
-                                      name="phone_number"
-                                      id="phone_number"
-                                      placeholder="Vendor's Phone Number"
-                                      value={data?.phone_number}
+                                      name="lead_time_days"
+                                      id="lead_time_days"
+                                      placeholder="Lead Time Days"
+                                      value={sku[i]?.lead_time_days}
                                       disabled
                                     />
                                   </Col>
                                   <Col sm="2">
                                     <Flatpickr
                                       className="form-control"
-                                      id="po_date"
-                                      name="po_date"
-                                      placeholder="Purchase Order Date"
-                                      value={data?.po_date}
+                                      id="eta"
+                                      name="eta"
+                                      placeholder="ETA"
+                                      value={sku[i]?.eta}
                                       onChange={(date) =>
-                                        onDateChange("po_date", date)
+                                        onDateChange("eta", date)
                                       }
                                     />
                                   </Col>
@@ -399,7 +480,7 @@ const index = () => {
                     </CardBody>
                     <hr />
                     <Row>
-                      <Col sm="12" className="mt-1">
+                      <Col sm="9" className="mt-1">
                         <div className="d-flex">
                           <Button
                             className="me-1"
@@ -420,11 +501,20 @@ const index = () => {
                               e.preventDefault();
                               onSubmit();
                             }}
+                            disabled={loading}
                           >
-                            Submit
+                            {loading ? (
+                              <>
+                                <Spinner className="me-25" size="sm" />
+                                Submiting
+                              </>
+                            ) : (
+                              "Submit"
+                            )}
                           </Button>
                         </div>
                       </Col>
+                      <Col sm="3">Grand Total: {data?.grand_total}</Col>
                     </Row>
                   </>
                 )}

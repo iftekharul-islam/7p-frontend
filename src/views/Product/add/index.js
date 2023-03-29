@@ -40,12 +40,8 @@ const index = () => {
   const onStockChange = (e) => {
     setData({
       ...data,
-      stock_id: e?.data?.id,
-      name: e?.data?.description,
-      sku_weight: e?.data?.weight,
-      re_order_qty: e?.data?.order_quantity,
-      min_order: e?.data?.minimum_stock_quantity,
-      adjustment: e?.data?.adjusment,
+      ...e?.data,
+      stock_no: e?.stock_no,
     });
   };
 
@@ -54,7 +50,7 @@ const index = () => {
     if (res?.payload?.status) {
       navigate("/product");
     } else {
-      setErrors(res?.payload?.data?.errors)
+      setErrors(res?.payload?.data?.errors);
     }
   };
 
@@ -85,7 +81,7 @@ const index = () => {
                       onChange={onStockChange}
                       isClearable={false}
                     />
-                  <small className="text-danger">{errors?.stock_id}</small>
+                    <small className="text-danger">{errors?.stock_id}</small>
                   </Col>
                   <Col sm="3" className="mb-1">
                     <Label className="form-label" for="nameVertical"></Label>
@@ -102,16 +98,15 @@ const index = () => {
                     </div>
                   </Col>
                   <Col sm="12">
-                    <Label className="form-label" for="name">
+                    <Label className="form-label" for="stock_name_discription">
                       Name
                     </Label>
                     <Input
                       type="text"
-                      name="name"
-                      id="name"
+                      name="stock_name_discription"
+                      id="stock_name_discription"
                       placeholder="Name"
-                      value={data?.name}
-                      onChange={onChange}
+                      value={data?.stock_name_discription}
                       disabled
                     />
                   </Col>
@@ -139,21 +134,19 @@ const index = () => {
                       id="re_order_qty"
                       placeholder="Re-order QTY"
                       value={data?.re_order_qty}
-                      onChange={onChange}
                       disabled
                     />
                   </Col>
                   <Col sm="12">
-                    <Label className="form-label" for="min_order">
+                    <Label className="form-label" for="min_reorder">
                       Min order
                     </Label>
                     <Input
                       type="text"
-                      name="min_order"
-                      id="min_order"
+                      name="min_reorder"
+                      id="min_reorder"
                       placeholder="Min order"
-                      value={data?.min_order}
-                      onChange={onChange}
+                      value={data?.min_reorder}
                       disabled
                     />
                   </Col>
@@ -167,7 +160,6 @@ const index = () => {
                       id="adjusment"
                       placeholder="Adjustment"
                       value={data?.adjusment}
-                      onChange={onChange}
                       disabled
                     />
                   </Col>
@@ -176,25 +168,31 @@ const index = () => {
                     <Label className="form-label" for="unit">
                       Unit
                     </Label>
-                    <Input
-                      type="text"
-                      name="unit"
-                      id="unit"
-                      placeholder="unit"
-                      value={data?.unit}
-                      onChange={onChange}
-                    />
+                    <Select
+                      className="react-select"
+                      classNamePrefix="select"
+                      theme={selectThemeColors}
+                      placeholder="Select Stock"
+                      options={store?.unitOptions}
+                      value={store?.unitOptions?.find(
+                        (item) => item?.value === data?.unit
+                      )}
+                      onChange={(e) =>
+                        onChange({ target: { name: "unit", value: e.value } })
+                      }
+                      isClearable={false}
+                    />                    
                   </Col>
                   <Col sm="6">
-                    <Label className="form-label" for="qty">
+                    <Label className="form-label" for="unit_qty">
                       QTY
                     </Label>
                     <Input
                       type="text"
-                      name="qty"
-                      id="qty"
-                      placeholder="qty"
-                      value={data?.qty}
+                      name="unit_qty"
+                      id="unit_qty"
+                      placeholder="QTY"
+                      value={data?.unit_qty}
                       onChange={onChange}
                     />
                   </Col>
@@ -206,7 +204,7 @@ const index = () => {
                       type="text"
                       name="unit_price"
                       id="unit_price"
-                      placeholder="unit_price"
+                      placeholder="Unit Price"
                       value={data?.unit_price}
                       onChange={onChange}
                     />
@@ -248,15 +246,15 @@ const index = () => {
                     />
                   </Col>
                   <Col sm="12">
-                    <Label className="form-label" for="sku_name">
-                      Sku Name
+                    <Label className="form-label" for="vendor_sku_name">
+                      SKU Name
                     </Label>
                     <Input
                       type="text"
-                      name="sku_name"
-                      id="sku_name"
-                      placeholder="sku_name"
-                      value={data?.sku_name}
+                      name="vendor_sku_name"
+                      id="vendor_sku_name"
+                      placeholder="SKU Name"
+                      value={data?.vendor_sku_name}
                       onChange={onChange}
                     />
                   </Col>

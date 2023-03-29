@@ -72,7 +72,7 @@ const index = () => {
                       type="text"
                       name="name"
                       id="name"
-                      value={data?.stock?.stock_number}
+                      value={data?.inventory?.stock_no_unique}
                       disabled
                     />                  
                   </Col>
@@ -84,7 +84,7 @@ const index = () => {
                       type="text"
                       name="description"
                       id="description"
-                      value={data?.stock?.description}
+                      value={data?.inventory?.stock_name_discription}
                       disabled
                     />
                   </Col>                  
@@ -93,25 +93,31 @@ const index = () => {
                     <Label className="form-label" for="unit">
                       Unit
                     </Label>
-                    <Input
-                      type="text"
-                      name="unit"
-                      id="unit"
-                      placeholder="unit"
-                      value={data?.unit}
-                      onChange={onChange}
+                    <Select
+                      className="react-select"
+                      classNamePrefix="select"
+                      theme={selectThemeColors}
+                      placeholder="Select Stock"
+                      options={store?.unitOptions}
+                      value={store?.unitOptions?.find(
+                        (item) => item?.value === data?.unit
+                      )}
+                      onChange={(e) =>
+                        onChange({ target: { name: "unit", value: e.value } })
+                      }
+                      isClearable={false}
                     />
                   </Col>
                   <Col sm="6">
-                    <Label className="form-label" for="qty">
+                    <Label className="form-label" for="unit_qty">
                       QTY
                     </Label>
                     <Input
                       type="text"
-                      name="qty"
-                      id="qty"
+                      name="unit_qty"
+                      id="unit_qty"
                       placeholder="qty"
-                      value={data?.qty}
+                      value={data?.unit_qty}
                       onChange={onChange}
                     />
                   </Col>
@@ -165,15 +171,15 @@ const index = () => {
                     />
                   </Col>
                   <Col sm="12">
-                    <Label className="form-label" for="sku_name">
+                    <Label className="form-label" for="vendor_sku_name">
                       Sku Name
                     </Label>
                     <Input
                       type="text"
-                      name="sku_name"
-                      id="sku_name"
+                      name="vendor_sku_name"
+                      id="vendor_sku_name"
                       placeholder="sku_name"
-                      value={data?.sku_name}
+                      value={data?.vendor_sku_name}
                       onChange={onChange}
                     />
                   </Col>

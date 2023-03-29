@@ -41,7 +41,7 @@ export default [
     isAccess: check(["product", "vendor"]),
     children: [
       {
-        id: "product",
+        id: "purchase_product",
         title: "Purchase Product",
         icon: <Circle size={20} />,
         isAccess: check(["product"]),
@@ -55,7 +55,7 @@ export default [
         navLink: "/vendor",
       },
       {
-        id: "venorderdor",
+        id: "purchase_order",
         title: "Purchase Order",
         icon: <Circle size={20} />,
         isAccess: check(["order"]),

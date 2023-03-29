@@ -1,34 +1,43 @@
 import moment from "moment";
 import { useState } from "react";
-import { Edit, Eye, Trash2 } from "react-feather";
+import { CheckCircle, Edit, Eye, Printer, Send, Trash2 } from "react-feather";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import { Button, Col, Modal, ModalBody, ModalHeader, Row } from "reactstrap";
-import { DeleteVendor } from "../store";
+import {
+  Button,
+  Col,
+  Modal,
+  ModalBody,
+  ModalHeader,
+  Row,
+  UncontrolledTooltip,
+} from "reactstrap";
+import { DeleteOrder } from "../store";
 
 const renderAction = (row) => {
-
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const [deleteItem, setDeleteItem] = useState(null);
   const [deleteShow, setDeleteShow] = useState(false);
 
   const onSubmitDelete = (e) => {
-    e.preventDefault()
-    dispatch(DeleteVendor(deleteItem.id))
-    setDeleteShow(!deleteShow)
-  }
+    e.preventDefault();
+    dispatch(DeleteOrder(deleteItem.id))
+    setDeleteShow(!deleteShow);
+  };
 
   return (
     <div className="column-action">
       <Link
         className="text-truncate text-capitalize align-middle"
-        to={`/vendor-view/${row.id}`}
+        // to={`/vendor-view/${row.id}`}
+        id={`view-${row.id}`}
       >
         <Eye size={18} className={`text-primary me-50`} />
       </Link>
       <Link
         className="text-truncate text-capitalize align-middle"
-        to={`/vendor-edit/${row.id}`}
+        // to={`/vendor-edit/${row.id}`}
+        id={`edit-${row.id}`}
       >
         <Edit size={18} className={`text-primary me-50`} />
       </Link>
@@ -39,9 +48,56 @@ const renderAction = (row) => {
           setDeleteItem(row);
           setDeleteShow(true);
         }}
+        id={`delete-${row.id}`}
       >
         <Trash2 size={18} className={`text-danger me-50`} />
       </Link>
+      <Link
+        className="text-truncate text-capitalize align-middle"
+        onClick={(e) => {
+          e.preventDefault();
+        }}
+        id={`receive-${row.id}`}
+      >
+        <CheckCircle size={18} className={`text-danger me-50`} />
+      </Link>
+      <Link
+        className="text-truncate text-capitalize align-middle"
+        onClick={(e) => {
+          e.preventDefault();
+        }}
+        id={`print-${row.id}`}
+      >
+        <Printer size={18} className={`text-danger me-50`} />
+      </Link>
+      <Link
+        className="text-truncate text-capitalize align-middle"
+        onClick={(e) => {
+          e.preventDefault();
+        }}
+        id={`send-${row.id}`}
+      >
+        <Send size={18} className={`text-danger me-50`} />
+      </Link>
+
+      <UncontrolledTooltip placement="top" target={`view-${row.id}`}>
+        Preview Order
+      </UncontrolledTooltip>
+      <UncontrolledTooltip placement="top" target={`edit-${row.id}`}>
+        Edit Order
+      </UncontrolledTooltip>
+      <UncontrolledTooltip placement="top" target={`delete-${row.id}`}>
+        Delete Order
+      </UncontrolledTooltip>
+      <UncontrolledTooltip placement="top" target={`receive-${row.id}`}>
+        Receive Order
+      </UncontrolledTooltip>
+      <UncontrolledTooltip placement="top" target={`print-${row.id}`}>
+        Print Order
+      </UncontrolledTooltip>
+      <UncontrolledTooltip placement="top" target={`send-${row.id}`}>
+        Send Order
+      </UncontrolledTooltip>
 
       <Modal
         isOpen={deleteShow}
@@ -73,8 +129,8 @@ const renderAction = (row) => {
         </ModalBody>
       </Modal>
     </div>
-  )
-}
+  );
+};
 
 export const columns = [
   {
@@ -83,14 +139,19 @@ export const columns = [
     minWidth: "100px",
     sortField: "id",
     selector: (row) => row.po_number,
-    cell: (row) => <span className="fw-bolder">{row.po_number}</span>
-  },{
+    cell: (row) => <span className="fw-bolder">{row.po_number}</span>,
+  },
+  {
     name: "Date",
     sortable: false,
     minWidth: "120px",
     sortField: "name",
     selector: (row) => row.po_date,
-    cell: (row) => <span className="fw-bolder">{moment(row.po_date).format("DD MMM YYYY")}</span>
+    cell: (row) => (
+      <span className="fw-bolder">
+        {moment(row.po_date).format("DD MMM YYYY")}
+      </span>
+    ),
   },
   {
     name: "Vendor",
@@ -98,35 +159,35 @@ export const columns = [
     minWidth: "180px",
     sortField: "email",
     selector: (row) => row.email,
-    cell: (row) => <span className="fw-bolder">{row.vendor?.name}</span>
+    cell: (row) => <span className="fw-bolder">{row.vendor?.name}</span>,
   },
   {
     name: "Products",
     sortable: false,
     minWidth: "100px",
-    sortField: "phone_number",
-    selector: (row) => row.phone_number,
-    cell: (row) => <span className="text-capitalize">6</span>
+    sortField: "total_products",
+    selector: (row) => row.total_products,
+    cell: (row) => <span className="text-capitalize">{row?.total_products}</span>,
   },
   {
     name: "Balance",
     sortable: false,
     minWidth: "100px",
-    sortField: "phone_number",
-    selector: (row) => row.phone_number,
-    cell: (row) => <span className="text-capitalize">6</span>
+    sortField: "total_balance",
+    selector: (row) => row.total_balance,
+    cell: (row) => <span className="text-capitalize">{row?.total_balance}</span>,
   },
   {
     name: "Tracking",
     sortable: false,
     minWidth: "100px",
-    sortField: "phone_number",
-    selector: (row) => row.phone_number,
-    cell: (row) => <span className="text-capitalize">{row?.tracking}</span>
+    sortField: "tracking",
+    selector: (row) => row.tracking,
+    cell: (row) => <span className="text-capitalize">{row?.tracking}</span>,
   },
   {
     name: "Actions",
     minWidth: "100px",
-    cell: (row) => renderAction(row)
-  }
-]
+    cell: (row) => renderAction(row),
+  },
+];
