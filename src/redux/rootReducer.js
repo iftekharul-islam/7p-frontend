@@ -7,6 +7,7 @@ import permissions from '@src/views/Permission/store'
 import products from '@src/views/Product/store'
 import vendors from '@src/views/Vendor/store'
 import orders from '@src/views/Order/store'
+import inventories from '@src/views/Inventory/store'
 
 const rootReducer = { 
     navbar, 
@@ -17,7 +18,8 @@ const rootReducer = {
     permissions,
     products,
     vendors,
-    orders
+    orders,
+    inventories
  };
 
 export default rootReducer;
