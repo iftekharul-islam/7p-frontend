@@ -1,7 +1,7 @@
 import moment from "moment";
 import { useState } from "react";
 import { CheckCircle, Edit, Eye, Printer, Send, Trash2 } from "react-feather";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import {
   Button,
@@ -16,88 +16,106 @@ import { DeleteOrder } from "../store";
 
 const renderAction = (row) => {
   const dispatch = useDispatch();
+  const store = useSelector((state) => state.orders);
   const [deleteItem, setDeleteItem] = useState(null);
   const [deleteShow, setDeleteShow] = useState(false);
 
   const onSubmitDelete = (e) => {
     e.preventDefault();
-    dispatch(DeleteOrder(deleteItem.id))
+    dispatch(DeleteOrder(deleteItem.id));
     setDeleteShow(!deleteShow);
   };
 
   return (
     <div className="column-action">
-      <Link
-        className="text-truncate text-capitalize align-middle"
-        // to={`/vendor-view/${row.id}`}
-        id={`view-${row.id}`}
-      >
-        <Eye size={18} className={`text-primary me-50`} />
-      </Link>
-      <Link
-        className="text-truncate text-capitalize align-middle"
-        // to={`/vendor-edit/${row.id}`}
-        id={`edit-${row.id}`}
-      >
-        <Edit size={18} className={`text-primary me-50`} />
-      </Link>
-      <Link
-        className="text-truncate text-capitalize align-middle"
-        onClick={(e) => {
-          e.preventDefault();
-          setDeleteItem(row);
-          setDeleteShow(true);
-        }}
-        id={`delete-${row.id}`}
-      >
-        <Trash2 size={18} className={`text-danger me-50`} />
-      </Link>
-      <Link
-        className="text-truncate text-capitalize align-middle"
-        onClick={(e) => {
-          e.preventDefault();
-        }}
-        id={`receive-${row.id}`}
-      >
-        <CheckCircle size={18} className={`text-danger me-50`} />
-      </Link>
-      <Link
-        className="text-truncate text-capitalize align-middle"
-        onClick={(e) => {
-          e.preventDefault();
-        }}
-        id={`print-${row.id}`}
-      >
-        <Printer size={18} className={`text-danger me-50`} />
-      </Link>
-      <Link
-        className="text-truncate text-capitalize align-middle"
-        onClick={(e) => {
-          e.preventDefault();
-        }}
-        id={`send-${row.id}`}
-      >
-        <Send size={18} className={`text-danger me-50`} />
-      </Link>
+      {store?.params?.status == 1 ? (
+        <>
+          <Link
+            className="text-truncate text-capitalize align-middle"
+            to={`/order-view/${row.id}`}
+            id={`view-${row.id}`}
+          >
+            <Eye size={18} className={`text-primary me-50`} />
+          </Link>
+          <Link
+            className="text-truncate text-capitalize align-middle"
+            to={`/order-edit/${row.id}`}
+            id={`edit-${row.id}`}
+          >
+            <Edit size={18} className={`text-primary me-50`} />
+          </Link>
+          <Link
+            className="text-truncate text-capitalize align-middle"
+            onClick={(e) => {
+              e.preventDefault();
+              setDeleteItem(row);
+              setDeleteShow(true);
+            }}
+            id={`delete-${row.id}`}
+          >
+            <Trash2 size={18} className={`text-danger me-50`} />
+          </Link>
+          <Link
+            className="text-truncate text-capitalize align-middle"
+            to={`/order-receive/${row.id}`}
+            id={`receive-${row.id}`}
+          >
+            <CheckCircle size={18} className={`text-danger me-50`} />
+          </Link>
+          <Link
+            className="text-truncate text-capitalize align-middle"
+            onClick={(e) => {
+              e.preventDefault();
+            }}
+            id={`print-${row.id}`}
+          >
+            <Printer size={18} className={`text-danger me-50`} />
+          </Link>
+          <Link
+            className="text-truncate text-capitalize align-middle"
+            onClick={(e) => {
+              e.preventDefault();
+            }}
+            id={`send-${row.id}`}
+          >
+            <Send size={18} className={`text-danger me-50`} />
+          </Link>
 
-      <UncontrolledTooltip placement="top" target={`view-${row.id}`}>
-        Preview Order
-      </UncontrolledTooltip>
-      <UncontrolledTooltip placement="top" target={`edit-${row.id}`}>
-        Edit Order
-      </UncontrolledTooltip>
-      <UncontrolledTooltip placement="top" target={`delete-${row.id}`}>
-        Delete Order
-      </UncontrolledTooltip>
-      <UncontrolledTooltip placement="top" target={`receive-${row.id}`}>
-        Receive Order
-      </UncontrolledTooltip>
-      <UncontrolledTooltip placement="top" target={`print-${row.id}`}>
-        Print Order
-      </UncontrolledTooltip>
-      <UncontrolledTooltip placement="top" target={`send-${row.id}`}>
-        Send Order
-      </UncontrolledTooltip>
+          <UncontrolledTooltip placement="top" target={`view-${row.id}`}>
+            Preview Order
+          </UncontrolledTooltip>
+          <UncontrolledTooltip placement="top" target={`edit-${row.id}`}>
+            Edit Order
+          </UncontrolledTooltip>
+          <UncontrolledTooltip placement="top" target={`delete-${row.id}`}>
+            Delete Order
+          </UncontrolledTooltip>
+          <UncontrolledTooltip placement="top" target={`receive-${row.id}`}>
+            Receive Order
+          </UncontrolledTooltip>
+          <UncontrolledTooltip placement="top" target={`print-${row.id}`}>
+            Print Order
+          </UncontrolledTooltip>
+          <UncontrolledTooltip placement="top" target={`send-${row.id}`}>
+            Send Order
+          </UncontrolledTooltip>
+        </>
+      ) : (
+        <>
+          <Link
+            className="text-truncate text-capitalize align-middle"
+            onClick={(e) => {
+              e.preventDefault();
+            }}
+            id={`print-${row.id}`}
+          >
+            <Printer size={18} className={`text-danger me-50`} />
+          </Link>
+          <UncontrolledTooltip placement="top" target={`print-${row.id}`}>
+            Print Order
+          </UncontrolledTooltip>
+        </>
+      )}
 
       <Modal
         isOpen={deleteShow}
@@ -137,15 +155,22 @@ export const columns = [
     name: "Purchase Order",
     sortable: false,
     minWidth: "100px",
-    sortField: "id",
+    sortField: "po_number",
     selector: (row) => row.po_number,
-    cell: (row) => <span className="fw-bolder">{row.po_number}</span>,
+    cell: (row) => (
+      <Link
+        className="text-truncate text-capitalize align-middle"
+        to={`/order-view/${row.id}`}
+      >
+        <span className="fw-bolder">{row.po_number}</span>
+      </Link>
+    ),
   },
   {
     name: "Date",
     sortable: false,
     minWidth: "120px",
-    sortField: "name",
+    sortField: "po_date",
     selector: (row) => row.po_date,
     cell: (row) => (
       <span className="fw-bolder">
@@ -157,9 +182,16 @@ export const columns = [
     name: "Vendor",
     sortable: false,
     minWidth: "180px",
-    sortField: "email",
-    selector: (row) => row.email,
-    cell: (row) => <span className="fw-bolder">{row.vendor?.name}</span>,
+    sortField: "vendor_name",
+    selector: (row) => row.vendor_name,
+    cell: (row) => (
+      <Link
+        className="text-truncate text-capitalize align-middle"
+        to={`/vendor-view/${row?.vendor?.id}`}
+      >
+        <span className="fw-bolder">{row.vendor?.vendor_name}</span>
+      </Link>
+    ),
   },
   {
     name: "Products",
@@ -167,7 +199,9 @@ export const columns = [
     minWidth: "100px",
     sortField: "total_products",
     selector: (row) => row.total_products,
-    cell: (row) => <span className="text-capitalize">{row?.total_products}</span>,
+    cell: (row) => (
+      <span className="text-capitalize">{row?.total_products}</span>
+    ),
   },
   {
     name: "Balance",
@@ -175,7 +209,9 @@ export const columns = [
     minWidth: "100px",
     sortField: "total_balance",
     selector: (row) => row.total_balance,
-    cell: (row) => <span className="text-capitalize">{row?.total_balance}</span>,
+    cell: (row) => (
+      <span className="text-capitalize">{row?.total_balance}</span>
+    ),
   },
   {
     name: "Tracking",

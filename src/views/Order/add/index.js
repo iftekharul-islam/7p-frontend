@@ -15,7 +15,7 @@ import {
 import { selectThemeColors } from "@utils";
 import Select from "react-select";
 import { useDispatch, useSelector } from "react-redux";
-import {  
+import {
   AddPurchaseOrder,
   getAllProductByVendor,
   getAllVendors,
@@ -23,15 +23,14 @@ import {
 } from "../store";
 import { useNavigate } from "react-router-dom";
 import Flatpickr from "react-flatpickr";
+import "@styles/react/libs/flatpickr/flatpickr.scss";
 import { SlideDown } from "react-slidedown";
 import Repeater from "@components/repeater";
 import "react-slidedown/lib/slidedown.css";
-import "@styles/react/libs/flatpickr/flatpickr.scss";
 import { Plus } from "react-feather";
 
 const index = () => {
   const [data, setData] = useState({ po_date: new Date(), grand_total: 0 });
-  console.log("🚀 ~ file: index.js:34 ~ index ~ data:", data)
   const [loading, setLoading] = useState(false);
   const [lock, setLock] = useState(false);
   const [sku, setSku] = useState([{}]);
@@ -80,10 +79,11 @@ const index = () => {
     if (name == "unit_price") {
       const updateData = sku?.map((item, index) => {
         if (i === index) {
+          const subTotal = (value ?? 0) * (item?.quantity ?? 0);
           return {
             ...item,
             [name]: value,
-            sub_total: parseInt(value ?? 0) * parseInt(item?.quantity ?? 0),
+            sub_total: parseFloat(subTotal).toFixed(2),
           };
         } else return item;
       });
@@ -91,10 +91,11 @@ const index = () => {
     } else if (name == "quantity") {
       const updateData = sku?.map((item, index) => {
         if (i === index) {
+          const subTotal = (item?.unit_price ?? 0) * (value ?? 0);
           return {
             ...item,
             [name]: value,
-            sub_total: parseInt(item?.unit_price ?? 0) * parseInt(value ?? 0),
+            sub_total: parseFloat(subTotal).toFixed(2),
           };
         } else return item;
       });
@@ -139,9 +140,10 @@ const index = () => {
   useEffect(() => {
     let grand_total = 0;
     sku.forEach((element) => {
-      grand_total += parseInt(element?.sub_total ?? 0);
+      grand_total =
+        parseFloat(grand_total) + parseFloat(element?.sub_total ?? 0);
     });
-    setData({ ...data, grand_total: grand_total });
+    setData({ ...data, grand_total: grand_total.toFixed(2) });
   }, [sku]);
 
   const increaseCount = () => {
@@ -159,14 +161,14 @@ const index = () => {
   };
 
   const onSubmit = async () => {
-    setLoading(true)
-    const res = await dispatch(AddPurchaseOrder({...data, skus: sku}));
+    setLoading(true);
+    const res = await dispatch(AddPurchaseOrder({ ...data, skus: sku }));
     if (res?.payload?.status) {
       navigate("/order");
     } else {
       setErrors(res?.payload?.data?.errors);
     }
-    setLoading(false)
+    setLoading(false);
   };
 
   return (
@@ -395,9 +397,10 @@ const index = () => {
                                   </Col>
                                   <Col sm="1">
                                     <Input
-                                      type="text"
+                                      type="number"
                                       name="quantity"
                                       id="quantity"
+                                      min={0}                                      
                                       placeholder="Quantity"
                                       value={sku[i]?.quantity}
                                       onChange={(e) =>
@@ -453,7 +456,7 @@ const index = () => {
                                       placeholder="ETA"
                                       value={sku[i]?.eta}
                                       onChange={(date) =>
-                                        onDateChange("eta", date)
+                                        onSkuChange("eta", date, i)
                                       }
                                     />
                                   </Col>

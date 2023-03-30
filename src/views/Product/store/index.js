@@ -5,8 +5,7 @@ import Api from "@src/http";
 export const getAllData = createAsyncThunk(
   "Product/getAllData",
   async (data) => {
-    console.log("🚀 ~ file: index.js:8 ~ data:", data)
-    const response = await Api.get("products", { params: data });
+    const response = await Api.get("purchased-products", { params: data });
     return response.data;
   }
 );
@@ -14,7 +13,7 @@ export const getAllData = createAsyncThunk(
 export const getProduct = createAsyncThunk(
   "Product/getProduct",
   async (id) => {
-    const response = await Api.get(`products/${id}`);
+    const response = await Api.get(`purchased-products/${id}`);
     return response.data;
   }
 );
@@ -22,7 +21,7 @@ export const getProduct = createAsyncThunk(
 export const AddProduct = createAsyncThunk(
   "Product/AddProduct",
   async (data, { dispatch }) => {
-    const response = await Api.post("products", data);
+    const response = await Api.post("purchased-products", data);
     if (response?.status == 201) {
       dispatch(getAllData());
       return { status: true };
@@ -35,7 +34,7 @@ export const AddProduct = createAsyncThunk(
 export const UpdateProduct = createAsyncThunk(
   "Product/UpdateProduct",
   async (data, { dispatch }) => {
-    const response = await Api.post(`products/${data?.id}`, data?.data);
+    const response = await Api.post(`purchased-products/${data?.id}`, data?.data);
     if (response?.status == 201) {
       dispatch(getAllData());
       return { status: true };
@@ -48,7 +47,7 @@ export const UpdateProduct = createAsyncThunk(
 export const DeleteProduct = createAsyncThunk(
   "Product/DeleteProduct",
   async (id, { dispatch }) => {
-    const response = await Api.post(`destroy-products/${id}`);
+    const response = await Api.post(`destroy-purchased-products/${id}`);
     if (response?.status == 201) {
       dispatch(getAllData());
       return { status: true };

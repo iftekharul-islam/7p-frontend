@@ -9,7 +9,7 @@ const themeConfig = {
     appName: "7P",
     appLogoImage: logo,
   },
-  layout:
+  layout: {
     isRTL: false,
     skin: "light", // light, dark, bordered, semi-dark
     type: "vertical", // vertical, horizontal
