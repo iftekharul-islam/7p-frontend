@@ -12,30 +12,36 @@ import {
   Row,
   Spinner,
 } from "reactstrap";
+import { selectThemeColors } from "@utils";
+import Select from "react-select";
 import { useDispatch, useSelector } from "react-redux";
-import {  getVendor, UpdateVendor } from "../store";
+import { getAllSections, getStock, UpdateStock } from "../store";
 import { useNavigate, useParams } from "react-router-dom";
 
 const index = () => {
-  const {id} = useParams();
   const [data, setData] = useState(null);
+  const { id } = useParams();
   const [errors, setErrors] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const store = useSelector((state) => state.inventories);
 
   useEffect(() => {
-    if(id) {
-      dispatch(getVendor(id))
+    if (id) {
+      dispatch(getStock(id));
     }
-  }, [id])
+  }, [id]);
 
   useEffect(() => {
-    if(store?.vendor) {
-      setData(store?.vendor)
+    if (store?.stock) {
+      setData({ ...store?.stock });
     }
-  }, [store?.vendor])
-  
+  }, [store?.stock]);
+
+  useEffect(() => {
+    dispatch(getAllSections());
+  }, []);
+
   const onChange = (e) => {
     setData({
       ...data,
@@ -44,9 +50,9 @@ const index = () => {
   };
 
   const onSubmit = async () => {
-    const res = await dispatch(UpdateVendor({id, data}));
+    const res = await dispatch(UpdateStock({ id, data }));
     if (res?.payload?.status) {
-      navigate("/vendor");
+      navigate("/inventory");
     } else {
       setErrors(res?.payload?.data?.errors);
     }
@@ -59,194 +65,200 @@ const index = () => {
           <Col sm="6">
             <Card>
               <CardHeader>
-                <CardTitle tag="h4">Edit Vendor</CardTitle>
+                <CardTitle tag="h4">New Stock</CardTitle>
               </CardHeader>
               <CardBody>
                 <Row>
-                  <Col sm="12" className="mb-1">
-                    <Label className="form-label" for="image">
-                      Image
+                  <Col sm="12">
+                    <Label className="form-label" for="stock_no_unique">
+                      Stock Number
                     </Label>
                     <Input
-                      type="file"
-                      name="image"
-                      id="image"
-                      placeholder="image"
-                      // value={data?.image}
-                      onChange={onChange}
+                      type="number"
+                      name="stock_no_unique"
+                      id="stock_no_unique"
+                      placeholder="Stock Number"
+                      value={data?.stock_no_unique}
+                      disabled
                     />
                   </Col>
+                  <small className="text-danger">
+                    {errors?.stock_no_unique}
+                  </small>
                   <Col sm="12">
-                    <Label className="form-label" for="vendor_name">
-                      Name
+                    <Label className="form-label" for="stock_name_discription">
+                      Discription
                     </Label>
                     <Input
                       type="text"
-                      name="vendor_name"
-                      id="vendor_name"
-                      placeholder="Name"
-                      value={data?.vendor_name}
+                      name="stock_name_discription"
+                      id="stock_name_discription"
+                      placeholder="Discription"
+                      value={data?.stock_name_discription}
                       onChange={onChange}
                     />
-                    <small className="text-danger">{errors?.vendor_name}</small>
                   </Col>
 
                   <Col sm="12">
-                    <Label className="form-label" for="zip_code">
-                      Zip Code
+                    <Label className="form-label" for="section_id">
+                      Section
                     </Label>
-                    <Input
-                      type="text"
-                      name="zip_code"
-                      id="zip_code"
-                      placeholder="Zip Code"
-                      value={data?.zip_code}
-                      onChange={onChange}
+                    <Select
+                      className="react-select"
+                      classNamePrefix="select"
+                      theme={selectThemeColors}
+                      placeholder="Select Section"
+                      options={store?.sectionOptions}
+                      value={store?.sectionOptions?.find(
+                        (item) => item?.value === data?.section_id
+                      )}
+                      onChange={(e) => {
+                        onChange({
+                          target: { value: e?.value, name: "section_id" },
+                        });
+                      }}
+                      isClearable={false}
                     />
-                  </Col>
-                  <Col sm="12">
-                    <Label className="form-label" for="state">
-                      State
-                    </Label>
-                    <Input
-                      type="text"
-                      name="state"
-                      id="state"
-                      placeholder="State"
-                      value={data?.state}
-                      onChange={onChange}
-                    />
-                  </Col>
-                  <Col sm="12">
-                    <Label className="form-label" for="country">
-                      Country
-                    </Label>
-                    <Input
-                      type="text"
-                      name="country"
-                      id="country"
-                      placeholder="Country"
-                      value={data?.country}
-                      onChange={onChange}
-                    />
-                  </Col>
-                  <Col sm="12">
-                    <Label className="form-label" for="email">
-                      Email
-                    </Label>
-                    <Input
-                      type="text"
-                      name="email"
-                      id="email"
-                      placeholder="Email"
-                      value={data?.email}
-                      onChange={onChange}
-                    />
-                     <small className="text-danger">{errors?.email}</small>
                   </Col>
 
                   <Col sm="12">
-                    <Label className="form-label" for="phone_number">
-                      Phone Number
+                    <Label className="form-label" for="sku_weight">
+                      Weight
                     </Label>
                     <Input
-                      type="text"
-                      name="phone_number"
-                      id="phone_number"
-                      placeholder="Phone Number"
-                      value={data?.phone_number}
-                      onChange={onChange}
-                    />
-                     <small className="text-danger">{errors?.phone_number}</small>
-                  </Col>
-                  <Col sm="12">
-                    <Label className="form-label" for="contact_person_name">
-                      Contact Person Name
-                    </Label>
-                    <Input
-                      type="text"
-                      name="contact_person_name"
-                      id="contact_person_name"
-                      placeholder="Contact Person Name"
-                      value={data?.contact_person_name}
+                      type="number"
+                      name="sku_weight"
+                      id="sku_weight"
+                      placeholder="Weight"
+                      value={data?.sku_weight}
                       onChange={onChange}
                     />
                   </Col>
                   <Col sm="12">
-                    <Label className="form-label" for="link">
-                      Account Link
+                    <Label className="form-label" for="re_order_qty">
+                      Order Quantity
                     </Label>
                     <Input
-                      type="text"
-                      name="link"
-                      id="link"
-                      placeholder="Account Link"
-                      value={data?.link}
+                      type="number"
+                      name="re_order_qty"
+                      id="re_order_qty"
+                      placeholder="Order Quantity"
+                      value={data?.re_order_qty}
+                      onChange={onChange}
+                    />
+                  </Col>
+
+                  <Col sm="12">
+                    <Label className="form-label" for="min_reorder">
+                      Minimum Stock Quantity
+                    </Label>
+                    <Input
+                      type="number"
+                      name="min_reorder"
+                      id="min_reorder"
+                      placeholder="Minimum Stock Quantity"
+                      value={data?.min_reorder}
                       onChange={onChange}
                     />
                   </Col>
                   <Col sm="12">
-                    <Label className="form-label" for="login_id">
-                      Account Login
+                    <Label className="form-label" for="last_cost">
+                      Last Cost
                     </Label>
                     <Input
-                      type="text"
-                      name="login_id"
-                      id="login_id"
-                      placeholder="Account Login"
-                      value={data?.login_id}
+                      type="number"
+                      name="last_cost"
+                      id="last_cost"
+                      placeholder="Last Cost"
+                      value={data?.last_cost}
                       onChange={onChange}
                     />
                   </Col>
                   <Col sm="12">
-                    <Label className="form-label" for="password">
-                      Account Password
+                    <Label className="form-label" for="upc">
+                      UPC
                     </Label>
                     <Input
                       type="text"
-                      name="password"
-                      id="password"
-                      placeholder="Account Password"
-                      value={data?.password}
+                      name="upc"
+                      id="upc"
+                      placeholder="UPC"
+                      value={data?.upc}
+                      onChange={onChange}
+                    />
+                  </Col>
+
+                  <Col sm="12">
+                    <Label className="form-label" for="wh_bin">
+                      BIN
+                    </Label>
+                    <Input
+                      type="text"
+                      name="wh_bin"
+                      id="wh_bin"
+                      placeholder="BIN"
+                      value={data?.wh_bin}
                       onChange={onChange}
                     />
                   </Col>
                   <Col sm="12">
-                    <Label className="form-label" for="bank_info">
-                      Bank Info
+                    <Label className="form-label" for="warehouse">
+                      Image Url
                     </Label>
                     <Input
                       type="text"
-                      name="bank_info"
-                      id="bank_info"
-                      placeholder="Bank Info"
-                      value={data?.bank_info}
+                      name="warehouse"
+                      id="warehouse"
+                      placeholder="Image Url"
+                      value={data?.warehouse}
+                      onChange={onChange}
+                    />
+                  </Col>
+                  <Col sm="12" className="d-flex">
+                    <Input
+                      type="checkbox"
+                      name="dropship"
+                      className="m-1"
+                      checked={data?.dropship}
+                      onChange={(e) =>
+                        onChange({
+                          target: {
+                            name: "dropship",
+                            value: e?.target?.checked,
+                          },
+                        })
+                      }
+                    />
+                    <Label
+                      for="warehouse"
+                      className="form-label d-flex align-content-center flex-wrap"
+                    >
+                      Dropship
+                    </Label>
+                  </Col>
+                  <Col sm="12">
+                    <Label className="form-label" for="dropship_sku">
+                      Dropship SKU
+                    </Label>
+                    <Input
+                      type="text"
+                      name="dropship_sku"
+                      id="dropship_sku"
+                      placeholder="Dropship SKU"
+                      value={data?.dropship_sku}
                       onChange={onChange}
                     />
                   </Col>
                   <Col sm="12">
-                    <Label className="form-label" for="paypal_info">
-                      Paypal Info
+                    <Label className="form-label" for="dropship_cost">
+                      Dropship Cost
                     </Label>
                     <Input
                       type="text"
-                      name="paypal_info"
-                      id="paypal_info"
-                      placeholder="Paypal Info"
-                      value={data?.paypal_info}
-                      onChange={onChange}
-                    />
-                  </Col>
-                  <Col sm="12">
-                    <Label className="form-label" for="notes">
-                      Notes
-                    </Label>
-                    <Input
-                      type="text"
-                      name="notes"
-                      id="notes"
-                      placeholder="Notes"
-                      value={data?.notes}
+                      name="dropship_cost"
+                      id="dropship_cost"
+                      placeholder="Dropship Cost"
+                      value={data?.dropship_cost}
                       onChange={onChange}
                     />
                   </Col>

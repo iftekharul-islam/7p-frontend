@@ -2,15 +2,67 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import Api from "@src/http";
 
-export const getAllData = createAsyncThunk("Inventory/getAllData", async (data) => {
-  const response = await Api.get("inventories",{params: data});
+export const getAllData = createAsyncThunk(
+  "Inventory/getAllData",
+  async (_, { getState }) => {
+    const { params, searchParams } = getState()?.inventories;
+    const response = await Api.get("inventories", { params:{...params, ...searchParams} });
+    return response.data;
+  }
+);
+
+export const AddStock = createAsyncThunk("Inventory/AddStock", async (data) => {
+  const response = await Api.post("inventories", data);
+  if (response?.status == 201) {
+    return { status: true };
+  } else {
+    return { status: false, data: response?.data };
+  }
+});
+
+export const UpdateStock = createAsyncThunk(
+  "Inventory/UpdateStock",
+  async (data) => {
+    const response = await Api.post(`inventories/${data?.id}`, data?.data);
+    if (response?.status == 201) {
+      return { status: true };
+    } else {
+      return { status: false, data: response?.data };
+    }
+  }
+);
+
+export const getStock = createAsyncThunk("Inventory/getStock", async (id) => {
+  const response = await Api.get(`inventories/${id}`);
   return response.data;
 });
 
-export const getVendor = createAsyncThunk("Vendor/getVendor", async (id) => {
+
+export const getAllSections = createAsyncThunk(
+  "Inventory/getAllSections",
+  async () => {
+    const response = await Api.get("section-options");
+    return response.data;
+  }
+);
+
+export const getVendor = createAsyncThunk("Inventory/getVendor", async (id) => {
   const response = await Api.get(`vendors/${id}`);
   return response.data;
 });
+
+export const DeleteInventory = createAsyncThunk(
+  "Inventory/DeleteVendor",
+  async (id, { dispatch }) => {
+    const response = await Api.post(`destroy-inventories/${id}`);
+    if (response?.status == 201) {
+      dispatch(getAllData());
+      return { status: true };
+    } else {
+      return { status: false, data: response?.data };
+    }
+  }
+);
 
 export const AddVendor = createAsyncThunk(
   "Vendor/AddVendor",
@@ -27,35 +79,10 @@ export const AddVendor = createAsyncThunk(
 
 export const UpdateVendor = createAsyncThunk(
   "Vendor/UpdateVendor",
-  async (data, {dispatch}) => {
+  async (data, { dispatch }) => {
     const response = await Api.post(`vendors/${data?.id}`, data?.data);
     if (response?.status == 201) {
       dispatch(getAllData());
-      return { status: true };
-    } else {
-      return { status: false, data: response?.data };
-    }
-  }
-);
-
-export const DeleteVendor = createAsyncThunk(
-  "Vendor/DeleteVendor",
-  async (id, { dispatch }) => {
-    const response = await Api.post(`destroy-vendors/${id}`);
-    if (response?.status == 201) {
-      dispatch(getAllData());
-      return { status: true };
-    } else {
-      return { status: false, data: response?.data };
-    }
-  }
-);
-
-export const AddStock = createAsyncThunk(
-  "Vendor/AddStock",
-  async (data) => {
-    const response = await Api.post("add-stock-products", data);
-    if (response?.status == 201) {
       return { status: true };
     } else {
       return { status: false, data: response?.data };
@@ -72,9 +99,18 @@ export const getAllStocks = createAsyncThunk(
 );
 
 export const getAllVendors = createAsyncThunk(
-  "Vendor/getAllVendors",
+  "Inventory/getAllVendors",
   async (data) => {
     const response = await Api.get("vendor-options", data);
+    return response.data;
+  }
+);
+
+export const UpdateBinQty = createAsyncThunk(
+  "Vendor/UpdateBinQty",
+  async (data, { dispatch }) => {
+    const response = await Api.post(`update-bin-&-qty`, data);
+    dispatch(getAllData());
     return response.data;
   }
 );
@@ -85,10 +121,77 @@ export const InventorySlice = createSlice({
     data: [],
     total: 1,
 
-    params: {},
+    params: {
+      page: 1,
+    },
+
+    searchParams: {
+      search_for_first: null,
+      operator_first: "in",
+      search_in_first: "stock_no_unique",
+      search_for_second: null,
+      operator_second: "in",
+      search_in_second: "stock_no_unique",
+      search_for_third: null,
+      operator_third: "in",
+      search_in_third: "stock_no_unique",
+      search_for_fourth: null,
+      operator_fourth: "in",
+      search_in_fourth: "stock_no_unique",
+
+      vendor_id: null,
+      section_ids: null,
+      sort_by: null,
+      sorted: "asc",
+    },
+
     allData: [],
 
-    vendor:{}
+    vendor: {},
+    stock: null,
+    vendorOptions: [],
+    sectionOptions: [],
+    inOptions: [
+      { label: "In", value: "in" },
+      { label: "Not In", value: "not_in" },
+      { label: "Starts With", value: "starts_with" },
+      { label: "Ends With", value: "ends_with" },
+      { label: "Equals", value: "equals" },
+      { label: "Not Equal", value: "not_equals" },
+      { label: "Less Than", value: "less_than" },
+      { label: "Greater Than", value: "greater_than" },
+      { label: "Is Blank", value: "blank" },
+      { label: "Is Not Blank", value: "not_blank" },
+    ],
+    searchOptions: [
+      { label: "Stock Number", value: "stock_no_unique" },
+      { label: "Description", value: "stock_name_discription" },
+      { label: "Child SKU", value: "child_sku" },
+      { label: "Bin", value: "wh_bin" },
+      { label: "Quantity on Hand", value: "qty_on_hand" },
+      { label: "Last Cost", value: "last_cost" },
+      { label: "Total Value", value: "value" },
+      { label: "Total Sales", value: "total_sale" },
+      { label: "30 Days of Sales", value: "sales_30" },
+      { label: "Quantity Available", value: "qty_av" },
+      { label: "Need to Reorder", value: "until_reorder" },
+    ],
+    sortOptions: [
+      { label: "Stock Number", value: "stock_no_unique" },
+      { label: "Need to Reorder", value: "until_reorder" },
+      { label: "Description", value: "stock_name_discription" },
+      { label: "Bin", value: "wh_bin" },
+      { label: "Quantity on Hand", value: "qty_on_hand" },
+      { label: "Total Sales", value: "total_sale" },
+      { label: "30 Days of Sales", value: "sales_30" },
+      { label: "90 Days of Sales", value: "sales_90" },
+      { label: "Last Cost", value: "last_cost" },
+      { label: "Total Value", value: "value" },
+    ],
+    directionOptions: [
+      { label: "Ascending", value: "asc" },
+      { label: "Descending", value: "desc" },
+    ],
   },
   extraReducers: (builder) => {
     builder
@@ -104,8 +207,23 @@ export const InventorySlice = createSlice({
       })
       .addCase(getAllVendors.fulfilled, (state, action) => {
         state.vendorOptions = action.payload;
+      })
+      .addCase(getAllSections.fulfilled, (state, action) => {
+        state.sectionOptions = action.payload;
+      })
+      .addCase(getStock.fulfilled, (state, action) => {
+        state.stock = action.payload;
       });
+  },
+  reducers: {
+    setParams: (state, action) => {
+      state.params = { ...state.params, ...action.payload };
+    },
+    setSearchParams: (state, action) => {
+      state.searchParams = { ...state.searchParams, ...action.payload };
+    },
   },
 });
 
+export const { setParams, setSearchParams } = InventorySlice.actions;
 export default InventorySlice.reducer;

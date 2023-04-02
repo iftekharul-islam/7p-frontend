@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Button, Card, Col, Input, Row } from "reactstrap";
 import { columns } from "./columns";
 import { getAllData } from "./../store/index";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 
 import "@styles/react/libs/react-select/_react-select.scss";
@@ -14,31 +14,38 @@ import { DebounceInput } from "react-debounce-input";
 
 const index = () => {
   const dispatch = useDispatch();
-
+  const [searchParams, setSearchParams] = useSearchParams();
+  const q = searchParams.get("q");
   const store = useSelector((state) => state.products);
   const [currentPage, setCurrentPage] = useState(1);
-  const [search, setSearch] = useState(null);
-  const [sort, setSort] = useState('desc')
-  const [sortColumn, setSortColumn] = useState('id')
+  const [search, setSearch] = useState(q ?? null);
+  const [sort, setSort] = useState("desc");
+  const [sortColumn, setSortColumn] = useState("id");
 
   useEffect(() => {
     dispatch(getAllData({ page: currentPage, q: search, sort, sortColumn }));
   }, [currentPage, search, sort, sortColumn]);
 
   const handleSort = (column, sortDirection) => {
-    setSort(sortDirection)
-    setSortColumn(column.sortField)
-  }
+    setSort(sortDirection);
+    setSortColumn(column.sortField);
+  };
 
   const CustomHeader = () => {
     const navigate = useNavigate();
     return (
       <div className="invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75">
         <Row>
-          <Col xl="6"></Col>
+          <Col xl="5"></Col>
           <Col
-            xl="4"
-            className="d-flex align-items-sm-center justify-content-xl-end justify-content-start flex-xl-nowrap flex-wrap flex-sm-row flex-column pe-xl-1 p-0 mt-xl-0 mt-1"
+            xl="2"
+            className="d-flex align-items-end align-content-center flex-wrap"
+          >
+            <div>Search by Vendor/Stock Info</div>            
+          </Col>
+          <Col
+            xl="3"
+            className="d-flex align-items-sm-start justify-content-xl-start justify-content-start flex-xl-nowrap flex-wrap flex-sm-row flex-column pe-xl-1 p-0 mt-xl-0 mt-1"
           >
             <div className="d-flex align-items-center table-header-actions">
               <DebounceInput
@@ -46,11 +53,11 @@ const index = () => {
                 color="primary"
                 debounceTimeout={300}
                 autoFocus
-                placeholder="Search by Stock/Vendor"
+                placeholder="Search Here"
                 value={search}
-                onChange={e=>{
-                  e.preventDefault()
-                  setSearch(e.target.value)
+                onChange={(e) => {
+                  e.preventDefault();
+                  setSearch(e.target.value);
                 }}
               />
             </div>

@@ -90,7 +90,7 @@ const index = () => {
                         color="primary"
                         onClick={(e) => {
                           e.preventDefault();
-                          navigate("/stock-add");
+                          navigate("/inventory-add");
                         }}
                       >
                         <UserPlus size={14} /> Stock
