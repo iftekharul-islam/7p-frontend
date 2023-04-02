@@ -5,7 +5,6 @@ import { Navigate } from 'react-router-dom'
 const ProductList = lazy(() => import('./list'))
 const ProductAdd = lazy(() => import('./add'))
 const ProductEdit = lazy(() => import('./edit'))
-const StockAdd = lazy(() => import('./addStock'))
 
 
 const UserRoute = [  
@@ -20,10 +19,6 @@ const UserRoute = [
   {
     element: <ProductEdit />,
     path: '/product-edit/:id',
-  },
-  {
-    element: <StockAdd />,
-    path: '/stock-add'
   }
 ]
 

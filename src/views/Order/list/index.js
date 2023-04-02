@@ -2,10 +2,10 @@ import { Fragment, useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import { ChevronDown, PlusCircle } from "react-feather";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Card, Col, Row } from "reactstrap";
+import { Button, Card, Col, Label, Row } from "reactstrap";
 import { columns } from "./columns";
 import { getAllData, updateParams } from "../store";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import "@styles/react/libs/react-select/_react-select.scss";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
@@ -15,9 +15,11 @@ import Select from "react-select";
 
 const index = () => {
   const dispatch = useDispatch();
+  const [searchParams, setSearchParams] = useSearchParams()
+  const q = searchParams.get("q")
   const store = useSelector((state) => state.orders);
   const [currentPage, setCurrentPage] = useState(1);
-  const [search, setSearch] = useState(null);
+  const [search, setSearch] = useState(q ?? null);
   const [sort, setSort] = useState("desc");
   const [sortColumn, setSortColumn] = useState("id");
 
@@ -48,7 +50,7 @@ const index = () => {
     return (
       <div className="invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75">
         <Row>
-          <Col xl="5"></Col>
+          <Col xl="3"></Col>
           <Col
             xl="2"
             className="d-flex align-items-sm-center justify-content-xl-end justify-content-start flex-xl-nowrap flex-wrap flex-sm-row flex-column pe-xl-1 p-0 mt-xl-0 mt-1"
@@ -67,10 +69,16 @@ const index = () => {
                 isClearable={false}
               />
             </div>
+          </Col>          
+          <Col
+            xl="2"
+            className="d-flex align-items-end"
+          >
+            <div>Search by PO#/Vendor/Stock/Status</div>            
           </Col>
           <Col
             xl="3"
-            className="d-flex align-items-sm-center justify-content-xl-end justify-content-start flex-xl-nowrap flex-wrap flex-sm-row flex-column pe-xl-1 p-0 mt-xl-0 mt-1"
+            className="d-flex align-items-sm-start justify-content-xl-start justify-content-start flex-xl-nowrap flex-wrap flex-sm-row flex-column pe-xl-1 p-0 mt-xl-0 mt-1"
           >
             <div className="d-flex align-items-center table-header-actions">
               <DebounceInput
@@ -78,7 +86,7 @@ const index = () => {
                 color="primary"
                 debounceTimeout={300}
                 autoFocus
-                placeholder="Search by Stock/Vendor"
+                placeholder="Search Here"
                 value={search}
                 onChange={(e) => {
                   e.preventDefault();
