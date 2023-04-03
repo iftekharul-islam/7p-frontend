@@ -15,6 +15,7 @@ import { Link } from "react-router-dom";
 import {
   Button,
   Col,
+  Collapse,
   Input,
   Modal,
   ModalBody,
@@ -28,6 +29,9 @@ const renderAction = (row) => {
   const dispatch = useDispatch();
   const [deleteItem, setDeleteItem] = useState(null);
   const [deleteShow, setDeleteShow] = useState(false);
+
+  const [isOpen, setIsOpen] = useState(false);
+  const toggle = () => setIsOpen(!isOpen);
 
   const onSubmitDelete = (e) => {
     e.preventDefault();
@@ -283,7 +287,12 @@ const renderAction = (row) => {
           to="/"
           onClick={(e) => {
             e.preventDefault();
-            printLabel(row?.stock_no_unique, row?.wh_bin, row?.stock_name_discription, row?.warehouse);
+            printLabel(
+              row?.stock_no_unique,
+              row?.wh_bin,
+              row?.stock_name_discription,
+              row?.warehouse
+            );
           }}
           id={`print-${row?.id}`}
         >
@@ -336,7 +345,7 @@ const renderAction = (row) => {
       <>
         <Link
           className="text-truncate text-capitalize align-middle"
-          to={`/stock-edit/${row.id}`}
+          to={`/adjustment?q=${row.stock_no_unique}`}
           id={`adjustment-${row?.id}`}
         >
           <Star size={18} className={`text-primary me-50`} />
@@ -348,13 +357,17 @@ const renderAction = (row) => {
       <>
         <Link
           className="text-truncate text-capitalize align-middle"
-          to={`/stock-edit/${row.id}`}
+          to="/"
+          onClick={(e) => {
+            e.preventDefault();
+            toggle();
+          }}
           id={`skus-${row?.id}`}
         >
           <List size={18} className={`text-primary me-50`} />
         </Link>
         <UncontrolledTooltip target={`skus-${row?.id}`}>
-          View Assigned Child SKUs
+          View Assigned Child SKUs ({row?.inventory_unit_relation?.length})
         </UncontrolledTooltip>
       </>
       <>
@@ -369,6 +382,16 @@ const renderAction = (row) => {
           Task
         </UncontrolledTooltip>
       </>
+
+      <div>
+        <Collapse isOpen={isOpen}>
+          <div>
+            {row?.inventory_unit_relation?.map((itm) => {
+              return <div>{itm?.child_sku}</div>;
+            })}
+          </div>
+        </Collapse>
+      </div>
 
       <Modal
         isOpen={deleteShow}

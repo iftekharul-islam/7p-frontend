@@ -8,6 +8,7 @@ import products from '@src/views/Product/store'
 import vendors from '@src/views/Vendor/store'
 import orders from '@src/views/Order/store'
 import inventories from '@src/views/Inventory/store'
+import adjustments from '@src/views/Adjustment/store'
 
 const rootReducer = { 
     navbar, 
@@ -19,7 +20,8 @@ const rootReducer = {
     products,
     vendors,
     orders,
-    inventories
+    inventories,
+    adjustments,
  };
 
 export default rootReducer;

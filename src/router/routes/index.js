@@ -19,6 +19,7 @@ import ProductRoute from "../../views/Product/ProductRoute";
 import VendorRoute from "../../views/Vendor/VendorRoute";
 import OrderRoute from "../../views/Order/OrderRoute";
 import InventoryRoute from "../../views/Inventory/InventoryRoute";
+import AdjustmentRoute from "../../views/Adjustment/AdjustmentRoute";
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -49,6 +50,7 @@ const Routes = [
   ...VendorRoute,
   ...OrderRoute,
   ...InventoryRoute,
+  ...AdjustmentRoute,
   {
     path: "/",
     index: true,

@@ -32,6 +32,19 @@ export const UpdateStock = createAsyncThunk(
   }
 );
 
+export const CalculateOrdering = createAsyncThunk(
+  "Inventory/CalculateOrdering",
+  async (data) => {
+    const response = await Api.post(`calculate-ordering`, data);
+    if (response?.status == 201) {
+      return { status: true };
+    } else {
+      return { status: false, data: response?.data };
+    }
+  }
+);
+
+
 export const getStock = createAsyncThunk("Inventory/getStock", async (id) => {
   const response = await Api.get(`inventories/${id}`);
   return response.data;
@@ -120,6 +133,7 @@ export const InventorySlice = createSlice({
   initialState: {
     data: [],
     total: 1,
+    cost: null,
 
     params: {
       page: 1,
@@ -192,12 +206,21 @@ export const InventorySlice = createSlice({
       { label: "Ascending", value: "asc" },
       { label: "Descending", value: "desc" },
     ],
+    divisorOptions: [
+      { label: "Divide by One", value: "1" },
+      { label: "Divide by Two", value: "2" },
+      { label: "Divide by Three", value: "3" },
+      { label: "Divide by Four", value: "4" },
+      { label: "Divide by Five", value: "5" },
+      { label: "Divide by Six", value: "6" },
+    ],
   },
   extraReducers: (builder) => {
     builder
       .addCase(getAllData.fulfilled, (state, action) => {
-        state.data = action.payload?.data;
-        state.total = action.payload?.total;
+        state.data = action.payload?.inventories?.data;
+        state.cost = action.payload?.total_cost;
+        state.total = action.payload?.inventories?.total;
       })
       .addCase(getVendor.fulfilled, (state, action) => {
         state.vendor = action.payload;

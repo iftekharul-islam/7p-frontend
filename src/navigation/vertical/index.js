@@ -68,6 +68,13 @@ export default [
         isAccess: check(["order"]),
         navLink: "/inventory",
       },
+      {
+        id: "adjustment",
+        title: "Adjustments",
+        icon: <Circle size={20} />,
+        isAccess: check(["order"]),
+        navLink: "/adjustment",
+      },
     ],
   },
 ];
