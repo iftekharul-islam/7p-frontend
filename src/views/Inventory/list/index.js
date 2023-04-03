@@ -2,10 +2,12 @@ import { Fragment, useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import { ChevronDown, PlusCircle } from "react-feather";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Card, Col, Input, Row } from "reactstrap";
+import { Button, Card, Col, Input, Label, Row, Spinner } from "reactstrap";
 import { columns } from "./columns";
 import {
+  CalculateOrdering,
   getAllData,
+  getAllSections,
   getAllVendors,
   setParams,
   setSearchParams,
@@ -15,10 +17,16 @@ import ReactPaginate from "react-paginate";
 import "@styles/react/libs/react-select/_react-select.scss";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 import Select from "react-select";
+import Flatpickr from "react-flatpickr";
+import "@styles/react/libs/flatpickr/flatpickr.scss";
 
 const index = () => {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.inventories);
+  const [loading, setLoading] = useState(false);
+  const [calculateLoading, setCalculateLoading] = useState(false);
+  const [isCalculate, setIsCalculate] = useState(false);
+  const [calculateData, setCalculateData] = useState(null);
   const params = store?.searchParams;
 
   useEffect(() => {
@@ -27,14 +35,29 @@ const index = () => {
 
   useEffect(() => {
     dispatch(getAllVendors());
+    dispatch(getAllSections());
   }, []);
 
-  const onSearch = () => {
-    dispatch(getAllData());
+  const onSearch = async () => {
+    setLoading(true);
+    await dispatch(getAllData());
+    setLoading(false);
   };
 
   const onChange = (data) => {
     dispatch(setSearchParams(data));
+  };
+
+  const onCalculateChange = (name, value) => {
+    setCalculateData({ ...calculateData, [name]: value });
+  };
+
+  const onCalculate = async () => {
+    setCalculateLoading(true);
+    await dispatch(CalculateOrdering(calculateData));
+    await dispatch(getAllData());
+    setIsCalculate(false);
+    setCalculateLoading(false);
   };
 
   const CustomHeader = () => {
@@ -42,7 +65,27 @@ const index = () => {
     return (
       <div className="invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75">
         <Row>
-          <Col xl="10"></Col>
+          <Col xl="8">
+            {store?.total} items found costing: $
+            {store?.cost?.cost?.toFixed(2) ?? 0}
+          </Col>
+          <Col
+            xl="2"
+            className="d-flex align-items-sm-center justify-content-xl-end justify-content-start flex-xl-nowrap flex-wrap flex-sm-row flex-column pe-xl-1 p-0 mt-xl-0 mt-1"
+          >
+            <div className="d-flex align-items-center table-header-actions">
+              <Button
+                className="add-new-user"
+                color="primary"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setIsCalculate(!isCalculate);
+                }}
+              >
+                Ordering Quantities
+              </Button>
+            </div>
+          </Col>
           <Col
             xl="2"
             className="d-flex align-items-sm-center justify-content-xl-end justify-content-start flex-xl-nowrap flex-wrap flex-sm-row flex-column pe-xl-1 p-0 mt-xl-0 mt-1"
@@ -226,7 +269,9 @@ const index = () => {
                 value={store?.sectionOptions?.find(
                   (item) => item?.value == params?.operator_fourth
                 )}
-                onChange={(e) => onChange({ section_ids: e?.value })}
+                onChange={(e) =>
+                  onChange({ section_ids: e?.map((item) => item?.value) })
+                }
               />
             </Col>
             <Col sm="2">
@@ -249,12 +294,75 @@ const index = () => {
               />
             </Col>
             <Col sm="2" className="d-flex align-items-end flex-column">
-              <Button color="primary" onClick={onSearch}>
-                Search
+              <Button color="primary" onClick={onSearch} disabled={loading}>
+                {loading ? "Searching" : "Search"}
               </Button>
             </Col>
           </Row>
         </Card>
+        {isCalculate && (
+          <Card className="p-1">
+            <Row>
+              <Col sm="2 d-flex align-items-center">
+                <h4>Use Total Sales From:</h4>
+              </Col>
+              <Col sm="2 d-flex align-items-center">
+                <Flatpickr
+                  className="form-control"
+                  id="date"
+                  value={calculateData?.start_date ?? new Date()}
+                  options={{ dateFormat: "d-m-Y" }}
+                  onChange={(date) => onCalculateChange("start_date", date[0])}
+                />
+              </Col>
+              <Col sm="2 d-flex align-items-center">
+                <Flatpickr
+                  className="form-control"
+                  id="date"
+                  value={calculateData?.end_date ?? new Date()}
+                  options={{ dateFormat: "d-m-Y" }}
+                  onChange={(date) => onCalculateChange("end_date", date[0])}
+                />
+              </Col>
+              <Col sm="2 d-flex align-items-center">
+                <Select
+                  options={store?.divisorOptions}
+                  placeholder="Select Divisor"
+                  value={store?.divisorOptions?.find(
+                    (item) => item?.value == calculateData?.divisor
+                  )}
+                  onChange={(e) => onCalculateChange("divisor", e.value)}
+                />
+              </Col>
+              <Col sm="1 d-flex align-items-center">
+                <Button
+                  className="add-new-user d-flex"
+                  color="primary"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onCalculate();
+                  }}
+                  disabled={calculateLoading}
+                >
+                  {calculateLoading ? (
+                    <>
+                    <Spinner className="me-25" size="sm" />
+                    Waiting
+                  </>
+                  ) : (
+                    "Calculate"
+                  )}
+                </Button>
+              </Col>
+              <Col sm="3 d-flex align-items-center">
+                <div>
+                  Minimum stock quantity will be set to the sales in the
+                  interval selected divided by the divisor selected.
+                </div>
+              </Col>
+            </Row>
+          </Card>
+        )}
         <Card className="overflow-hidden">
           <div className="react-dataTable">
             <DataTable
