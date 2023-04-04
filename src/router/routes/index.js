@@ -20,6 +20,11 @@ import VendorRoute from "../../views/Vendor/VendorRoute";
 import OrderRoute from "../../views/Order/OrderRoute";
 import InventoryRoute from "../../views/Inventory/InventoryRoute";
 import AdjustmentRoute from "../../views/Adjustment/AdjustmentRoute";
+import SectionRoute from "../../views/Section/SectionRoute";
+import StationRoute from "../../views/Station/StationRoute";
+import RejectionReasonRoute from "../../views/RejectionReason/RejectionReasonRoute";
+import ParametersRoute from "../../views/Parameters/ParametersRoute";
+import ProductionCategoriesRoute from "../../views/ProductionCategories/ProductionCategoriesRoute";
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -51,6 +56,11 @@ const Routes = [
   ...OrderRoute,
   ...InventoryRoute,
   ...AdjustmentRoute,
+  ...SectionRoute,
+  ...StationRoute,
+  ...RejectionReasonRoute,
+  ...ParametersRoute,
+  ...ProductionCategoriesRoute,
   {
     path: "/",
     index: true,

@@ -34,8 +34,7 @@ const ProductionRejects = () => {
   const CustomHeader = () => {
     return (
       <div className="w-100">
-        <Row>
-          <Col xl="7"></Col>
+        <Row>          
           <Col
             xl="2"
             className="d-flex align-items-end align-content-center flex-wrap"
@@ -61,6 +60,7 @@ const ProductionRejects = () => {
               />
             </div>
           </Col>
+          <Col xl="7"></Col>
         </Row>
       </div>
     );
