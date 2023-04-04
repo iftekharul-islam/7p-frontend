@@ -77,4 +77,47 @@ export default [
       },
     ],
   },
+  {
+    id: "maintenance",
+    title: "Maintenance",
+    icon: <Circle size={20} />,
+    isAccess: check(["product", "vendor"]),
+    children: [
+      {
+        id: "sections",
+        title: "Sections",
+        icon: <Circle size={20} />,
+        isAccess: check(["product"]),
+        navLink: "/section",
+      },
+      {
+        id: "stations",
+        title: "Stations",
+        icon: <Circle size={20} />,
+        isAccess: check(["product"]),
+        navLink: "/station",
+      },
+      {
+        id: "reason",
+        title: "Rejection Reasons",
+        icon: <Circle size={20} />,
+        isAccess: check(["product"]),
+        navLink: "/reason",
+      },
+      {
+        id: "parameter",
+        title: "Parameters",
+        icon: <Circle size={20} />,
+        isAccess: check(["product"]),
+        navLink: "/parameter",
+      },
+      // {
+      //   id: "product_categories",
+      //   title: "Product Categories",
+      //   icon: <Circle size={20} />,
+      //   isAccess: check(["product"]),
+      //   navLink: "/product-category",
+      // }
+    ],
+  },
 ];

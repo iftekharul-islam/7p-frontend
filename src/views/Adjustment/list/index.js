@@ -8,7 +8,6 @@ import { setActive } from "../store";
 import { useDispatch, useSelector } from "react-redux";
 
 const index = () => {
-  // const [active, setActive] = useState("1");
   const dispatch = useDispatch()
   const {active} = useSelector(state=> state?.adjustments) 
 
@@ -21,7 +20,7 @@ const index = () => {
   return (
     <Fragment>
       <Card className="p-1">
-        <Nav tabs>
+        <Nav pills className='mb-2 orange'>
           <NavItem>
             <NavLink
               active={active === "1"}

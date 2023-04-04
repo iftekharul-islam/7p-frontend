@@ -7,7 +7,7 @@ export const viewAdjustmentcolumns = [
   {
     name: "Date",
     sortable: false,
-    minWidth: "120px",
+    minWidth: "200px",
     sortField: "created_at",
     selector: (row) => row?.created_at,
     cell: (row) => (

@@ -3,7 +3,10 @@ import DataTable from "react-data-table-component";
 import { ChevronDown, PlusCircle, UserPlus } from "react-feather";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Card, Col, Input, Label, Row } from "reactstrap";
-import { getAdjustInventoryData, updateAdjustInventoryData } from "../store/index";
+import {
+  getAdjustInventoryData,
+  updateAdjustInventoryData,
+} from "../store/index";
 import { useSearchParams } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 
@@ -116,36 +119,36 @@ const AdjustInventory = () => {
             </Row>
             <hr />
             <Row>
-              <Col sm="6" className="d-flex align-items-center">
-                <Col sm="8">
-                  <table class="table table-bordered">
-                    <tr>
-                      <td>Purchases</td>
-                      <td>{AdjustInventory?.total_purchase}</td>
-                    </tr>
-                    <tr>
-                      <td>Sales</td>
-                      <td>{AdjustInventory?.total_sale}</td>
-                    </tr>
-                    <tr>
-                      <td>Quantity On Hand</td>
-                      <td>{AdjustInventory?.qty_on_hand}</td>
-                    </tr>
-                    <tr>
-                      <td>Allocated</td>
-                      <td>{AdjustInventory?.qty_alloc}</td>
-                    </tr>
-                    <tr>
-                      <td>Expected</td>
-                      <td>{AdjustInventory?.qty_exp}</td>
-                    </tr>
-                    <tr>
-                      <td>Available</td>
-                      <td>{AdjustInventory?.qty_av}</td>
-                    </tr>
-                  </table>
-                </Col>
+              <Col sm="2"></Col>
+              <Col sm="2" className="d-flex align-items-center">
+                <table className="table table-bordered">
+                  <tr>
+                    <td>Purchases</td>
+                    <td>{AdjustInventory?.total_purchase}</td>
+                  </tr>
+                  <tr>
+                    <td>Sales</td>
+                    <td>{AdjustInventory?.total_sale}</td>
+                  </tr>
+                  <tr>
+                    <td>Quantity On Hand</td>
+                    <td>{AdjustInventory?.qty_on_hand}</td>
+                  </tr>
+                  <tr>
+                    <td>Allocated</td>
+                    <td>{AdjustInventory?.qty_alloc}</td>
+                  </tr>
+                  <tr>
+                    <td>Expected</td>
+                    <td>{AdjustInventory?.qty_exp}</td>
+                  </tr>
+                  <tr>
+                    <td>Available</td>
+                    <td>{AdjustInventory?.qty_av}</td>
+                  </tr>
+                </table>
               </Col>
+              <Col sm="2"></Col>
               <Col sm="6">
                 <Row className="pb-2">
                   <p>Update Quantity on Hand:</p>
