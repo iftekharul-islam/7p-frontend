@@ -23,9 +23,10 @@ export const sortOrderReason = createAsyncThunk(
 
 export const AddReason = createAsyncThunk(
   "RejectionReason/AddReason",
-  async (data) => {
+  async (data, {dispatch}) => {
     const response = await Api.post("reasons", data);
     if (response?.status == 201) {
+      dispatch(getAllData());
       return { status: true };
     } else {
       return { status: false, data: response?.data };
@@ -59,8 +60,7 @@ export const StationSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getAllData.fulfilled, (state, action) => {
-        state.data = action.payload?.data;
-        state.total = action.payload?.total;
+        state.data = action.payload
       })
   },
 });

@@ -10,12 +10,9 @@ import {
   Input,
   Label,
   Row,
-  Spinner,
 } from "reactstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { getSectionOption, getStation, UpdateStation } from "../store";
-import { selectThemeColors } from "@utils";
-import Select from "react-select";
+import { getCategory, UpdateCategory } from "../store";
 import { useNavigate, useParams } from "react-router-dom";
 
 const index = () => {
@@ -24,20 +21,19 @@ const index = () => {
   const [errors, setErrors] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const store = useSelector((state) => state.stations);
+  const store = useSelector((state) => state.categories);
 
   useEffect(() => {
     if (id) {
-      dispatch(getStation(id));
-      dispatch(getSectionOption());
+      dispatch(getCategory(id));
     }
   }, [id]);
 
   useEffect(() => {
-    if (store?.station) {
-      setData(store?.station);
+    if (store?.category) {
+      setData(store?.category);
     }
-  }, [store?.station]);
+  }, [store?.category]);
 
   const onChange = (e) => {
     setData({
@@ -47,9 +43,9 @@ const index = () => {
   };
 
   const onSubmit = async () => {
-    const res = await dispatch(UpdateStation({ id, data }));
+    const res = await dispatch(UpdateCategory({ id, data }));
     if (res?.payload?.status) {
-      navigate("/station");
+      navigate("/category");
     } else {
       setErrors(res?.payload?.data?.errors);
     }
@@ -62,92 +58,52 @@ const index = () => {
           <Col sm="6">
             <Card>
               <CardHeader>
-                <CardTitle tag="h4">Edit Section</CardTitle>
+                <CardTitle tag="h4">Edit Production Categories</CardTitle>
               </CardHeader>
               <CardBody>
-                <Row>
+              <Row>
                   <Col sm="12">
-                    <Label className="form-label" for="station_name">
-                      Station Name
+                    <Label className="form-label" for="production_category_code">
+                    Category Code
                     </Label>
                     <Input
                       type="text"
-                      name="station_name"
-                      id="station_name"
-                      placeholder="Enter Station Name"
-                      value={data?.station_name}
+                      name="production_category_code"
+                      id="production_category_code"
+                      placeholder="Enter Category Code"
+                      value={data?.production_category_code}
                       onChange={onChange}
                     />
                     <small className="text-danger">
-                      {errors?.station_name}
+                      {errors?.production_category_code}
                     </small>
                   </Col>
                   <Col sm="12">
-                    <Label className="form-label" for="station_description">
-                      Description
+                    <Label className="form-label" for="production_category_description">
+                    Description
                     </Label>
                     <Input
                       type="text"
-                      name="station_description"
-                      id="station_description"
-                      placeholder="Enter Station Description"
-                      value={data?.station_description}
+                      name="production_category_description"
+                      id="production_category_description"
+                      placeholder="Enter Description"
+                      value={data?.production_category_description}
                       onChange={onChange}
                     />
                   </Col>
                   <Col sm="12">
-                    <Label className="form-label" for="station_status">
-                    Status on the My Orders portal
+                    <Label className="form-label" for="production_category_display_order">
+                    Display Order
                     </Label>
                     <Input
-                      type="text"
-                      name="station_status"
-                      id="station_status"
-                      placeholder="Enter Station Status"
-                      value={data?.station_status}
+                      type="number"
+                      name="production_category_display_order"
+                      id="production_category_display_order"
+                      placeholder="Enter Display Order"
+                      value={data?.production_category_display_order}
                       onChange={onChange}
                     />
-                  </Col>
-                  <Col sm="12">
-                    <Label className="form-label" for="section">
-                      Section
-                    </Label>
-                    <Select
-                      className="react-select"
-                      classNamePrefix="select"
-                      theme={selectThemeColors}
-                      placeholder="Select Section"
-                      options={store?.sectionOption}
-                      value={store?.sectionOption?.find(
-                        (item) => item?.value === data?.section
-                      )}
-                      onChange={(e) =>
-                        onChange({
-                          target: { name: "section", value: e?.value },
-                        })
-                      }
-                    />
-                  </Col>
-                  <Col sm="12">
-                    <Label className="form-label" for="type">
-                      Type
-                    </Label>
-                    <Select
-                      className="react-select"
-                      classNamePrefix="select"
-                      theme={selectThemeColors}
-                      placeholder="Select Type"
-                      options={store?.typeOption}
-                      value={store?.typeOption?.find(
-                        (item) => item?.value === data?.type
-                      )}
-                      onChange={(e) =>
-                        onChange({
-                          target: { name: "type", value: e?.value },
-                        })
-                      }
-                    />
-                  </Col>
+                  </Col>                  
                 </Row>
                 <Row>
                   <Col sm="12" className="mt-1">

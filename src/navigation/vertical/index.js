@@ -21,13 +21,6 @@ export default [
     navLink: "/home",
   },
   {
-    id: "users",
-    title: "Users",
-    icon: <Users size={20} />,
-    isAccess: check(["user"]),
-    navLink: "/user",
-  },
-  {
     id: "roles",
     title: "Role",
     icon: <User size={20} />,
@@ -84,6 +77,13 @@ export default [
     isAccess: check(["product", "vendor"]),
     children: [
       {
+        id: "users",
+        title: "Users",
+        icon: <Users size={20} />,
+        isAccess: check(["user"]),
+        navLink: "/user",
+      },
+      {
         id: "sections",
         title: "Sections",
         icon: <Circle size={20} />,
@@ -96,6 +96,13 @@ export default [
         icon: <Circle size={20} />,
         isAccess: check(["product"]),
         navLink: "/station",
+      },
+      {
+        id: "template",
+        title: "Route Templates",
+        icon: <Circle size={20} />,
+        isAccess: check(["product"]),
+        navLink: "/template",
       },
       {
         id: "reason",
@@ -111,13 +118,20 @@ export default [
         isAccess: check(["product"]),
         navLink: "/parameter",
       },
-      // {
-      //   id: "product_categories",
-      //   title: "Product Categories",
-      //   icon: <Circle size={20} />,
-      //   isAccess: check(["product"]),
-      //   navLink: "/product-category",
-      // }
+      {
+        id: "product_categories",
+        title: "Product Categories",
+        icon: <Circle size={20} />,
+        isAccess: check(["product"]),
+        navLink: "/category",
+      },
+      {
+        id: "manufacture",
+        title: "Manufactures",
+        icon: <Circle size={20} />,
+        isAccess: check(["product"]),
+        navLink: "/manufacture",
+      },
     ],
   },
 ];
