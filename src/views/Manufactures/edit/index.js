@@ -11,16 +11,29 @@ import {
   Label,
   Row,
 } from "reactstrap";
-import { useDispatch } from "react-redux";
-import { AddCategory } from "../store";
-import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { getManufacture, UpdateManufacture } from "../store";
+import { useNavigate, useParams } from "react-router-dom";
 
 const index = () => {
+  const { id } = useParams();
   const [data, setData] = useState(null);
   const [errors, setErrors] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const store = useSelector((state) => state.manufactures);
 
+  useEffect(() => {
+    if (id) {
+      dispatch(getManufacture(id));
+    }
+  }, [id]);
+
+  useEffect(() => {
+    if (store?.manufacture) {
+      setData(store?.manufacture);
+    }
+  }, [store?.manufacture]);
 
   const onChange = (e) => {
     setData({
@@ -30,9 +43,9 @@ const index = () => {
   };
 
   const onSubmit = async () => {
-    const res = await dispatch(AddCategory(data));
+    const res = await dispatch(UpdateManufacture({ id, data }));
     if (res?.payload?.status) {
-      navigate("/category");
+      navigate("/manufacture");
     } else {
       setErrors(res?.payload?.data?.errors);
     }
@@ -45,52 +58,37 @@ const index = () => {
           <Col sm="6">
             <Card>
               <CardHeader>
-                <CardTitle tag="h4">New Production Categories</CardTitle>
+                <CardTitle tag="h4">Edit Production Categories</CardTitle>
               </CardHeader>
               <CardBody>
                 <Row>
                   <Col sm="12">
-                    <Label className="form-label" for="production_category_code">
-                    Category Code
+                    <Label className="form-label" for="name">
+                      Name
                     </Label>
                     <Input
                       type="text"
-                      name="production_category_code"
-                      id="production_category_code"
+                      name="name"
+                      id="name"
                       placeholder="Enter Category Code"
-                      value={data?.production_category_code}
+                      value={data?.name}
                       onChange={onChange}
                     />
-                    <small className="text-danger">
-                      {errors?.production_category_code}
-                    </small>
+                    <small className="text-danger">{errors?.name}</small>
                   </Col>
                   <Col sm="12">
-                    <Label className="form-label" for="production_category_description">
-                    Description
+                    <Label className="form-label" for="description">
+                      Description
                     </Label>
                     <Input
-                      type="text"
-                      name="production_category_description"
-                      id="production_category_description"
+                      type="textarea"
+                      name="description"
+                      id="description"
                       placeholder="Enter Description"
-                      value={data?.production_category_description}
+                      value={data?.description}
                       onChange={onChange}
                     />
                   </Col>
-                  <Col sm="12">
-                    <Label className="form-label" for="production_category_display_order">
-                    Display Order
-                    </Label>
-                    <Input
-                      type="number"
-                      name="production_category_display_order"
-                      id="production_category_display_order"
-                      placeholder="Enter Display Order"
-                      value={data?.production_category_display_order}
-                      onChange={onChange}
-                    />
-                  </Col>                  
                 </Row>
                 <Row>
                   <Col sm="12" className="mt-1">

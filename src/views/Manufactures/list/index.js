@@ -13,7 +13,7 @@ import { DebounceInput } from "react-debounce-input";
 
 const index = () => {
   const dispatch = useDispatch();
-  const store = useSelector((state) => state.categories);
+  const store = useSelector((state) => state.manufactures);
   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState(null);
 
@@ -37,7 +37,7 @@ const index = () => {
                 color="primary"
                 debounceTimeout={300}
                 autoFocus
-                placeholder="Search by Code/Description"
+                placeholder="Search by Name"
                 value={search}
                 onChange={e=>{
                   e.preventDefault()
@@ -56,10 +56,10 @@ const index = () => {
                 color="primary"
                 onClick={(e) => {
                   e.preventDefault();
-                  navigate("/category-add");
+                  navigate("/manufacture-add");
                 }}
               >
-                <PlusCircle size={14} /> Product Category
+                <PlusCircle size={14} /> Manufacture
               </Button>
             </div>
           </Col>

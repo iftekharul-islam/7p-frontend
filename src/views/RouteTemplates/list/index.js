@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
-import { ChevronDown, PlusCircle } from "react-feather";
+import { PlusCircle } from "react-feather";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Button,
@@ -15,21 +15,16 @@ import {
   Row,
 } from "reactstrap";
 import { columns } from "./columns";
-import { AddReason, getAllData } from "../store";
-import ReactPaginate from "react-paginate";
-import "@styles/react/libs/react-select/_react-select.scss";
+import { AddTemplate, getAllData } from "../store";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
-import { DebounceInput } from "react-debounce-input";
 
 const index = () => {
   const dispatch = useDispatch();
-  const store = useSelector((state) => state.reasons);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [search, setSearch] = useState(null);
+  const store = useSelector((state) => state.templates);
 
   useEffect(() => {
-    dispatch(getAllData({ page: currentPage, q: search }));
-  }, [currentPage, search]);
+    dispatch(getAllData());
+  }, []);
 
   const [addShow, setAddShow] = useState(false);
   const [data, setData] = useState(null);
@@ -44,7 +39,7 @@ const index = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault()
-    const res = await dispatch(AddReason(data));
+    const res = await dispatch(AddTemplate(data));
     if (res?.payload?.status) {
       setAddShow(false)
     } else {
@@ -57,25 +52,6 @@ const index = () => {
       <div className="invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75">
         <Row>
           <Col xl="10"></Col>
-          {/* <Col
-            xl="4"
-            className="d-flex align-items-sm-center justify-content-xl-end justify-content-start flex-xl-nowrap flex-wrap flex-sm-row flex-column pe-xl-1 p-0 mt-xl-0 mt-1"
-          >
-            <div className="d-flex align-items-center table-header-actions">
-              <DebounceInput
-                className="form-control"
-                color="primary"
-                debounceTimeout={300}
-                // autoFocus
-                placeholder="Search by Rejection Message"
-                value={search}
-                onChange={(e) => {
-                  e.preventDefault();
-                  setSearch(e.target.value);
-                }}
-              />
-            </div>
-          </Col> */}
           <Col
             xl="2"
             className="d-flex align-items-sm-center justify-content-xl-end justify-content-start flex-xl-nowrap flex-wrap flex-sm-row flex-column pe-xl-1 p-0 mt-xl-0 mt-1"
@@ -89,7 +65,7 @@ const index = () => {
                   setAddShow(true);
                 }}
               >
-                <PlusCircle size={14} /> Rejection Reason
+                <PlusCircle size={14} /> Route Template
               </Button>
             </div>
           </Col>
@@ -98,29 +74,6 @@ const index = () => {
     );
   };
 
-  const CustomPagination = () => {
-    const count = Number(Math.ceil(store.total / 10));
-
-    return (
-      <ReactPaginate
-        previousLabel={""}
-        nextLabel={""}
-        pageCount={count || 1}
-        activeClassName="active"
-        forcePage={currentPage !== 0 ? currentPage - 1 : 0}
-        onPageChange={(page) => setCurrentPage(page.selected + 1)}
-        pageClassName={"page-item"}
-        nextLinkClassName={"page-link"}
-        nextClassName={"page-item next"}
-        previousClassName={"page-item prev"}
-        previousLinkClassName={"page-link"}
-        pageLinkClassName={"page-link"}
-        containerClassName={
-          "pagination react-paginate justify-content-end my-2 pe-1"
-        }
-      />
-    );
-  };
 
   return (
     <div className="app-user-list">
@@ -128,17 +81,10 @@ const index = () => {
         <Card className="overflow-hidden">
           <div className="react-dataTable">
             <DataTable
-              noHeader
               subHeader
-              sortServer
-              pagination
               responsive
-              paginationServer
               columns={columns}
-              //   onSort={handleSort}
-              sortIcon={<ChevronDown />}
               className="react-dataTable"
-              paginationComponent={CustomPagination}
               data={store.data}
               subHeaderComponent={<CustomHeader />}
             />
@@ -159,19 +105,19 @@ const index = () => {
           <Form onSubmit={onSubmit}>
           <Row>
             <Col sm="12">
-              <Label className="form-label" for="rejection_message">
-                Rejection message
+              <Label className="form-label" for="template_name">
+                Template Name
               </Label>
               <Input
                 type="text"
-                name="rejection_message"
-                id="rejection_message"
+                name="template_name"
+                id="template_name"
                 placeholder="Enter Rejection message"
                 autoFocus
-                value={data?.rejection_message}
+                value={data?.template_name}
                 onChange={onChange}
               />
-              <small className="text-danger">{errors?.rejection_message}</small>
+              <small className="text-danger">{errors?.template_name}</small>
             </Col>
           </Row>
           <Row>

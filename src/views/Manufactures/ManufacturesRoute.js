@@ -4,20 +4,25 @@ import { lazy } from "react";
 const CategoryList = lazy(() => import("./list"));
 const CategoryAdd = lazy(() => import("./add"));
 const CategoryEdit = lazy(() => import("./edit"));
+const CategoryAccess = lazy(() => import("./access"));
 
-const ProductionCategoriesRoute = [
+const ManufacturesRoute = [
   {
     element: <CategoryList />,
-    path: "/category",
+    path: "/manufacture",
   },
   {
     element: <CategoryAdd />,
-    path: "/category-add",
+    path: "/manufacture-add",
   },
   {
     element: <CategoryEdit />,
-    path: "/category-edit/:id",
+    path: "/manufacture-edit/:id",
+  },
+  {
+    element: <CategoryAccess />,
+    path: "/manufacture-access/:id",
   }
 ];
 
-export default ProductionCategoriesRoute;
+export default ManufacturesRoute;

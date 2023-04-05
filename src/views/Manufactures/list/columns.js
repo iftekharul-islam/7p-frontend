@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Edit, Eye, Trash2 } from "react-feather";
+import { AlertTriangle, Edit, Eye, Trash2 } from "react-feather";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { Button, Col, Modal, ModalBody, ModalHeader, Row } from "reactstrap";
-import { DeleteCategories } from "../store";
+import { DeleteManufacture } from "../store";
 
 const renderAction = (row) => {
   const dispatch = useDispatch();
@@ -12,7 +12,7 @@ const renderAction = (row) => {
 
   const onSubmitDelete = (e) => {
     e.preventDefault();
-    dispatch(DeleteCategories(deleteItem.id));
+    dispatch(DeleteManufacture(deleteItem.id));
     setDeleteShow(!deleteShow);
   };
 
@@ -20,7 +20,7 @@ const renderAction = (row) => {
     <div className="column-action">
       <Link
         className="text-truncate text-capitalize align-middle"
-        to={`/category-edit/${row.id}`}
+        to={`/manufacture-edit/${row.id}`}
       >
         <Edit size={18} className={`text-primary me-50`} />
       </Link>
@@ -33,6 +33,12 @@ const renderAction = (row) => {
         }}
       >
         <Trash2 size={18} className={`text-danger me-50`} />
+      </Link>
+      <Link
+        className="text-truncate text-capitalize align-middle"
+        to={`/manufacture-access/${row.id}`}
+      >
+        <AlertTriangle size={18} className={`text-danger me-50`} />
       </Link>
 
       <Modal
@@ -70,32 +76,24 @@ const renderAction = (row) => {
 
 export const columns = [
   {
-    name: "Category Code",
+    name: "Name",
     sortable: false,
     minWidth: "120px",
-    sortField: "production_category_code",
-    selector: (row) => row.production_category_code,
-    cell: (row) => <span>{row.production_category_code}</span>,
+    sortField: "name",
+    selector: (row) => row.name,
+    cell: (row) => <span>{row.name}</span>,
   },
   {
-    name: "category description",
+    name: "Description",
     sortable: false,
     minWidth: "300px",
-    sortField: "production_category_description",
-    selector: (row) => row.production_category_description,
-    cell: (row) => <span>{row.production_category_description}</span>,
-  },
-  {
-    name: "category display order",
-    sortable: false,
-    minWidth: "60px",
-    sortField: "production_category_display_order",
-    selector: (row) => row.production_category_display_order,
-    cell: (row) => <span>{row.production_category_display_order ?? 0}</span>,
+    sortField: "description",
+    selector: (row) => row.description,
+    cell: (row) => <span>{row.description}</span>,
   },
   {
     name: "Actions",
-    minWidth: "100px",
+    minWidth: "60px",
     cell: (row) => renderAction(row),
   },
 ];

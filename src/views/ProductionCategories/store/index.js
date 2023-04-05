@@ -3,22 +3,22 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import Api from "@src/http";
 
 export const getAllData = createAsyncThunk(
-  "Station/getAllData",
+  "Categories/getAllData",
   async (data) => {
-    const response = await Api.get("stations", { params: data });
+    const response = await Api.get("categories", { params: data });
     return response.data;
   }
 );
 
-export const getStation = createAsyncThunk("Station/getStation", async (id) => {
-  const response = await Api.get(`stations/${id}`);
+export const getCategory = createAsyncThunk("Categories/getCategory", async (id) => {
+  const response = await Api.get(`categories/${id}`);
   return response.data;
 });
 
-export const AddStation = createAsyncThunk(
-  "Station/AddStation",
+export const AddCategory = createAsyncThunk(
+  "Categories/AddCategory",
   async (data) => {
-    const response = await Api.post("stations", data);
+    const response = await Api.post("categories", data);
     if (response?.status == 201) {
       return { status: true };
     } else {
@@ -27,10 +27,10 @@ export const AddStation = createAsyncThunk(
   }
 );
 
-export const UpdateStation = createAsyncThunk(
-  "Station/UpdateStation",
+export const UpdateCategory = createAsyncThunk(
+  "Categories/UpdateCategory",
   async (data) => {
-    const response = await Api.post(`stations/${data?.id}`, data?.data);
+    const response = await Api.post(`categories/${data?.id}`, data?.data);
     if (response?.status == 201) {
       return { status: true };
     } else {
@@ -39,13 +39,22 @@ export const UpdateStation = createAsyncThunk(
   }
 );
 
-export const getSectionOption = createAsyncThunk("Station/getSectionOption", async () => {
-  const response = await Api.get(`section-options`);
-  return response.data;
-});
+export const DeleteCategories = createAsyncThunk(
+  "Categories/DeleteCategories",
+  async (id, { dispatch }) => {
+    const response = await Api.post(`destroy-categories/${id}`);
+    if (response?.status == 201) {
+      dispatch(getAllData());
+      return { status: true };
+    } else {
+      return { status: false, data: response?.data };
+    }
+  }
+);
 
-export const StationSlice = createSlice({
-  name: "Station",
+
+export const CategoriesSlice = createSlice({
+  name: "Categories",
   initialState: {
     data: [],
     total: 1,
@@ -53,9 +62,8 @@ export const StationSlice = createSlice({
     params: {},
     allData: [],
 
-    station: {},
+    category: {},
 
-    sectionOption: [],
     typeOption: [
       { label: "Not Assigned", value: "X" },
       { label: "Graphics", value: "G" },
@@ -69,13 +77,10 @@ export const StationSlice = createSlice({
         state.data = action.payload?.data;
         state.total = action.payload?.total;
       })
-      .addCase(getStation.fulfilled, (state, action) => {
-        state.station = action.payload;
-      })
-      .addCase(getSectionOption.fulfilled, (state, action) => {
-        state.sectionOption = action.payload;
+      .addCase(getCategory.fulfilled, (state, action) => {
+        state.category = action.payload;
       })
   },
 });
 
-export default StationSlice.reducer;
+export default CategoriesSlice.reducer;

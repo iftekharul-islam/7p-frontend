@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useState } from "react";
 import {
   Button,
   Card,
@@ -12,7 +12,7 @@ import {
   Row,
 } from "reactstrap";
 import { useDispatch } from "react-redux";
-import { AddCategory } from "../store";
+import { AddManufacture } from "../store";
 import { useNavigate } from "react-router-dom";
 
 const index = () => {
@@ -20,7 +20,6 @@ const index = () => {
   const [errors, setErrors] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
 
   const onChange = (e) => {
     setData({
@@ -30,9 +29,9 @@ const index = () => {
   };
 
   const onSubmit = async () => {
-    const res = await dispatch(AddCategory(data));
+    const res = await dispatch(AddManufacture(data));
     if (res?.payload?.status) {
-      navigate("/category");
+      navigate("/manufacture");
     } else {
       setErrors(res?.payload?.data?.errors);
     }
@@ -50,15 +49,15 @@ const index = () => {
               <CardBody>
                 <Row>
                   <Col sm="12">
-                    <Label className="form-label" for="production_category_code">
-                    Category Code
+                    <Label className="form-label" for="name">
+                    Name
                     </Label>
                     <Input
                       type="text"
-                      name="production_category_code"
-                      id="production_category_code"
+                      name="name"
+                      id="name"
                       placeholder="Enter Category Code"
-                      value={data?.production_category_code}
+                      value={data?.name}
                       onChange={onChange}
                     />
                     <small className="text-danger">
@@ -66,31 +65,19 @@ const index = () => {
                     </small>
                   </Col>
                   <Col sm="12">
-                    <Label className="form-label" for="production_category_description">
+                    <Label className="form-label" for="description">
                     Description
                     </Label>
                     <Input
-                      type="text"
-                      name="production_category_description"
-                      id="production_category_description"
+                      type="textarea"
+                      name="description"
+                      id="description"
                       placeholder="Enter Description"
-                      value={data?.production_category_description}
+                      value={data?.manufacture}
                       onChange={onChange}
                     />
                   </Col>
-                  <Col sm="12">
-                    <Label className="form-label" for="production_category_display_order">
-                    Display Order
-                    </Label>
-                    <Input
-                      type="number"
-                      name="production_category_display_order"
-                      id="production_category_display_order"
-                      placeholder="Enter Display Order"
-                      value={data?.production_category_display_order}
-                      onChange={onChange}
-                    />
-                  </Col>                  
+                  
                 </Row>
                 <Row>
                   <Col sm="12" className="mt-1">

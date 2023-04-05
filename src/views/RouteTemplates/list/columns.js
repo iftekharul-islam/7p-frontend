@@ -1,9 +1,10 @@
+import { Edit, Trash2 } from "react-feather";
 import { useState } from "react";
-import { Edit, Eye, Trash2 } from "react-feather";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { Button, Col, Modal, ModalBody, ModalHeader, Row } from "reactstrap";
-import { DeleteCategories } from "../store";
+import { DeleteTemplate } from "../store";
+
 
 const renderAction = (row) => {
   const dispatch = useDispatch();
@@ -12,7 +13,7 @@ const renderAction = (row) => {
 
   const onSubmitDelete = (e) => {
     e.preventDefault();
-    dispatch(DeleteCategories(deleteItem.id));
+    dispatch(DeleteTemplate(deleteItem.id));
     setDeleteShow(!deleteShow);
   };
 
@@ -20,9 +21,9 @@ const renderAction = (row) => {
     <div className="column-action">
       <Link
         className="text-truncate text-capitalize align-middle"
-        to={`/category-edit/${row.id}`}
+        to={`/template-edit/${row.id}`}
       >
-        <Edit size={18} className={`text-primary me-50`} />
+        <Edit size={18} className={`text-danger me-50`} />
       </Link>
       <Link
         className="text-truncate text-capitalize align-middle"
@@ -70,32 +71,46 @@ const renderAction = (row) => {
 
 export const columns = [
   {
-    name: "Category Code",
+    name: "",
     sortable: false,
-    minWidth: "120px",
-    sortField: "production_category_code",
-    selector: (row) => row.production_category_code,
-    cell: (row) => <span>{row.production_category_code}</span>,
+    minWidth: "20px",
+    sortField: "template_name",
+    selector: (row) => row.template_name,
+    cell: (row) => <span className="fw-bolder"></span>,
   },
   {
-    name: "category description",
+    name: "Template Name",
     sortable: false,
-    minWidth: "300px",
-    sortField: "production_category_description",
-    selector: (row) => row.production_category_description,
-    cell: (row) => <span>{row.production_category_description}</span>,
+    minWidth: "320px",
+    sortField: "template_name",
+    selector: (row) => row.template_name,
+    cell: (row) => <span className="fw-bolder">{row.template_name}</span>,
   },
   {
-    name: "category display order",
+    name: "",
     sortable: false,
+    minWidth: "320px",
+    sortField: "rejection_message",
+    selector: (row) => row.rejection_message,
+    cell: (row) => <span className="fw-bolder"></span>,
+  },
+  {
+    name: "Status",
     minWidth: "60px",
-    sortField: "production_category_display_order",
-    selector: (row) => row.production_category_display_order,
-    cell: (row) => <span>{row.production_category_display_order ?? 0}</span>,
+    selector: (row) => row.is_active,
+    cell: (row) => <span>{row?.is_active ? 'Active' : 'Deactive'}</span>,
   },
   {
     name: "Actions",
-    minWidth: "100px",
+    minWidth: "40px",
     cell: (row) => renderAction(row),
   },
+  // {
+  //   name: "",
+  //   sortable: false,
+  //   minWidth: "320px",
+  //   sortField: "rejection_message",
+  //   selector: (row) => row.rejection_message,
+  //   cell: (row) => <span className="fw-bolder"></span>,
+  // },
 ];

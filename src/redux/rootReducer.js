@@ -14,6 +14,8 @@ import stations from '@src/views/Station/store'
 import reasons from '@src/views/RejectionReason/store'
 import parameters from '@src/views/Parameters/store'
 import categories from '@src/views/ProductionCategories/store'
+import manufactures from '@src/views/Manufactures/store'
+import templates from '@src/views/RouteTemplates/store'
 
 const rootReducer = { 
     navbar, 
@@ -31,7 +33,9 @@ const rootReducer = {
     stations,
     reasons,
     parameters,
-    categories
+    categories,
+    manufactures,
+    templates
  };
 
 export default rootReducer;
