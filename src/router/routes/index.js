@@ -27,6 +27,8 @@ import ParametersRoute from "../../views/Parameters/ParametersRoute";
 import ProductionCategoriesRoute from "../../views/ProductionCategories/ProductionCategoriesRoute";
 import ManufacturesRoute from "../../views/Manufactures/ManufacturesRoute";
 import RouteTemplatesRoute from "../../views/RouteTemplates/RouteTemplatesRoute";
+import RouteRoute from "../../views/Route/RouteRoute";
+import ProductSKURoute from "../../views/ProductSKU/ProductSKURoute";
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -65,6 +67,8 @@ const Routes = [
   ...ProductionCategoriesRoute,
   ...ManufacturesRoute,
   ...RouteTemplatesRoute,
+  ...RouteRoute,
+  ...ProductSKURoute,
   {
     path: "/",
     index: true,
