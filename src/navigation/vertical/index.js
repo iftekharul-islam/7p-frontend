@@ -71,6 +71,21 @@ export default [
     ],
   },
   {
+    id: "product_namgement",
+    title: "Product Management",
+    icon: <Circle size={20} />,
+    isAccess: check(["product", "vendor"]),
+    children: [
+      {
+        id: "products_sku",
+        title: "Products ( SKUs )",
+        icon: <Users size={20} />,
+        isAccess: check(["user"]),
+        navLink: "/sku-product",
+      },
+    ],
+  },
+  {
     id: "maintenance",
     title: "Maintenance",
     icon: <Circle size={20} />,
@@ -96,6 +111,13 @@ export default [
         icon: <Circle size={20} />,
         isAccess: check(["product"]),
         navLink: "/station",
+      },
+      {
+        id: "route",
+        title: "Route",
+        icon: <Circle size={20} />,
+        isAccess: check(["product"]),
+        navLink: "/route",
       },
       {
         id: "template",

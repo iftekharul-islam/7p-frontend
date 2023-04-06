@@ -16,6 +16,8 @@ import parameters from '@src/views/Parameters/store'
 import categories from '@src/views/ProductionCategories/store'
 import manufactures from '@src/views/Manufactures/store'
 import templates from '@src/views/RouteTemplates/store'
+import routes from '@src/views/Route/store'
+import productskus from '@src/views/ProductSKU/store'
 
 const rootReducer = { 
     navbar, 
@@ -35,7 +37,9 @@ const rootReducer = {
     parameters,
     categories,
     manufactures,
-    templates
+    templates,
+    routes,
+    productskus
  };
 
 export default rootReducer;
