@@ -1,4 +1,8 @@
+import { selectThemeColors } from "@utils";
 import { Fragment, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import Select from "react-select";
 import {
   Button,
   Card,
@@ -10,21 +14,15 @@ import {
   Input,
   Label,
   Row,
-  Spinner,
 } from "reactstrap";
-import { selectThemeColors } from "@utils";
-import Select from "react-select";
-import { useDispatch, useSelector } from "react-redux";
 import { AddProduct, getAllStocks, getAllVendors } from "../store";
-import { useNavigate } from "react-router-dom";
-import { UserPlus } from "react-feather";
 
 const index = () => {
   const [data, setData] = useState(null);
   const [errors, setErrors] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const store = useSelector((state) => state.products);
+  const store = useSelector((state) => state.productskus);
 
   useEffect(() => {
     dispatch(getAllStocks());
@@ -37,13 +35,7 @@ const index = () => {
       [e.target?.name]: e.target?.value,
     });
   };
-  const onStockChange = (e) => {
-    setData({
-      ...data,
-      ...e?.data,
-      stock_no: e?.stock_no,
-    });
-  };
+
 
   const onSubmit = async () => {
     const res = await dispatch(AddProduct(data));
@@ -65,41 +57,27 @@ const index = () => {
               </CardHeader>
               <CardBody>
                 <Row>
-                  <Col sm="9" className="mb-1">
+                  <Col sm="12" className="">
                     <Label className="form-label" for="nameVertical">
-                      Stock
+                      Production category
                     </Label>
                     <Select
                       className="react-select"
                       classNamePrefix="select"
                       theme={selectThemeColors}
-                      placeholder="Select Stock"
+                      placeholder="Select Production category"
                       options={store?.stockOptions}
                       value={store?.stockOptions?.find(
                         (item) => item?.value === data?.stock_id
                       )}
-                      onChange={onStockChange}
+                      onChange={onChange}
                       isClearable={false}
                     />
                     <small className="text-danger">{errors?.stock_id}</small>
                   </Col>
-                  <Col sm="3" className="mb-1">
-                    <Label className="form-label" for="nameVertical"></Label>
-                    <div>
-                      <Button
-                        color="primary"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          navigate("/inventory-add");
-                        }}
-                      >
-                        <UserPlus size={14} /> Stock
-                      </Button>
-                    </div>
-                  </Col>
                   <Col sm="12">
                     <Label className="form-label" for="stock_name_discription">
-                      Name
+                      Model(SKU)
                     </Label>
                     <Input
                       type="text"
@@ -107,12 +85,12 @@ const index = () => {
                       id="stock_name_discription"
                       placeholder="Name"
                       value={data?.stock_name_discription}
-                      disabled
                     />
+                    <small className="text-danger">{errors?.vendor_id}</small>
                   </Col>
                   <Col sm="12">
                     <Label className="form-label" for="sku_weight">
-                      SKU Weight
+                      Product name
                     </Label>
                     <Input
                       type="text"
@@ -121,25 +99,26 @@ const index = () => {
                       placeholder="SKU Weight"
                       value={data?.sku_weight}
                       onChange={onChange}
-                      disabled
                     />
                   </Col>
                   <Col sm="12">
                     <Label className="form-label" for="re_order_qty">
-                      Re-order QTY
+                      Product description
                     </Label>
                     <Input
-                      type="text"
+                      type="textarea"
+                      rows="4"
                       name="re_order_qty"
                       id="re_order_qty"
                       placeholder="Re-order QTY"
                       value={data?.re_order_qty}
-                      disabled
                     />
                   </Col>
+                  <hr className="mt-1" />
+
                   <Col sm="12">
                     <Label className="form-label" for="min_reorder">
-                      Min order
+                      ID
                     </Label>
                     <Input
                       type="text"
@@ -147,12 +126,11 @@ const index = () => {
                       id="min_reorder"
                       placeholder="Min order"
                       value={data?.min_reorder}
-                      disabled
                     />
                   </Col>
                   <Col sm="12">
                     <Label className="form-label" for="adjusment">
-                      Adjustment
+                      Product URL
                     </Label>
                     <Input
                       type="text"
@@ -160,32 +138,25 @@ const index = () => {
                       id="adjusment"
                       placeholder="Adjustment"
                       value={data?.adjusment}
-                      disabled
                     />
                   </Col>
-
-                  <Col sm="6">
+                  <Col sm="12">
                     <Label className="form-label" for="unit">
-                      Unit
+                      Thumb / Insert image
                     </Label>
-                    <Select
-                      className="react-select"
-                      classNamePrefix="select"
-                      theme={selectThemeColors}
-                      placeholder="Select Stock"
-                      options={store?.unitOptions}
-                      value={store?.unitOptions?.find(
-                        (item) => item?.value === data?.unit
-                      )}
-                      onChange={(e) =>
-                        onChange({ target: { name: "unit", value: e.value } })
-                      }
-                      isClearable={false}
-                    />                    
+                    <Input
+                      type="text"
+                      name="adjusment"
+                      id="adjusment"
+                      placeholder="Adjustment"
+                      value={data?.adjusment}
+                    />
                   </Col>
-                  <Col sm="6">
+                  <hr className="mt-1" />
+
+                  <Col sm="12">
                     <Label className="form-label" for="unit_qty">
-                      QTY
+                      Ship weight
                     </Label>
                     <Input
                       type="text"
@@ -198,7 +169,7 @@ const index = () => {
                   </Col>
                   <Col sm="12">
                     <Label className="form-label" for="unit_price">
-                      Unit Price
+                      Height
                     </Label>
                     <Input
                       type="text"
@@ -209,32 +180,24 @@ const index = () => {
                       onChange={onChange}
                     />
                   </Col>
-                  <hr className="mt-2" />
                   <Col sm="12" className="mb-1">
                     <Label className="form-label" for="nameVertical">
-                      Vendor
+                      Width
                     </Label>
-                    <Select
-                      className="react-select"
-                      classNamePrefix="select"
-                      theme={selectThemeColors}
-                      placeholder="Select Vendor"
-                      options={store?.vendorOptions}
-                      value={store?.vendorOptions?.find(
-                        (item) => item?.value === data?.vendor_id
-                      )}
-                      onChange={(e) => {
-                        onChange({
-                          target: { value: e?.value, name: "vendor_id" },
-                        });
-                      }}
-                      isClearable={false}
+                    <Input
+                      type="text"
+                      name="unit_price"
+                      id="unit_price"
+                      placeholder="Unit Price"
+                      value={data?.unit_price}
+                      onChange={onChange}
                     />
-                    <small className="text-danger">{errors?.vendor_id}</small>
                   </Col>
+                  <hr className="mt-1" />
+
                   <Col sm="12">
                     <Label className="form-label" for="vendor_sku">
-                      Vendor Sku
+                      UPC
                     </Label>
                     <Input
                       type="text"
@@ -247,7 +210,7 @@ const index = () => {
                   </Col>
                   <Col sm="12">
                     <Label className="form-label" for="vendor_sku_name">
-                      SKU Name
+                      ASIN
                     </Label>
                     <Input
                       type="text"
@@ -258,9 +221,37 @@ const index = () => {
                       onChange={onChange}
                     />
                   </Col>
+                  <hr className="mt-1" />
+
                   <Col sm="12">
                     <Label className="form-label" for="lead_time_days">
-                      Lead Time Days
+                      Product price
+                    </Label>
+                    <Input
+                      type="text"
+                      name="lead_time_days"
+                      id="lead_time_days"
+                      placeholder="lead_time_days"
+                      value={data?.lead_time_days}
+                      onChange={onChange}
+                    />
+                  </Col>
+                  <Col sm="12">
+                    <Label className="form-label" for="lead_time_days">
+                      Product sale price
+                    </Label>
+                    <Input
+                      type="text"
+                      name="lead_time_days"
+                      id="lead_time_days"
+                      placeholder="lead_time_days"
+                      value={data?.lead_time_days}
+                      onChange={onChange}
+                    />
+                  </Col>
+                  <Col sm="12">
+                    <Label className="form-label" for="lead_time_days">
+                      Wholesale price
                     </Label>
                     <Input
                       type="text"

@@ -3,32 +3,33 @@ import { Fragment, lazy } from "react";
 import { Navigate } from "react-router-dom";
 // ** Layouts
 import BlankLayout from "@layouts/BlankLayout";
-import VerticalLayout from "@src/layouts/VerticalLayout";
-import HorizontalLayout from "@src/layouts/HorizontalLayout";
 import LayoutWrapper from "@src/@core/layouts/components/layout-wrapper";
+import HorizontalLayout from "@src/layouts/HorizontalLayout";
+import VerticalLayout from "@src/layouts/VerticalLayout";
 
 // ** Route Components
 import PublicRoute from "@components/routes/PublicRoute";
 
 // ** Utils
 import { isObjEmpty } from "@utils";
-import UserRoute from "../../views/User/UserRoute";
-import RoleRoute from "../../views/Role/RoleRoute";
+import AdjustmentRoute from "../../views/Adjustment/AdjustmentRoute";
+import InventoryRoute from "../../views/Inventory/InventoryRoute";
+import ManufacturesRoute from "../../views/Manufactures/ManufacturesRoute";
+import OrderRoute from "../../views/Order/OrderRoute";
+import ParametersRoute from "../../views/Parameters/ParametersRoute";
 import PermissionRoute from "../../views/Permission/PermissionRoute";
 import ProductRoute from "../../views/Product/ProductRoute";
-import VendorRoute from "../../views/Vendor/VendorRoute";
-import OrderRoute from "../../views/Order/OrderRoute";
-import InventoryRoute from "../../views/Inventory/InventoryRoute";
-import AdjustmentRoute from "../../views/Adjustment/AdjustmentRoute";
-import SectionRoute from "../../views/Section/SectionRoute";
-import StationRoute from "../../views/Station/StationRoute";
-import RejectionReasonRoute from "../../views/RejectionReason/RejectionReasonRoute";
-import ParametersRoute from "../../views/Parameters/ParametersRoute";
-import ProductionCategoriesRoute from "../../views/ProductionCategories/ProductionCategoriesRoute";
-import ManufacturesRoute from "../../views/Manufactures/ManufacturesRoute";
-import RouteTemplatesRoute from "../../views/RouteTemplates/RouteTemplatesRoute";
-import RouteRoute from "../../views/Route/RouteRoute";
 import ProductSKURoute from "../../views/ProductSKU/ProductSKURoute";
+import ProductionCategoriesRoute from "../../views/ProductionCategories/ProductionCategoriesRoute";
+import RejectionReasonRoute from "../../views/RejectionReason/RejectionReasonRoute";
+import RoleRoute from "../../views/Role/RoleRoute";
+import RouteRoute from "../../views/Route/RouteRoute";
+import RouteTemplatesRoute from "../../views/RouteTemplates/RouteTemplatesRoute";
+import SectionRoute from "../../views/Section/SectionRoute";
+import SpecificationSheetRoute from "../../views/SpecificationSheet/SpecificationSheetRoute";
+import StationRoute from "../../views/Station/StationRoute";
+import UserRoute from "../../views/User/UserRoute";
+import VendorRoute from "../../views/Vendor/VendorRoute";
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -69,6 +70,7 @@ const Routes = [
   ...RouteTemplatesRoute,
   ...RouteRoute,
   ...ProductSKURoute,
+  ...SpecificationSheetRoute,
   {
     path: "/",
     index: true,

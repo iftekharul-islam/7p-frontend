@@ -77,11 +77,32 @@ export default [
     isAccess: check(["product", "vendor"]),
     children: [
       {
+        id: "config_child_sku",
+        title: "Configure SKUs",
+        icon: <Users size={20} />,
+        isAccess: check(["user"]),
+        navLink: "/config-child-sku",
+      },
+      {
         id: "products_sku",
         title: "Products ( SKUs )",
         icon: <Users size={20} />,
         isAccess: check(["user"]),
         navLink: "/sku-product",
+      },
+      {
+        id: "create-child-sku",
+        title: "Create Child SKU",
+        icon: <Users size={20} />,
+        isAccess: check(["user"]),
+        navLink: "/create-child-sku",
+      },
+      {
+        id: "specification-product",
+        title: "Specification sheet",
+        icon: <Users size={20} />,
+        isAccess: check(["user"]),
+        navLink: "/specification-product",
       },
     ],
   },

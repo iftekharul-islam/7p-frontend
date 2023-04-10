@@ -1,4 +1,8 @@
+import { selectThemeColors } from "@utils";
 import { Fragment, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import Select from "react-select";
 import {
   Button,
   Card,
@@ -9,14 +13,9 @@ import {
   Form,
   Input,
   Label,
-  Row,
-  Spinner,
+  Row
 } from "reactstrap";
-import { selectThemeColors } from "@utils";
-import Select from "react-select";
-import { useDispatch, useSelector } from "react-redux";
 import { AddRoute, getStationOption } from "../store";
-import { useNavigate } from "react-router-dom";
 
 const index = () => {
   const [data, setData] = useState(null);
