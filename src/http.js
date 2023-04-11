@@ -1,12 +1,12 @@
 import axios from "axios";
-import Swal from 'sweetalert2'
-import withReactContent from 'sweetalert2-react-content'
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 
 let Api = axios.create({
   baseURL: 'http://7p.test/api',
 
   headers: {
-    "Content-type": "application/json",
+    "Content-type": "multipart/form-data",
     accept: "application/json",
   },
   transformResponse: (data) => {

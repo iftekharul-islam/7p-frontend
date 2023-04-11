@@ -14,18 +14,14 @@ export const getVendor = createAsyncThunk("Vendor/getVendor", async (id) => {
   return response.data;
 });
 
-export const AddVendor = createAsyncThunk(
-  "Vendor/AddVendor",
-  async (data, { dispatch }) => {
-    const response = await Api.post("vendors", data);
-    if (response?.status == 201) {
-      dispatch(getAllData());
-      return { status: true };
-    } else {
-      return { status: false, data: response?.data };
-    }
+export const AddSpecifiction = createAsyncThunk("Specification/AddSpecifiction", async (data) => {
+  const response = await Api.post("specification-product", data);
+  if (response?.status == 201) {
+    return { status: true };
+  } else {
+    return { status: false, data: response?.data };
   }
-);
+});
 
 export const UpdateVendor = createAsyncThunk(
   "Vendor/UpdateVendor",
@@ -53,14 +49,7 @@ export const DeleteVendor = createAsyncThunk(
   }
 );
 
-export const AddStock = createAsyncThunk("Vendor/AddStock", async (data) => {
-  const response = await Api.post("add-stock-products", data);
-  if (response?.status == 201) {
-    return { status: true };
-  } else {
-    return { status: false, data: response?.data };
-  }
-});
+
 
 export const getAllStocks = createAsyncThunk(
   "Vendor/getAllStocks",
@@ -117,10 +106,18 @@ export const getStatusesOptions = createAsyncThunk(
   }
 );
 
+export const getVendorsOptions = createAsyncThunk(
+  "Specification/getVendor",
+  async (data) => {
+    const response = await Api.get("vendor-options", { params: data });
+    return response.data;
+  }
+);
+
 export const getSkus = createAsyncThunk(
   "Specification/getSkus",
   async (data) => {
-    const response = await Api.get("skus", {params: data});
+    const response = await Api.get("skus", { params: data });
     return response.data;
   }
 );
@@ -130,11 +127,14 @@ export const SpecificationSlice = createSlice({
   initialState: {
     data: [],
     total: 1,
-    specificationData:{sku: 'EB11598'},
+    specificationData: {
+      labor_expense_cost_variation:[],
+      delivery_cost_variation:[],
+    },
 
     params: {},
     allData: [],
-    active: 2,
+    active: 1,
 
     vendor: {},
     makeSampleDataOptions: [],
@@ -142,6 +142,7 @@ export const SpecificationSlice = createSlice({
     searchableFieldsOptions: [],
     statusesOptions: [],
     webImageStatusOptions: [],
+    vendorOptions: [],
   },
   extraReducers: (builder) => {
     builder
@@ -165,16 +166,22 @@ export const SpecificationSlice = createSlice({
         state.productionCategoriesOptions = action.payload;
       })
       .addCase(getWebImageStatusOptions.fulfilled, (state, action) => {
-        state.webImageStatusOptions = action.payload
+        state.webImageStatusOptions = action.payload;
       })
       .addCase(getMakeSampleDataOptions.fulfilled, (state, action) => {
-        state.makeSampleDataOptions = action.payload
+        state.makeSampleDataOptions = action.payload;
       })
       .addCase(getStatusesOptions.fulfilled, (state, action) => {
-        state.statusesOptions = action.payload
+        state.statusesOptions = action.payload;
+      })
+      .addCase(getVendorsOptions.fulfilled, (state, action) => {
+        state.vendorOptions = action.payload;
       })
       .addCase(getSkus.fulfilled, (state, action) => {
-        state.specificationData = {...state.specificationData, ...action.payload};
+        state.specificationData = {
+          ...state.specificationData,
+          ...action.payload,
+        };
       });
   },
   reducers: {
@@ -188,9 +195,13 @@ export const SpecificationSlice = createSlice({
       state.active = state.active > 1 ? state.active - 1 : 1;
     },
     setSpecificationData: (state, action) => {
-      state.specificationData = {...state.specificationData, ...action.payload};
-    }
+      state.specificationData = {
+        ...state.specificationData,
+        ...action.payload,
+      };
+    },
   },
 });
-export const { setActive, nextTab, prevTab, setSpecificationData } = SpecificationSlice.actions;
+export const { setActive, nextTab, prevTab, setSpecificationData } =
+  SpecificationSlice.actions;
 export default SpecificationSlice.reducer;

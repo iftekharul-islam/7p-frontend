@@ -1,40 +1,13 @@
-import { Fragment, useState } from "react";
+import { Fragment } from "react";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import {
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  CardTitle,
-  Col,
-  Form,
-  Input,
-  Label,
-  Row,
-} from "reactstrap";
-import { AddVendor, nextTab, prevTab } from "../store";
+import { Button, Card, CardBody, Col, Form, Input, Label, Row } from "reactstrap";
+import { nextTab, prevTab, setSpecificationData } from "../store";
 
 const SpecialNote = () => {
-  const [data, setData] = useState(null);
-  const [errors, setErrors] = useState(null);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
-  const onChange = (e) => {
-    setData({
-      ...data,
-      [e.target?.name]: e.target?.value,
-    });
-  };
-
-  const onSubmit = async () => {
-    const res = await dispatch(AddVendor(data));
-    if (res?.payload?.status) {
-      navigate("/vendor");
-    } else {
-      setErrors(res?.payload?.data?.errors);
-    }
+  const onChange = (data) => {
+    dispatch(setSpecificationData(data));
   };
 
   return (
@@ -43,22 +16,19 @@ const SpecialNote = () => {
         <Form>
           <Col sm="12">
             <Card>
-              <CardHeader>
-                <CardTitle tag="h4">New Vendor</CardTitle>
-              </CardHeader>
               <CardBody>
                 <Row>
-                  <Col sm="12" className="mb-1">
-                    <Label className="form-label" for="image">
-                      Image
+                  <Col sm="4">
+                    <Label className="form-label" for="product_note">
+                      Product Note
                     </Label>
                     <Input
-                      type="file"
-                      name="image"
-                      id="image"
-                      placeholder="image"
-                      value={data?.image}
-                      onChange={onChange}
+                      type="textarea"
+                      name="product_note"
+                      Rows="5"
+                      id="product_note"
+                      placeholder="Product Note"
+                      onChange={(e) => onChange({ [e.target.name]: e.target.value })}
                     />
                   </Col>
                 </Row>

@@ -1,6 +1,6 @@
 import "@styles/react/libs/react-select/_react-select.scss";
 import { selectThemeColors } from "@utils";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import {
@@ -23,8 +23,6 @@ import {
 } from "../store";
 
 const ProductionCategory = () => {
-  const [data, setData] = useState(null);
-  const [errors, setErrors] = useState(null);
   const dispatch = useDispatch();
   const { specificationData, productionCategoriesOptions } = useSelector(
     (state) => state.productspecifications
