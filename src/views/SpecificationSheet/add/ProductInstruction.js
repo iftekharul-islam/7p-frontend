@@ -35,7 +35,7 @@ const ProductInstruction = () => {
   };
 
   const onImageChange = (e) => {
-    onChange({ [e?.target?.name]: e?.target?.files[0] });
+    onChange({ [e?.target?.name]: e?.target?.files });
   };
 
   useEffect(() => {
@@ -76,7 +76,7 @@ const ProductInstruction = () => {
               <CardBody>
                 <Row>
                   <Col sm="3" className="mb-1">
-                    <Label className="form-label" for="production_category">
+                    <Label className="form-label" for="production_category_id">
                       Production category
                     </Label>
                     <Select
@@ -87,10 +87,10 @@ const ProductInstruction = () => {
                       options={productionCategoriesOptions}
                       value={productionCategoriesOptions?.find(
                         (item) =>
-                          item?.value == specificationData?.production_category
+                          item?.value == specificationData?.production_category_id
                       )}
                       onChange={(e) =>
-                        onChange({ production_category: e?.value })
+                        onChange({ production_category_id: e?.value })
                       }
                     />
                   </Col>
@@ -122,7 +122,7 @@ const ProductInstruction = () => {
                       type="text"
                       name="art_work_location"
                       id="art_work_location"
-                      placeholder="Enter  Length"
+                      placeholder="Enter Length"
                       value={specificationData?.art_work_location}
                       onChange={(e) =>
                         onChange({ art_work_location: e?.target?.value })

@@ -84,19 +84,20 @@ export default [
         navLink: "/config-child-sku",
       },
       {
-        id: "products_sku",
-        title: "Products ( SKUs )",
-        icon: <Users size={20} />,
-        isAccess: check(["user"]),
-        navLink: "/sku-product",
-      },
-      {
         id: "create-child-sku",
         title: "Create Child SKU",
         icon: <Users size={20} />,
         isAccess: check(["user"]),
         navLink: "/create-child-sku",
       },
+      {
+        id: "products_sku",
+        title: "Products ( SKUs )",
+        icon: <Users size={20} />,
+        isAccess: check(["user"]),
+        navLink: "/sku-product",
+      },
+
       {
         id: "specification-product",
         title: "Specification sheet",

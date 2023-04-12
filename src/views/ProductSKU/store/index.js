@@ -11,17 +11,17 @@ export const getAllData = createAsyncThunk(
 );
 
 export const getProduct = createAsyncThunk(
-  "Product/getProduct",
+  "ProductSKU/getProduct",
   async (id) => {
-    const response = await Api.get(`products/${id}`);
+    const response = await Api.get(`product/${id}`);
     return response.data;
   }
 );
 
 export const AddProduct = createAsyncThunk(
-  "Product/AddProduct",
+  "ProductSKU/AddProduct",
   async (data, { dispatch }) => {
-    const response = await Api.post("purchased-products", data);
+    const response = await Api.post("product", data);
     if (response?.status == 201) {
       dispatch(getAllData());
       return { status: true };
@@ -32,11 +32,10 @@ export const AddProduct = createAsyncThunk(
 );
 
 export const UpdateProduct = createAsyncThunk(
-  "Product/UpdateProduct",
-  async (data, { dispatch }) => {
-    const response = await Api.post(`purchased-products/${data?.id}`, data?.data);
+  "ProductSKU/UpdateProduct",
+  async (data) => {
+    const response = await Api.post(`product/${data?.id}`, data?.data);
     if (response?.status == 201) {
-      dispatch(getAllData());
       return { status: true };
     } else {
       return { status: false, data: response?.data };
@@ -57,27 +56,18 @@ export const DeleteProduct = createAsyncThunk(
   }
 );
 
-export const AddStock = createAsyncThunk("Product/AddStock", async (data) => {
-  const response = await Api.post("add-stock-products", data);
-  if (response?.status == 201) {
-    return { status: true };
-  } else {
-    return { status: false, data: response?.data };
-  }
-});
-
-export const getAllStocks = createAsyncThunk(
-  "Product/getAllStocks",
-  async (data) => {
-    const response = await Api.get("stock-options", data);
+export const getProductionCategoryOptions = createAsyncThunk(
+  "ProductSKU/getProductionCategoryOptions",
+  async () => {
+    const response = await Api.get("production-category-options");
     return response.data;
   }
 );
 
-export const getAllVendors = createAsyncThunk(
-  "Product/getAllVendors",
-  async (data) => {
-    const response = await Api.get("vendor-options", data);
+export const getSearchableFieldsOptions = createAsyncThunk(
+  "ProductSKU/getSearchableFieldsOptions",
+  async () => {
+    const response = await Api.get("product-searchable-fields-options");
     return response.data;
   }
 );
@@ -93,48 +83,9 @@ export const ProductSKUSlice = createSlice({
 
     product:{},
 
-    stockOptions: [],
-    vendorOptions: [],
-    sectionOptions: [
-      {
-        label: "Section A",
-        value: 1,
-      },
-      {
-        label: "Section B",
-        value: 2,
-      },
-      {
-        label: "Section C",
-        value: 3,
-      },
-      {
-        label: "Section D",
-        value: 4,
-      },
-      {
-        label: "Section E",
-        value: 5,
-      },
-    ],
-    unitOptions: [
-      {
-        label: "Each",
-        value: "Each",
-      },
-      {
-        label: "Case",
-        value: 'Case',
-      },
-      {
-        label: "Pack",
-        value: "Pack",
-      },
-      {
-        label: "Square Foot",
-        value: "Square Foot",
-      }
-    ],
+    productionCategoryOptions: [],
+    searchableFieldsOptions: [],
+
   },
   extraReducers: (builder) => {
     builder
@@ -142,15 +93,15 @@ export const ProductSKUSlice = createSlice({
         state.data = action.payload?.data;
         state.total = action.payload?.total;
       })
+      .addCase(getProductionCategoryOptions.fulfilled, (state, action) => {
+        state.productionCategoryOptions = action.payload;
+      })
+      .addCase(getSearchableFieldsOptions.fulfilled, (state, action) => {
+        state.searchableFieldsOptions = action.payload;
+      })
       .addCase(getProduct.fulfilled, (state, action) => {
         state.product = action.payload;
       })
-      .addCase(getAllStocks.fulfilled, (state, action) => {
-        state.stockOptions = action.payload;
-      })
-      .addCase(getAllVendors.fulfilled, (state, action) => {
-        state.vendorOptions = action.payload;
-      });
   },
 });
 

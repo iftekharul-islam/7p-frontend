@@ -4,7 +4,6 @@ import { lazy } from "react";
 const SpecificationList = lazy(() => import("./list"));
 const SpecificationAdd = lazy(() => import("./add"));
 const SpecificationEdit = lazy(() => import("./edit"));
-const SpecificationView = lazy(() => import("./show"));
 
 const SpecificationSheetRoute = [
   {
@@ -18,11 +17,7 @@ const SpecificationSheetRoute = [
   {
     element: <SpecificationEdit />,
     path: "/specification-product-edit/:id",
-  },
-  {
-    element: <SpecificationView />,
-    path: "/specification-product-view/:id",
-  },
+  }
 ];
 
 export default SpecificationSheetRoute;

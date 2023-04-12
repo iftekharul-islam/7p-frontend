@@ -9,60 +9,52 @@ export const getAllData = createAsyncThunk(
   }
 );
 
-export const getVendor = createAsyncThunk("Vendor/getVendor", async (id) => {
-  const response = await Api.get(`vendors/${id}`);
-  return response.data;
-});
-
-export const AddSpecifiction = createAsyncThunk("Specification/AddSpecifiction", async (data) => {
-  const response = await Api.post("specification-product", data);
-  if (response?.status == 201) {
-    return { status: true };
-  } else {
-    return { status: false, data: response?.data };
-  }
-});
-
-export const UpdateVendor = createAsyncThunk(
-  "Vendor/UpdateVendor",
-  async (data, { dispatch }) => {
-    const response = await Api.post(`vendors/${data?.id}`, data?.data);
-    if (response?.status == 201) {
-      dispatch(getAllData());
-      return { status: true };
-    } else {
-      return { status: false, data: response?.data };
-    }
-  }
-);
-
-export const DeleteVendor = createAsyncThunk(
-  "Vendor/DeleteVendor",
-  async (id, { dispatch }) => {
-    const response = await Api.post(`destroy-vendors/${id}`);
-    if (response?.status == 201) {
-      dispatch(getAllData());
-      return { status: true };
-    } else {
-      return { status: false, data: response?.data };
-    }
-  }
-);
-
-
-
-export const getAllStocks = createAsyncThunk(
-  "Vendor/getAllStocks",
-  async (data) => {
-    const response = await Api.get("stock-options", data);
+export const getSpecifiction = createAsyncThunk(
+  "Specification/getSpecifiction",
+  async (id) => {
+    const response = await Api.get(`specification-product/${id}`);
     return response.data;
   }
 );
 
-export const getAllVendors = createAsyncThunk(
-  "Vendor/getAllVendors",
-  async () => {
-    return null;
+export const AddSpecifiction = createAsyncThunk(
+  "Specification/AddSpecifiction",
+  async (data) => {
+    const response = await Api.post("specification-product", data);
+    if (response?.status == 201) {
+      return { status: true };
+    } else {
+      return { status: false, data: response?.data };
+    }
+  }
+);
+
+export const UpdateSpecifiction = createAsyncThunk(
+  "Specification/UpdateSpecifiction",
+  async (data, { dispatch }) => {
+    const response = await Api.post(
+      `specification-product/${data?.id}`,
+      data?.data
+    );
+    if (response?.status == 201) {
+      dispatch(getAllData());
+      return { status: true };
+    } else {
+      return { status: false, data: response?.data };
+    }
+  }
+);
+
+export const DeleteSpecifiction = createAsyncThunk(
+  "Specification/DeleteSpecifiction",
+  async (id, { dispatch }) => {
+    const response = await Api.post(`destroy-specification-product/${id}`);
+    if (response?.status == 201) {
+      dispatch(getAllData());
+      return { status: true };
+    } else {
+      return { status: false, data: response?.data };
+    }
   }
 );
 
@@ -107,7 +99,7 @@ export const getStatusesOptions = createAsyncThunk(
 );
 
 export const getVendorsOptions = createAsyncThunk(
-  "Specification/getVendor",
+  "Specification/getVendorsOptions",
   async (data) => {
     const response = await Api.get("vendor-options", { params: data });
     return response.data;
@@ -128,15 +120,16 @@ export const SpecificationSlice = createSlice({
     data: [],
     total: 1,
     specificationData: {
-      labor_expense_cost_variation:[],
-      delivery_cost_variation:[],
+      labor_expense_cost_variation: [],
+      delivery_cost_variation: [],
     },
 
     params: {},
     allData: [],
     active: 1,
 
-    vendor: {},
+    specification: {},
+
     makeSampleDataOptions: [],
     productionCategoriesOptions: [],
     searchableFieldsOptions: [],
@@ -150,14 +143,8 @@ export const SpecificationSlice = createSlice({
         state.data = action.payload?.data;
         state.total = action.payload?.total;
       })
-      .addCase(getVendor.fulfilled, (state, action) => {
-        state.vendor = action.payload;
-      })
-      .addCase(getAllStocks.fulfilled, (state, action) => {
-        state.stockOptions = action.payload;
-      })
-      .addCase(getAllVendors.fulfilled, (state, action) => {
-        state.vendorOptions = action.payload;
+      .addCase(getSpecifiction.fulfilled, (state, action) => {
+        state.specificationData = action.payload;
       })
       .addCase(getSearchableFieldsOptions.fulfilled, (state, action) => {
         state.searchableFieldsOptions = action.payload;
@@ -200,8 +187,15 @@ export const SpecificationSlice = createSlice({
         ...action.payload,
       };
     },
+    resetSpecificationData: (state, action) => {
+      state.specificationData = {
+        labor_expense_cost_variation: [],
+        delivery_cost_variation: [],
+      };
+      state.active = 1;
+    },
   },
 });
-export const { setActive, nextTab, prevTab, setSpecificationData } =
+export const { setActive, nextTab, prevTab, setSpecificationData, resetSpecificationData } =
   SpecificationSlice.actions;
 export default SpecificationSlice.reducer;

@@ -38,8 +38,8 @@ const ProductionCategory = () => {
 
   const onNext = (e) => {
     e.preventDefault();
-    if (specificationData?.production_category) {
-      dispatch(getSkus({'production_category': specificationData?.production_category, 'gift-wrap':specificationData?.gift_wrap}));
+    if (specificationData?.production_category_id) {
+      dispatch(getSkus({'production_category': specificationData?.production_category_id, 'gift-wrap':specificationData?.gift_wrap}));
       dispatch(nextTab());
     } else {
       const MySwal = withReactContent(Swal)
@@ -73,10 +73,10 @@ const ProductionCategory = () => {
                       options={productionCategoriesOptions}
                       value={productionCategoriesOptions?.find(
                         (item) =>
-                          item?.value == specificationData?.production_category
+                          item?.value == specificationData?.production_category_id
                       )}
                       onChange={(e) =>
-                        onChange({ production_category: e?.value })
+                        onChange({ production_category_id: e?.value })
                       }
                     />
                   </Col>

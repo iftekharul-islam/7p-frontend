@@ -17,6 +17,7 @@ import {
   getMakeSampleDataOptions,
   getVendorsOptions,
   prevTab,
+  resetSpecificationData,
   setSpecificationData,
 } from "../store";
 
@@ -37,7 +38,7 @@ const FinancialInfo = () => {
       ...specificationData?.labor_expense_cost_variation,
     ];
     labor_expense_cost_variation[index] = value;
-    onChange({labor_expense_cost_variation});
+    onChange({ labor_expense_cost_variation });
   };
 
   const onDeliveryChange = (value, index) => {
@@ -45,7 +46,7 @@ const FinancialInfo = () => {
       ...specificationData?.delivery_cost_variation,
     ];
     delivery_cost_variation[index] = value;
-    onChange({delivery_cost_variation});
+    onChange({ delivery_cost_variation });
   };
 
   useEffect(() => {
@@ -58,18 +59,26 @@ const FinancialInfo = () => {
   }, [options]);
 
   useEffect(() => {
-    var cost_variation_1_total = options.reduce(function (prev, cur) {
-      return parseInt(prev) + parseInt(cur?.variation_1 ?? 0);
-    }, 0);
-    var cost_variation_2_total = options.reduce(function (prev, cur) {
-      return parseInt(prev) + parseInt(cur?.variation_2 ?? 0);
-    }, 0);
-    var cost_variation_3_total = options.reduce(function (prev, cur) {
-      return parseInt(prev) + parseInt(cur?.variation_3 ?? 0);
-    }, 0);
-    var cost_variation_4_total = options.reduce(function (prev, cur) {
-      return parseInt(prev) + parseInt(cur?.variation_4 ?? 0);
-    }, 0);
+    var cost_variation_1_total = options
+      .reduce(function (prev, cur) {
+        return parseFloat(prev) + parseFloat(cur?.variation_1 ?? 0);
+      }, 0)
+      .toFixed(2);
+    var cost_variation_2_total = options
+      .reduce(function (prev, cur) {
+        return parseFloat(prev) + parseFloat(cur?.variation_2 ?? 0);
+      }, 0)
+      .toFixed(2);
+    var cost_variation_3_total = options
+      .reduce(function (prev, cur) {
+        return parseFloat(prev) + parseFloat(cur?.variation_3 ?? 0);
+      }, 0)
+      .toFixed(2);
+    var cost_variation_4_total = options
+      .reduce(function (prev, cur) {
+        return parseFloat(prev) + parseFloat(cur?.variation_4 ?? 0);
+      }, 0)
+      .toFixed(2);
     onChange({
       cost_variation_1_total,
       cost_variation_2_total,
@@ -80,10 +89,11 @@ const FinancialInfo = () => {
 
   useEffect(() => {
     onChange({
-      sum_of_cost_variation_1:
-        parseInt(specificationData?.cost_variation_1_total ?? 0) +
-        parseInt(specificationData?.labor_expense_cost_variation[0] ?? 0) +
-        parseInt(specificationData?.delivery_cost_variation[0] ?? 0),
+      sum_of_cost_variation_1: (
+        parseFloat(specificationData?.cost_variation_1_total ?? 0) +
+        parseFloat(specificationData?.labor_expense_cost_variation[0] ?? 0) +
+        parseFloat(specificationData?.delivery_cost_variation[0] ?? 0)
+      ).toFixed(2),
     });
   }, [
     specificationData?.cost_variation_1_total,
@@ -93,10 +103,11 @@ const FinancialInfo = () => {
 
   useEffect(() => {
     onChange({
-      sum_of_cost_variation_2:
-        parseInt(specificationData?.cost_variation_2_total ?? 0) +
-        parseInt(specificationData?.labor_expense_cost_variation[1] ?? 0) +
-        parseInt(specificationData?.delivery_cost_variation[1] ?? 0),
+      sum_of_cost_variation_2: (
+        parseFloat(specificationData?.cost_variation_2_total ?? 0) +
+        parseFloat(specificationData?.labor_expense_cost_variation[1] ?? 0) +
+        parseFloat(specificationData?.delivery_cost_variation[1] ?? 0)
+      ).toFixed(2),
     });
   }, [
     specificationData?.cost_variation_2_total,
@@ -106,10 +117,11 @@ const FinancialInfo = () => {
 
   useEffect(() => {
     onChange({
-      sum_of_cost_variation_3:
-        parseInt(specificationData?.cost_variation_3_total ?? 0) +
-        parseInt(specificationData?.labor_expense_cost_variation[2] ?? 0) +
-        parseInt(specificationData?.delivery_cost_variation[2] ?? 0),
+      sum_of_cost_variation_3: (
+        parseFloat(specificationData?.cost_variation_3_total ?? 0) +
+        parseFloat(specificationData?.labor_expense_cost_variation[2] ?? 0) +
+        parseFloat(specificationData?.delivery_cost_variation[2] ?? 0)
+      ).toFixed(2),
     });
   }, [
     specificationData?.cost_variation_3_total,
@@ -119,10 +131,11 @@ const FinancialInfo = () => {
 
   useEffect(() => {
     onChange({
-      sum_of_cost_variation_4:
-        parseInt(specificationData?.cost_variation_4_total ?? 0) +
-        parseInt(specificationData?.labor_expense_cost_variation[3] ?? 0) +
-        parseInt(specificationData?.delivery_cost_variation[3] ?? 0),
+      sum_of_cost_variation_4: (
+        parseFloat(specificationData?.cost_variation_4_total ?? 0) +
+        parseFloat(specificationData?.labor_expense_cost_variation[3] ?? 0) +
+        parseFloat(specificationData?.delivery_cost_variation[3] ?? 0)
+      ).toFixed(2),
     });
   }, [
     specificationData?.cost_variation_4_total,
@@ -151,14 +164,13 @@ const FinancialInfo = () => {
   };
 
   const onSubmit = async () => {
-    // setLoading(true);
+    setLoading(true);
     const res = await dispatch(AddSpecifiction(specificationData));
-    // if (res?.payload?.status) {
-    //   // navigate("/specification-product");
-    // } else {
-    //   // setErrors(res?.payload?.data?.errors);
-    // }
-    // setLoading(false);
+    if (res?.payload?.status) {
+      dispatch(resetSpecificationData())
+      navigate("/specification-product");
+    }
+    setLoading(false);
   };
 
   return (
@@ -474,48 +486,28 @@ const FinancialInfo = () => {
                     <Input
                       type="number"
                       value={specificationData?.delivery_cost_variation[0]}
-                      onChange={(e) =>
-                        onDeliveryChange(
-                          e?.target?.value,
-                          0
-                        )
-                      }
+                      onChange={(e) => onDeliveryChange(e?.target?.value, 0)}
                     />
                   </Col>
                   <Col sm="1">
                     <Input
                       type="number"
                       value={specificationData?.delivery_cost_variation[1]}
-                      onChange={(e) =>
-                        onDeliveryChange(
-                          e?.target?.value,
-                          1
-                        )
-                      }
+                      onChange={(e) => onDeliveryChange(e?.target?.value, 1)}
                     />
                   </Col>
                   <Col sm="1">
                     <Input
                       type="number"
                       value={specificationData?.delivery_cost_variation[2]}
-                      onChange={(e) =>
-                        onDeliveryChange(
-                          e?.target?.value,
-                          2
-                        )
-                      }
+                      onChange={(e) => onDeliveryChange(e?.target?.value, 2)}
                     />
                   </Col>
                   <Col sm="1">
                     <Input
                       type="number"
                       value={specificationData?.delivery_cost_variation[3]}
-                      onChange={(e) =>
-                        onDeliveryChange(
-                          e?.target?.value,
-                          3
-                        )
-                      }
+                      onChange={(e) => onDeliveryChange(e?.target?.value, 3)}
                     />
                   </Col>
                 </Row>
@@ -530,48 +522,28 @@ const FinancialInfo = () => {
                     <Input
                       type="number"
                       value={specificationData?.labor_expense_cost_variation[0]}
-                      onChange={(e) =>
-                        onLaborChange(
-                          e?.target?.value,
-                          0
-                        )
-                      }
+                      onChange={(e) => onLaborChange(e?.target?.value, 0)}
                     />
                   </Col>
                   <Col sm="1">
                     <Input
                       type="number"
                       value={specificationData?.labor_expense_cost_variation[1]}
-                      onChange={(e) =>
-                        onLaborChange(
-                          e?.target?.value,
-                          1
-                        )
-                      }
+                      onChange={(e) => onLaborChange(e?.target?.value, 1)}
                     />
                   </Col>
                   <Col sm="1">
                     <Input
                       type="number"
                       value={specificationData?.labor_expense_cost_variation[2]}
-                      onChange={(e) =>
-                        onLaborChange(
-                          e?.target?.value,
-                          2
-                        )
-                      }
+                      onChange={(e) => onLaborChange(e?.target?.value, 2)}
                     />
                   </Col>
                   <Col sm="1">
                     <Input
                       type="number"
                       value={specificationData?.labor_expense_cost_variation[3]}
-                      onChange={(e) =>
-                        onLaborChange(
-                          e?.target?.value,
-                          3
-                        )
-                      }
+                      onChange={(e) => onLaborChange(e?.target?.value, 3)}
                     />
                   </Col>
                 </Row>

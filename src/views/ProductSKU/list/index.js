@@ -4,27 +4,48 @@ import { ChevronDown, PlusCircle } from "react-feather";
 import ReactPaginate from "react-paginate";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Button, Card, Col, Row } from "reactstrap";
-import { getAllData } from "../store/index";
+import Select from "react-select";
+import { Button, Card, Col, Input, Row } from "reactstrap";
+import { getAllData, getProductionCategoryOptions, getSearchableFieldsOptions } from "../store";
 import { columns } from "./columns";
 
 import "@styles/react/libs/react-select/_react-select.scss";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
-import { DebounceInput } from "react-debounce-input";
 
 const index = () => {
   const dispatch = useDispatch();
+  const store = useSelector((state) => state.productskus);
+  const [loading, setLoading] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const q = searchParams.get("q");
-  const store = useSelector((state) => state.productskus);
   const [currentPage, setCurrentPage] = useState(1);
-  const [search, setSearch] = useState(q ?? null);
+
   const [sort, setSort] = useState("desc");
   const [sortColumn, setSortColumn] = useState("id");
+  const [query, setQuery] = useState(null);
+
+  const updateQuery = (key, value) => {
+    setQuery({ ...query, [key]: value });
+  };
 
   useEffect(() => {
-    dispatch(getAllData({ page: currentPage, q: search, sort, sortColumn }));
-  }, [currentPage, search, sort, sortColumn]);
+    dispatch(getAllData({ page: currentPage, sort, sortColumn, ...query }));
+  }, [currentPage, sort, sortColumn]);
+
+  useEffect(() => {
+    dispatch(getProductionCategoryOptions())
+    dispatch(getSearchableFieldsOptions())    
+  }, [])
+  
+
+  const onSearch = async (e) => {
+    setLoading(true);
+    e.preventDefault();
+    await dispatch(
+      getAllData({ page: currentPage, sort, sortColumn, ...query })
+    );
+    setLoading(false);
+  };
 
   const handleSort = (column, sortDirection) => {
     setSort(sortDirection);
@@ -36,32 +57,8 @@ const index = () => {
     return (
       <div className="invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75">
         <Row>
-          <Col xl="5"></Col>
-          <Col
-            xl="2"
-            className="d-flex align-items-end align-content-center flex-wrap"
-          >
-            <div>Search by SKU</div>            
-          </Col>
-          <Col
-            xl="3"
-            className="d-flex align-items-sm-start justify-content-xl-start justify-content-start flex-xl-nowrap flex-wrap flex-sm-row flex-column pe-xl-1 p-0 mt-xl-0 mt-1"
-          >
-            <div className="d-flex align-items-center table-header-actions">
-              <DebounceInput
-                className="form-control"
-                color="primary"
-                debounceTimeout={300}
-                autoFocus
-                placeholder="Search Here"
-                value={search}
-                onChange={(e) => {
-                  e.preventDefault();
-                  setSearch(e.target.value);
-                }}
-              />
-            </div>
-          </Col>
+          <Col xl="10"></Col>
+
           <Col
             xl="2"
             className="d-flex align-items-sm-center justify-content-xl-end justify-content-start flex-xl-nowrap flex-wrap flex-sm-row flex-column pe-xl-1 p-0 mt-xl-0 mt-1"
@@ -111,6 +108,42 @@ const index = () => {
   return (
     <div className="app-user-list">
       <Fragment>
+        <Card className="p-2">
+          <Row>
+            <Col sm="4">
+              <Input
+                placeholder="Search for"
+                value={query?.search_for}
+                onChange={(e) => updateQuery("search_for", e?.target?.value)}
+              />
+            </Col>
+            <Col sm="3">
+              <Select
+                placeholder="Search in"
+                options={store?.searchableFieldsOptions}
+                value={store?.searchableFieldsOptions?.find(
+                  (item) => item?.value == query?.search_in
+                )}
+                onChange={(e) => updateQuery("search_in", e?.value)}
+              />
+            </Col>
+            <Col sm="3">
+              <Select
+                placeholder="Search in production category"
+                options={store?.productionCategoryOptions}
+                value={store?.productionCategoryOptions?.find(
+                  (item) => item?.value == query?.product_production_category
+                )}
+                onChange={(e) => updateQuery("product_production_category", e?.value)}
+              />
+            </Col>
+            <Col sm="2" className="d-flex align-items-center flex-column">
+              <Button color="primary" onClick={onSearch} disabled={loading}>
+                {loading ? "Searching" : "Search"}
+              </Button>
+            </Col>
+          </Row>
+        </Card>
         <Card className="overflow-hidden">
           <div className="react-dataTable">
             <DataTable

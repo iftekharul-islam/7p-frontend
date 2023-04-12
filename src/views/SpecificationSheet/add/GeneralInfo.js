@@ -36,7 +36,7 @@ const GeneralInfo = () => {
     dispatch(setSpecificationData(data));
   };
   const onImageChange = (e) => {
-    dispatch(setSpecificationData({ [e?.target?.name]: e?.target?.files[0] }));
+    dispatch(setSpecificationData({ [e?.target?.name]: e?.target?.files }));
   };
 
   return (
@@ -91,6 +91,7 @@ const GeneralInfo = () => {
                       type="file"
                       name="product_images"
                       onChange={onImageChange}
+                      multiple
                     />
                   </Col>
                   <Col sm="8" className="mb-1"></Col>
