@@ -266,9 +266,9 @@ const index = () => {
                 placeholder="Select Sections"
                 isMulti
                 options={store?.sectionOptions}
-                value={store?.sectionOptions?.find(
-                  (item) => item?.value == params?.operator_fourth
-                )}
+                // value={store?.sectionOptions?.find(
+                //   (item) => item?.value == params?.operator_fourth
+                // )}
                 onChange={(e) =>
                   onChange({ section_ids: e?.map((item) => item?.value) })
                 }

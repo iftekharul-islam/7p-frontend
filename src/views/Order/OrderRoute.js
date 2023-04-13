@@ -2,32 +2,22 @@
 import { lazy } from "react";
 
 const OrderList = lazy(() => import("./list"));
-const OrderAdd = lazy(() => import("./add"));
-const OrderEdit = lazy(() => import("./edit"));
-const OrderView = lazy(() => import("./show"));
-const OrderReceive = lazy(() => import("./receive"));
+// const InventoryAdd = lazy(() => import("./add"));
+// const InventoryEdit = lazy(() => import("./edit"));
 
-const VendorRoute = [
+const OrderRoute = [
   {
     element: <OrderList />,
-    path: "/order",
+    path: "/customer-order",
   },
-  {
-    element: <OrderAdd />,
-    path: "/order-add",
-  },
-  {
-    element: <OrderEdit />,
-    path: "/order-edit/:id",
-  },
-  {
-    element: <OrderView />,
-    path: "/order-view/:id",
-  },
-  {
-    element: <OrderReceive />,
-    path: "/order-receive/:id",
-  },
+  // {
+  //   element: <InventoryAdd />,
+  //   path: "/customer-order-add",
+  // },
+  // {
+  //   element: <InventoryEdit />,
+  //   path: "/customer-order-edit/:id",
+  // }
 ];
 
-export default VendorRoute;
+export default OrderRoute;

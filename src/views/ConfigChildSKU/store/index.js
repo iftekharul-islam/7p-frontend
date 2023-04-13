@@ -3,10 +3,10 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import Api from "@src/http";
 
 export const getAllData = createAsyncThunk(
-  "Inventory/getAllData",
+  "ConfigChildSKU/getAllData",
   async (_, { getState }) => {
     const { params, searchParams } = getState()?.inventories;
-    const response = await Api.get("inventories", { params:{...params, ...searchParams} });
+    const response = await Api.get("config-child-sku", { params:{...params, ...searchParams} });
     return response.data;
   }
 );
@@ -103,18 +103,17 @@ export const UpdateVendor = createAsyncThunk(
   }
 );
 
-export const getAllStocks = createAsyncThunk(
-  "Vendor/getAllStocks",
-  async (data) => {
-    const response = await Api.get("stock-options", data);
+export const getBatchRouteOptions = createAsyncThunk(
+  "ConfigChildSKU/getBatchRouteOptions",
+  async () => {
+    const response = await Api.get(`batch-route-options`);
     return response.data;
   }
 );
-
-export const getAllVendors = createAsyncThunk(
-  "Inventory/getAllVendors",
-  async (data) => {
-    const response = await Api.get("vendor-options", data);
+export const getStockWithImageOptions = createAsyncThunk(
+  "ConfigChildSKU/getStockWithImageOptions",
+  async () => {
+    const response = await Api.get(`stock-image-options`);
     return response.data;
   }
 );
@@ -128,8 +127,8 @@ export const UpdateBinQty = createAsyncThunk(
   }
 );
 
-export const InventorySlice = createSlice({
-  name: "Inventory",
+export const ConfigChildSKUSlice = createSlice({
+  name: "ConfigChildSKU",
   initialState: {
     data: [],
     total: 1,
@@ -141,30 +140,33 @@ export const InventorySlice = createSlice({
 
     searchParams: {
       search_for_first: null,
-      operator_first: null,
+      contains_first: null,
       search_in_first: null,
       search_for_second: null,
-      operator_second: null,
+      ocontains_second: null,
       search_in_second: null,
       search_for_third: null,
-      operator_third: null,
+      contains_third: null,
       search_in_third: null,
       search_for_fourth: null,
-      operator_fourth: null,
+      contains_fourth: null,
       search_in_fourth: null,
 
-      vendor_id: null,
-      section_ids: null,
-      sort_by: null,
-      sorted: null,
+      active: null,
+      sku_status: null,
+      batch_route_id: null,
+      sure3d: null,
+
+      allow_mixing_update: null,
+      batch_route_id_update: null,
+      graphic_sku_update: null,
+      sure3d_update: null,
+      frame_size_update: null,
+      stock_select: null,
     },
 
     allData: [],
 
-    vendor: {},
-    stock: null,
-    vendorOptions: [],
-    sectionOptions: [],
     inOptions: [
       { label: "In", value: "in" },
       { label: "Not In", value: "not_in" },
@@ -172,48 +174,41 @@ export const InventorySlice = createSlice({
       { label: "Ends With", value: "ends_with" },
       { label: "Equals", value: "equals" },
       { label: "Not Equal", value: "not_equals" },
-      { label: "Less Than", value: "less_than" },
-      { label: "Greater Than", value: "greater_than" },
-      // { label: "Is Blank", value: "blank" },
-      // { label: "Is Not Blank", value: "not_blank" },
+      // { label: "Less Than", value: "less_than" },
+      // { label: "Greater Than", value: "greater_than" },
+      { label: "Is Blank", value: "blank" },
+      { label: "Is Not Blank", value: "not_blank" },
     ],
     searchOptions: [
-      { label: "Store Order#", value: "orders.order_id" },
-      { label: "5P#", value: "orders.id" },
-      { label: "Company", value: "company" },
-      { label: "Order Total", value: "total" },
-      { label: "Coupon", value: "coupon" },
-      { label: "Coupon Amount", value: "coupon_amount" },
-      { label: "Customer", value: "customer" },
-      { label: "Email", value: "email" },
-      { label: "State", value: "ship_state" },
-      { label: "Item Description", value: "item_desc" },
-      { label: "Shipping", value: "shipping_charge" },
+      { label: "Parent SKU", value: "parent_sku" },
+      { label: "Child SKU", value: "child_sku" },
+      { label: "ID Catalog", value: "id_catalog" },
+      { label: "Stock Number", value: "stock_number" },
+      { label: "Graphic SKU", value: "graphic_sku" },
+      { label: "Name", value: "name" },
     ],
-    statusOptions: [
-      { label: "Stock Number", value: "stock_no_unique" },
-      { label: "Need to Reorder", value: "until_reorder" },
-      { label: "Description", value: "stock_name_discription" },
-      { label: "Bin", value: "wh_bin" },
-      { label: "Quantity on Hand", value: "qty_on_hand" },
-      { label: "Total Sales", value: "total_sale" },
-      { label: "30 Days of Sales", value: "sales_30" },
-      { label: "90 Days of Sales", value: "sales_90" },
-      { label: "Last Cost", value: "last_cost" },
-      { label: "Total Value", value: "value" },
+    showOptions: [
+      { label: "Show All SKUs", value: "0" },
+      { label: "Show Active SKUs", value: "1" },
+      { label: "Active & Unbatched", value: "2" },
     ],
-    storeOptions: [
-      { label: "Stock Number", value: "stock_no_unique" },
-      { label: "Need to Reorder", value: "until_reorder" },
-      { label: "Description", value: "stock_name_discription" },
-      { label: "Bin", value: "wh_bin" },
-      { label: "Quantity on Hand", value: "qty_on_hand" },
-      { label: "Total Sales", value: "total_sale" },
-      { label: "30 Days of Sales", value: "sales_30" },
-      { label: "90 Days of Sales", value: "sales_90" },
-      { label: "Last Cost", value: "last_cost" },
-      { label: "Total Value", value: "value" },
+    skuOptions: [
+      { label: "No Stock Number", value: "SN" },
+      { label: "Route Unassigned", value: "RT" },
+      { label: "No Template", value: "TM" },
+      { label: "Template not Found", value: "TP" },
+      { label: "Settings not Found", value: "ST" },
     ],
+    batchRouteOptions: [],
+    typeOptions: [
+      { label: 'Not Sure3d', value: '0'},
+      { label: 'Sure3d', value: '1'}
+    ],
+    mixingOptions: [
+      { label: 'No', value: '0'},
+      { label: 'Yes', value: '1'}
+    ],
+    stockwithImageOptions: [],
   },
   extraReducers: (builder) => {
     builder
@@ -225,17 +220,14 @@ export const InventorySlice = createSlice({
       .addCase(getVendor.fulfilled, (state, action) => {
         state.vendor = action.payload;
       })
-      .addCase(getAllStocks.fulfilled, (state, action) => {
-        state.stockOptions = action.payload;
-      })
-      .addCase(getAllVendors.fulfilled, (state, action) => {
-        state.vendorOptions = action.payload;
-      })
-      .addCase(getAllSections.fulfilled, (state, action) => {
-        state.sectionOptions = action.payload;
-      })
       .addCase(getStock.fulfilled, (state, action) => {
         state.stock = action.payload;
+      })
+      .addCase(getBatchRouteOptions.fulfilled, (state, action) => {
+        state.batchRouteOptions = action.payload;
+      })      
+      .addCase(getStockWithImageOptions.fulfilled, (state, action) => {
+        state.stockwithImageOptions = action.payload;
       });
   },
   reducers: {
@@ -248,5 +240,5 @@ export const InventorySlice = createSlice({
   },
 });
 
-export const { setParams, setSearchParams } = InventorySlice.actions;
-export default InventorySlice.reducer;
+export const { setParams, setSearchParams } = ConfigChildSKUSlice.actions;
+export default ConfigChildSKUSlice.reducer;

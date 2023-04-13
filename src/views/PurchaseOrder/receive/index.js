@@ -1,4 +1,10 @@
+import Repeater from "@components/repeater";
+import "@styles/react/libs/flatpickr/flatpickr.scss";
 import { Fragment, useEffect, useState } from "react";
+import Flatpickr from "react-flatpickr";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import { SlideDown } from "react-slidedown";
 import {
   Button,
   Card,
@@ -12,13 +18,7 @@ import {
   Row,
   Spinner,
 } from "reactstrap";
-import { useDispatch, useSelector } from "react-redux";
-import { getOrder, ReceiveOrder } from "../store";
-import { useNavigate, useParams } from "react-router-dom";
-import Flatpickr from "react-flatpickr";
-import { SlideDown } from "react-slidedown";
-import Repeater from "@components/repeater";
-import "@styles/react/libs/flatpickr/flatpickr.scss";
+import { ReceiveOrder, getOrder } from "../store";
 
 const index = () => {
   const { id } = useParams();
@@ -70,7 +70,7 @@ const index = () => {
     setLoading(true);
     const res = await dispatch(ReceiveOrder(sku));
     if (res?.payload?.status) {
-      navigate("/order");
+      navigate("/purchase-order");
     } else {
       setErrors(res?.payload?.data?.errors);
     }
