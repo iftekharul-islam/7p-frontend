@@ -146,7 +146,7 @@ export default [
         title: "Email Template",
         icon: <Circle size={20} />,
         isAccess: check(["user"]),
-        navLink: "/email_template",
+        navLink: "/email-template",
       },
       {
         id: "send_bulk_emails",
