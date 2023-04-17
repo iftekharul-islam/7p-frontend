@@ -1,3 +1,4 @@
+import moment from "moment";
 import { useState } from "react";
 import {
   Copy,
@@ -10,7 +11,7 @@ import {
   Star,
   Trash2,
 } from "react-feather";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import {
   Button,
@@ -482,118 +483,175 @@ const OnHand = (row) => {
 
 export const columns = [
   {
-    name: "Image",
+    name: "Order/PO",
     sortable: false,
-    minWidth: "20px",
+    minWidth: "200px",
     sortField: "warehouse",
     selector: (row) => row.warehouse,
-    cell: (row) => <img src={row.warehouse} height="50" width="50" />,
-  },
-  {
-    name: "Inventory Item",
-    sortable: false,
-    minWidth: "320px",
-    sortField: "stock_no",
-    selector: (row) => row.stock_no_unique,
     cell: (row) => (
       <div>
         <div>
-          {row?.stock_no_unique} : {row?.stock_name_discription}
+          <Link to={`/order-view/${row.id}`}>{row?.short_order}</Link>
         </div>
-        <small>{row?.section?.section_name}</small>
-        {renderAction(row)}
-        {row?.qty_user && (
-          <small>
-            QTY updated by {row?.qty_user?.name} - {row?.qty_date}
-          </small>
-        )}
+        <div>
+          <Link to={`/order-view/${row.id}`}>{row?.purchase_order}</Link>
+        </div>
       </div>
     ),
   },
   {
-    name: "Bin",
+    name: "Date",
+    sortable: false,
+    minWidth: "280px",
+    sortField: "store",
+    selector: (row) => row.store,
+    cell: (row) => (
+      <div>
+        <div>
+          {row?.store
+            ? row?.store?.company > 0
+              ? row?.store?.company[0]
+              : row?.store?.store_name
+            : "STORE NOT FOUND"}
+        </div>
+        <div>{moment(row?.order_date).format("YYYY-MM-DD HH:MM:ss a")}</div>
+      </div>
+    ),
+  },
+  {
+    name: "Customer",
+    sortable: false,
+    minWidth: "240px",
+    sortField: "customer",
+    selector: (row) => row.customer,
+    cell: (row) => (
+      <div>
+        <div>{row?.customer ? row?.customer?.ship_full_name : "#"}</div>
+        <div>
+          {row?.customer
+            ? `${row?.customer?.ship_state},${row?.customer?.ship_country}`
+            : "#"}
+        </div>
+      </div>
+    ),
+  },
+  {
+    name: "Items",
+    sortable: false,
+    minWidth: "60px",
+    sortField: "item_count",
+    selector: (row) => row.item_count,
+    cell: (row) => <div>{row?.item_count ?? 0}</div>,
+  },
+  {
+    name: "Subtotal",
+    sortable: false,
+    minWidth: "120px",
+    sortField: "items",
+    selector: (row) => row.items,
+    cell: (row) => (
+      <div>
+        $
+        {parseFloat(
+          row?.items.reduce(function (prev, cur) {
+            return parseFloat(prev) + parseFloat(cur?.item_total_price);
+          }, 0)
+        ).toFixed(2)}
+      </div>
+    ),
+  },
+  {
+    name: "Discount",
+    sortable: false,
+    minWidth: "120px",
+    sortField: "promotion_value",
+    selector: (row) => row.promotion_value,
+    cell: (row) => (
+      <div>
+        $
+        {parseFloat(
+          parseFloat(row?.promotion_value ?? 0) +
+            parseFloat(row?.coupon_value ?? 0)
+        ).toFixed(2)}
+      </div>
+    ),
+  },
+  {
+    name: "Shipping",
+    sortable: false,
+    minWidth: "120px",
+    sortField: "shipping_charge",
+    selector: (row) => row.shipping_charge,
+    cell: (row) => (
+      <div>${parseFloat(row?.shipping_charge ?? 0).toFixed(2)}</div>
+    ),
+  },
+  {
+    name: "Tax",
+    sortable: false,
+    minWidth: "120px",
+    sortField: "tax_charge",
+    selector: (row) => row.tax_charge,
+    cell: (row) => <div>${parseFloat(row?.tax_charge ?? 0).toFixed(2)}</div>,
+  },
+  {
+    name: "Total",
+    sortable: false,
+    minWidth: "120px",
+    sortField: "item_count",
+    selector: (row) => row.item_count,
+    cell: (row) => {
+      const diff =
+        parseFloat(
+          row?.items.reduce(function (prev, cur) {
+            return parseFloat(prev) + parseFloat(cur?.item_total_price);
+          }, 0)
+        ) -
+        (parseFloat(row?.promotion_value ?? 0) +
+          parseFloat(row?.coupon_value ?? 0)) +
+        parseFloat(row?.shipping_charge ?? 0) +
+        parseFloat(row?.tax_charge ?? 0) -
+        parseFloat(row?.total ?? 0);
+      return (
+        <div className={diff != 0 && `text-danger`}>
+          ${parseFloat(row?.total ?? 0).toFixed(2)}
+        </div>
+      );
+    },
+  },
+  {
+    name: "Status",
     sortable: false,
     minWidth: "180px",
-    sortField: "wh_bin",
-    selector: (row) => row.wh_bin,
-    cell: BIN,
+    sortField: "order_status",
+    selector: (row) => row.order_status,
+    cell: (row) => {
+      const store = useSelector((state) => state.orders);
+      return (
+        <div>
+          <div>
+            {
+              store?.statusOptions?.find(
+                (item) => item?.value == row?.order_status
+              )?.label
+            }
+          </div>
+          <div>
+            {row?.carrier} {row?.method}
+          </div>
+        </div>
+      );
+    },
   },
   {
-    name: "On Hand",
+    name: "Coupon",
     sortable: false,
     minWidth: "180px",
-    sortField: "qty_on_hand",
-    selector: (row) => row.qty_on_hand,
-    cell: OnHand,
-  },
-  {
-    name: "Vendor",
-    sortable: false,
-    minWidth: "150px",
-    sortField: "vendor_name",
-    selector: (row) => row.vendor_name,
+    sortField: "item_count",
+    selector: (row) => row.item_count,
     cell: (row) => (
       <div>
-        {row?.last_product?.vendor && (
-          <div>{row?.last_product?.vendor?.vendor_name}</div>
-        )}
-        {row?.last_product?.vendor && (
-          <div>Lead Time: {row?.last_product?.lead_time_days}</div>
-        )}
-        <div>Purchase: {row?.total_purchase}</div>
-      </div>
-    ),
-  },
-  {
-    name: "Current",
-    sortable: false,
-    minWidth: "120px",
-    sortField: "qty_alloc",
-    selector: (row) => row.qty_alloc,
-    cell: (row) => (
-      <div>
-        <div>Allocated: {row?.qty_alloc}</div>
-        <div>Expected: {row?.qty_exp}</div>
-      </div>
-    ),
-  },
-  {
-    name: "Ordering",
-    sortable: false,
-    minWidth: "120px",
-    sortField: "qty_av",
-    selector: (row) => row.qty_av,
-    cell: (row) => (
-      <div>
-        <div>Available: {row?.qty_av}</div>
-        <div>Min. Qty: {row?.min_reorder}</div>
-      </div>
-    ),
-  },
-  {
-    name: "Value",
-    sortable: false,
-    minWidth: "120px",
-    sortField: "last_cost",
-    selector: (row) => row.last_cost,
-    cell: (row) => (
-      <div>
-        <div>Cost: {row?.last_cost}</div>
-        <div>Value: ${row?.value}</div>
-      </div>
-    ),
-  },
-  {
-    name: "Sales History",
-    sortable: false,
-    minWidth: "120px",
-    sortField: "sales_30",
-    selector: (row) => row.sales_30,
-    cell: (row) => (
-      <div>
-        <div>30 days: {row?.sales_30}</div>
-        <div>90 days: {row?.sales_90}</div>
-        <div>Total: {row?.total_sale}</div>
+        {row?.promotion_id} {row?.coupon_id}
       </div>
     ),
   },

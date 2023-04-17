@@ -3,10 +3,12 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import Api from "@src/http";
 
 export const getAllData = createAsyncThunk(
-  "Inventory/getAllData",
+  "Orders/getAllData",
   async (_, { getState }) => {
-    const { params, searchParams } = getState()?.inventories;
-    const response = await Api.get("inventories", { params:{...params, ...searchParams} });
+    const { params, searchParams } = getState()?.orders;
+    const response = await Api.get("orders", {
+      params: { ...params, ...searchParams },
+    });
     return response.data;
   }
 );
@@ -44,12 +46,10 @@ export const CalculateOrdering = createAsyncThunk(
   }
 );
 
-
 export const getStock = createAsyncThunk("Inventory/getStock", async (id) => {
   const response = await Api.get(`inventories/${id}`);
   return response.data;
 });
-
 
 export const getAllSections = createAsyncThunk(
   "Inventory/getAllSections",
@@ -128,12 +128,40 @@ export const UpdateBinQty = createAsyncThunk(
   }
 );
 
-export const InventorySlice = createSlice({
-  name: "Inventory",
+export const getOperatorOptions = createAsyncThunk(
+  "Order/getOperatorOptions",
+  async () => {
+    const response = await Api.get(`order-operator-options`);
+    return response.data;
+  }
+);
+export const getSearchOptions = createAsyncThunk(
+  "Order/getSearchOptions",
+  async () => {
+    const response = await Api.get(`order-search-options`);
+    return response.data;
+  }
+);
+export const getStatusOptions = createAsyncThunk(
+  "Order/getStatusOptions",
+  async () => {
+    const response = await Api.get(`order-status-options`);
+    return response.data;
+  }
+);
+export const getStoreOptions = createAsyncThunk(
+  "Order/getStoreOptions",
+  async () => {
+    const response = await Api.get(`order-store-options`);
+    return response.data;
+  }
+);
+
+export const OrdersSlice = createSlice({
+  name: "Orders",
   initialState: {
     data: [],
-    total: 1,
-    cost: null,
+    total: {},
 
     params: {
       page: 1,
@@ -143,85 +171,50 @@ export const InventorySlice = createSlice({
       search_for_first: null,
       operator_first: null,
       search_in_first: null,
+
       search_for_second: null,
       operator_second: null,
       search_in_second: null,
-      search_for_third: null,
-      operator_third: null,
-      search_in_third: null,
-      search_for_fourth: null,
-      operator_fourth: null,
-      search_in_fourth: null,
 
-      vendor_id: null,
-      section_ids: null,
-      sort_by: null,
-      sorted: null,
+      start_date: null,
+      end_date: null,
+
+      status: null,
+      store: null,
     },
 
     allData: [],
 
     vendor: {},
-    stock: null,
-    vendorOptions: [],
-    sectionOptions: [],
-    inOptions: [
-      { label: "In", value: "in" },
-      { label: "Not In", value: "not_in" },
-      { label: "Starts With", value: "starts_with" },
-      { label: "Ends With", value: "ends_with" },
-      { label: "Equals", value: "equals" },
-      { label: "Not Equal", value: "not_equals" },
-      { label: "Less Than", value: "less_than" },
-      { label: "Greater Than", value: "greater_than" },
-      // { label: "Is Blank", value: "blank" },
-      // { label: "Is Not Blank", value: "not_blank" },
-    ],
-    searchOptions: [
-      { label: "Store Order#", value: "orders.order_id" },
-      { label: "5P#", value: "orders.id" },
-      { label: "Company", value: "company" },
-      { label: "Order Total", value: "total" },
-      { label: "Coupon", value: "coupon" },
-      { label: "Coupon Amount", value: "coupon_amount" },
-      { label: "Customer", value: "customer" },
-      { label: "Email", value: "email" },
-      { label: "State", value: "ship_state" },
-      { label: "Item Description", value: "item_desc" },
-      { label: "Shipping", value: "shipping_charge" },
-    ],
-    statusOptions: [
-      { label: "Stock Number", value: "stock_no_unique" },
-      { label: "Need to Reorder", value: "until_reorder" },
-      { label: "Description", value: "stock_name_discription" },
-      { label: "Bin", value: "wh_bin" },
-      { label: "Quantity on Hand", value: "qty_on_hand" },
-      { label: "Total Sales", value: "total_sale" },
-      { label: "30 Days of Sales", value: "sales_30" },
-      { label: "90 Days of Sales", value: "sales_90" },
-      { label: "Last Cost", value: "last_cost" },
-      { label: "Total Value", value: "value" },
-    ],
-    storeOptions: [
-      { label: "Stock Number", value: "stock_no_unique" },
-      { label: "Need to Reorder", value: "until_reorder" },
-      { label: "Description", value: "stock_name_discription" },
-      { label: "Bin", value: "wh_bin" },
-      { label: "Quantity on Hand", value: "qty_on_hand" },
-      { label: "Total Sales", value: "total_sale" },
-      { label: "30 Days of Sales", value: "sales_30" },
-      { label: "90 Days of Sales", value: "sales_90" },
-      { label: "Last Cost", value: "last_cost" },
-      { label: "Total Value", value: "value" },
-    ],
+
+    operatorOptions: [],
+    searchOptions: [],
+    statusOptions: [],
+    storeOptions: [],
   },
   extraReducers: (builder) => {
     builder
       .addCase(getAllData.fulfilled, (state, action) => {
-        state.data = action.payload?.inventories?.data;
-        state.cost = action.payload?.total_cost;
-        state.total = action.payload?.inventories?.total;
+        state.data = action.payload?.order?.data;
+        state.total = {
+          ...action.payload?.total,
+          total: action.payload?.order?.total,
+        };
       })
+      .addCase(getOperatorOptions.fulfilled, (state, action) => {
+        state.operatorOptions = action.payload;
+      })
+      .addCase(getSearchOptions.fulfilled, (state, action) => {
+        state.searchOptions = action.payload;
+      })
+      .addCase(getStatusOptions.fulfilled, (state, action) => {
+        state.statusOptions = action.payload;
+      })
+      .addCase(getStoreOptions.fulfilled, (state, action) => {
+        state.storeOptions = action.payload;
+      })
+      
+      
       .addCase(getVendor.fulfilled, (state, action) => {
         state.vendor = action.payload;
       })
@@ -248,5 +241,5 @@ export const InventorySlice = createSlice({
   },
 });
 
-export const { setParams, setSearchParams } = InventorySlice.actions;
-export default InventorySlice.reducer;
+export const { setParams, setSearchParams } = OrdersSlice.actions;
+export default OrdersSlice.reducer;

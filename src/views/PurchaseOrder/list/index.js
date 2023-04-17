@@ -17,7 +17,7 @@ const index = () => {
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams()
   const q = searchParams.get("q")
-  const store = useSelector((state) => state.orders);
+  const store = useSelector((state) => state.purchaseOrders);
   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState(q ?? null);
   const [sort, setSort] = useState("desc");

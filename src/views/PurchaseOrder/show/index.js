@@ -1,4 +1,6 @@
 import { Fragment, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import {
   Card,
   CardBody,
@@ -8,9 +10,7 @@ import {
   Form,
   Row,
 } from "reactstrap";
-import { useDispatch, useSelector } from "react-redux";
 import { getOrder } from "../store";
-import { useParams } from "react-router-dom";
 import ProductTable from "./ProductTable";
 
 const index = () => {
@@ -18,7 +18,7 @@ const index = () => {
   const [data, setData] = useState({ grand_total: 0 });
   const [sku, setSku] = useState([{}]);
   const dispatch = useDispatch();
-  const store = useSelector((state) => state.orders);
+  const store = useSelector((state) => state.purchaseOrders);
 
   useEffect(() => {
     dispatch(getOrder(id));

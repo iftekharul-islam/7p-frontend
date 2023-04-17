@@ -16,7 +16,7 @@ import { DeleteOrder } from "../store";
 
 const renderAction = (row) => {
   const dispatch = useDispatch();
-  const store = useSelector((state) => state.orders);
+  const store = useSelector((state) => state.purchaseOrders);
   const [deleteItem, setDeleteItem] = useState(null);
   const [deleteShow, setDeleteShow] = useState(false);
 

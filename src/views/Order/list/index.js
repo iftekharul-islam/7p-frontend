@@ -3,39 +3,43 @@ import "@styles/react/libs/react-select/_react-select.scss";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 import { Fragment, useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
-import { ChevronDown, PlusCircle } from "react-feather";
+import { ChevronDown } from "react-feather";
 import Flatpickr from "react-flatpickr";
 import ReactPaginate from "react-paginate";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import { Button, Card, Col, Input, Row } from "reactstrap";
 import {
-  getAllSections,
-  getAllVendors,
+  getAllData,
+  getOperatorOptions,
+  getSearchOptions,
+  getStatusOptions,
+  getStoreOptions,
   setParams,
   setSearchParams
-} from "../store/index";
+} from "./../store";
 import { columns } from "./columns";
 
 const index = () => {
   const dispatch = useDispatch();
-  const store = useSelector((state) => state.customerOrders);
+  const store = useSelector((state) => state.orders);
   const [loading, setLoading] = useState(false);
   const params = store?.searchParams;
 
   useEffect(() => {
-    // if (store?.params) dispatch(getAllData());
+    if (store?.params) dispatch(getAllData());
   }, [store?.params]);
 
   useEffect(() => {
-    dispatch(getAllVendors());
-    dispatch(getAllSections());
+    dispatch(getOperatorOptions());
+    dispatch(getSearchOptions());
+    dispatch(getStatusOptions());
+    dispatch(getStoreOptions());
   }, []);
 
   const onSearch = async () => {
     setLoading(true);
-    // await dispatch(getAllData());
+    await dispatch(getAllData());
     setLoading(false);
   };
 
@@ -44,30 +48,46 @@ const index = () => {
   };
 
   const CustomHeader = () => {
-    const navigate = useNavigate();
     return (
       <div className="invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75">
         <Row>
-          <Col xl="10">
-            {store?.total} items found costing: $
-            {store?.cost?.cost?.toFixed(2) ?? 0}
+          <Col sm="2" className="d-flex align-items-center border-primary">
+            <div>Total Orders: {parseInt(store?.total?.total ?? 0)}</div>
           </Col>
-          <Col
-            xl="2"
-            className="d-flex align-items-sm-center justify-content-xl-end justify-content-start flex-xl-nowrap flex-wrap flex-sm-row flex-column pe-xl-1 p-0 mt-xl-0 mt-1"
-          >
-            <div className="d-flex align-items-center table-header-actions">
-              <Button
-                className="add-new-user"
-                color="primary"
-                onClick={(e) => {
-                  e.preventDefault();
-                  navigate("/inventory-add");
-                }}
-              >
-                <PlusCircle size={14} /> Stock
-              </Button>
+          <Col sm="2" className="d-flex align-items-center border-primary">
+            <div>
+              Total Amount: ${parseFloat(store?.total?.money ?? 0).toFixed(2)}
             </div>
+          </Col>
+          <Col sm="2" className="d-flex align-items-center border-primary">
+            <div>
+              Average Amount: $
+              {parseFloat(
+                store?.total?.money
+                  ? store?.total?.money / store?.total?.total
+                  : 0
+              ).toFixed(2)}
+            </div>
+          </Col>
+          <Col sm="2" className="d-flex align-items-center border-primary">
+            <div>
+              Tax Total: ${parseFloat(store?.total?.tax ?? 0).toFixed(2)}
+            </div>
+          </Col>
+          <Col sm="2" className="d-flex align-items-center border-primary">
+            <div>
+              Shipping Total: $
+              {parseFloat(store?.total?.shipping ?? 0).toFixed(2)}
+            </div>
+          </Col>
+          <Col sm="2" className="d-flex justify-content-center">
+            <Button
+              color="primary"
+              onClick={(e) => console.log("A")}
+              disabled={loading}
+            >
+              {loading ? "Searching" : "Create CSV Export#"}
+            </Button>
           </Col>
         </Row>
       </div>
@@ -117,8 +137,8 @@ const index = () => {
             <Col sm="2">
               <Select
                 placeholder="Search in"
-                options={store?.inOptions}
-                value={store?.inOptions?.find(
+                options={store?.operatorOptions}
+                value={store?.operatorOptions?.find(
                   (item) => item?.value == params?.operator_first
                 )}
                 onChange={(e) => onChange({ operator_first: e?.value })}
@@ -146,8 +166,8 @@ const index = () => {
             <Col sm="2">
               <Select
                 placeholder="Search in"
-                options={store?.inOptions}
-                value={store?.inOptions?.find(
+                options={store?.operatorOptions}
+                value={store?.operatorOptions?.find(
                   (item) => item?.value == params?.operator_second
                 )}
                 onChange={(e) => onChange({ operator_second: e?.value })}
@@ -185,13 +205,12 @@ const index = () => {
                 onChange={(date) => onChange({ end_date: date[0] })}
               />
             </Col>
-            <Col sm="1"></Col>
-            <Col sm="2">
+            <Col sm="3">
               <Select
                 placeholder="Filter By Status"
                 isMulti
-                options={store?.sortOptions}
-                value={store?.searchOptions?.filter(
+                options={store?.statusOptions}
+                value={store?.statusOptions?.find(
                   (item) => item?.value == params?.status
                 )}
                 onChange={(data) =>
@@ -199,12 +218,12 @@ const index = () => {
                 }
               />
             </Col>
-            <Col sm="2">
+            <Col sm="3">
               <Select
                 placeholder="Filter By Store"
                 isMulti
-                options={store?.directionOptions}
-                value={store?.directionOptions?.find(
+                options={store?.storeOptions}
+                value={store?.storeOptions?.find(
                   (item) => item?.value == params?.store
                 )}
                 onChange={(data) =>
@@ -219,6 +238,7 @@ const index = () => {
             </Col>
           </Row>
         </Card>
+
         <Card className="overflow-hidden">
           <div className="react-dataTable">
             <DataTable
@@ -229,10 +249,6 @@ const index = () => {
               responsive
               paginationServer
               columns={columns}
-              customStyles={{
-                cells: { style: { marginTop: 25, marginBottom: 25 } },
-              }}
-              //   onSort={handleSort}
               sortIcon={<ChevronDown />}
               className="react-dataTable"
               paginationComponent={CustomPagination}

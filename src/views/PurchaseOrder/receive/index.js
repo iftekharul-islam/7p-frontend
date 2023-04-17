@@ -28,7 +28,7 @@ const index = () => {
   const [errors, setErrors] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const store = useSelector((state) => state.orders);
+  const store = useSelector((state) => state.purchaseOrders);
 
   const onSkuChange = (name, value, i) => {
     const updateData = sku?.map((item, index) => {

@@ -4,13 +4,13 @@ import configchildskus from "@src/views/ConfigChildSKU/store";
 import emailTemplate from "@src/views/EmailTemplate/store";
 import inventories from "@src/views/Inventory/store";
 import manufactures from "@src/views/Manufactures/store";
-import customerOrders from "@src/views/Order/store";
+import orders from "@src/views/Order/store";
 import parameters from "@src/views/Parameters/store";
 import permissions from "@src/views/Permission/store";
 import products from "@src/views/Product/store";
 import productskus from "@src/views/ProductSKU/store";
 import categories from "@src/views/ProductionCategories/store";
-import orders from "@src/views/PurchaseOrder/store";
+import purchaseOrders from "@src/views/PurchaseOrder/store";
 import reasons from "@src/views/RejectionReason/store";
 import roles from "@src/views/Role/store";
 import routes from "@src/views/Route/store";
@@ -33,7 +33,7 @@ const rootReducer = {
   permissions,
   products,
   vendors,
-  orders,
+  purchaseOrders,
   inventories,
   adjustments,
   sections,
@@ -47,7 +47,7 @@ const rootReducer = {
   productskus,
   productspecifications,
   configchildskus,
-  customerOrders,
+  orders,
   emailTemplate,
   bulkEmails,
 };

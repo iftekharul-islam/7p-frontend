@@ -2,24 +2,24 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import Api from "@src/http";
 
-export const getAllData = createAsyncThunk("Order/getAllData", async (data) => {
+export const getAllData = createAsyncThunk("PurchaseOrders/getAllData", async (data) => {
   const response = await Api.get("purchased-orders", { params: data });
   return response.data;
 });
 
-export const getVendor = createAsyncThunk("Order/getVendor", async (id) => {
+export const getVendor = createAsyncThunk("PurchaseOrders/getVendor", async (id) => {
   const response = await Api.get(`vendors/${id}`);
   return response.data;
 });
 
-export const getOrder = createAsyncThunk("Order/getOrder", async (id) => {
+export const getOrder = createAsyncThunk("PurchaseOrders/getOrder", async (id) => {
   const response = await Api.get(`purchased-orders/${id}`);
   return response.data;
 });
 
 
 export const AddPurchaseOrder = createAsyncThunk(
-  "Order/AddPurchaseOrder",
+  "PurchaseOrders/AddPurchaseOrder",
   async (data, { dispatch }) => {
     const response = await Api.post("purchased-orders", data);
     if (response?.status == 201) {
@@ -31,7 +31,7 @@ export const AddPurchaseOrder = createAsyncThunk(
 );
 
 export const UpdatePurchaseOrder = createAsyncThunk(
-  "Order/UpdatePurchaseOrder",
+  "PurchaseOrders/UpdatePurchaseOrder",
   async (data, { dispatch }) => {
     const response = await Api.post(`orders/${data?.id}`, data?.data);
     if (response?.status == 201) {
@@ -43,7 +43,7 @@ export const UpdatePurchaseOrder = createAsyncThunk(
 );
 
 export const DeleteOrder = createAsyncThunk(
-  "Order/DeleteOrder",
+  "PurchaseOrders/DeleteOrder",
   async (id, { dispatch }) => {
     const response = await Api.post(`purchased-orders-orders/${id}`);
     if (response?.status == 201) {
@@ -56,7 +56,7 @@ export const DeleteOrder = createAsyncThunk(
 );
 
 export const ReceiveOrder = createAsyncThunk(
-  "Order/ReceiveOrder",
+  "PurchaseOrders/ReceiveOrder",
   async (data) => {
     const response = await Api.post(`receive-purchased-orders`, data);
     if (response?.status == 201) {
@@ -68,22 +68,22 @@ export const ReceiveOrder = createAsyncThunk(
 );
 
 export const getAllVendors = createAsyncThunk(
-  "Order/getAllVendors",
+  "PurchaseOrders/getAllVendors",
   async (data) => {
     const response = await Api.get("vendor-options", data);
     return response.data;
   }
 );
 export const getAllProductByVendor = createAsyncThunk(
-  "Order/getAllProductByVendor",
+  "PurchaseOrders/getAllProductByVendor",
   async (id) => {
     const response = await Api.get(`product-options/${id}`);
     return response.data;
   }
 );
 
-export const OrderSlice = createSlice({
-  name: "Order",
+export const PurchaseOrdersSlice = createSlice({
+  name: "PurchaseOrders",
   initialState: {
     data: [],
     total: 1,
@@ -124,5 +124,5 @@ export const OrderSlice = createSlice({
     }
   },
 });
-export const { updateParams } = OrderSlice.actions
-export default OrderSlice.reducer;
+export const { updateParams } = PurchaseOrdersSlice.actions
+export default PurchaseOrdersSlice.reducer;
