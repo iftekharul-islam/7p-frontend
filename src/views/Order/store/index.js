@@ -161,7 +161,8 @@ export const OrdersSlice = createSlice({
   name: "Orders",
   initialState: {
     data: [],
-    total: {},
+    total: 1,
+    totalData: {},
 
     params: {
       page: 1,
@@ -196,7 +197,8 @@ export const OrdersSlice = createSlice({
     builder
       .addCase(getAllData.fulfilled, (state, action) => {
         state.data = action.payload?.order?.data;
-        state.total = {
+        state.total = action.payload?.order?.total;
+        state.totalData = {
           ...action.payload?.total,
           total: action.payload?.order?.total,
         };

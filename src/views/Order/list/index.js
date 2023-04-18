@@ -52,38 +52,37 @@ const index = () => {
       <div className="invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75">
         <Row>
           <Col sm="2" className="d-flex align-items-center border-primary">
-            <div>Total Orders: {parseInt(store?.total?.total ?? 0)}</div>
+            <div>Total Orders: {parseInt(store?.totalData?.total ?? 0)}</div>
           </Col>
           <Col sm="2" className="d-flex align-items-center border-primary">
             <div>
-              Total Amount: ${parseFloat(store?.total?.money ?? 0).toFixed(2)}
+              Total Amount: ${parseFloat(store?.totalData?.money ?? 0).toFixed(2)}
             </div>
           </Col>
           <Col sm="2" className="d-flex align-items-center border-primary">
             <div>
               Average Amount: $
               {parseFloat(
-                store?.total?.money
-                  ? store?.total?.money / store?.total?.total
+                store?.totalData?.money
+                  ? store?.totalData?.money / store?.totalData?.total
                   : 0
               ).toFixed(2)}
             </div>
           </Col>
           <Col sm="2" className="d-flex align-items-center border-primary">
             <div>
-              Tax Total: ${parseFloat(store?.total?.tax ?? 0).toFixed(2)}
+              Tax Total: ${parseFloat(store?.totalData?.tax ?? 0).toFixed(2)}
             </div>
           </Col>
           <Col sm="2" className="d-flex align-items-center border-primary">
             <div>
               Shipping Total: $
-              {parseFloat(store?.total?.shipping ?? 0).toFixed(2)}
+              {parseFloat(store?.totalData?.shipping ?? 0).toFixed(2)}
             </div>
           </Col>
           <Col sm="2" className="d-flex justify-content-center">
             <Button
               color="primary"
-              onClick={(e) => console.log("A")}
               disabled={loading}
             >
               {loading ? "Searching" : "Create CSV Export#"}

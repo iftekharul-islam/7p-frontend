@@ -160,7 +160,7 @@ export default [
         title: <b>Manual Orders</b>,
         icon: <Circle size={20} />,
         isAccess: check(["user"]),
-        navLink: "/manual-orders",
+        navLink: "/manual-orders-add",
       },
     ],
   },

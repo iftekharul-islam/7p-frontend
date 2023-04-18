@@ -16,6 +16,7 @@ import AdjustmentRoute from "../../views/Adjustment/AdjustmentRoute";
 import ConfigChildSKURoute from "../../views/ConfigChildSKU/ConfigChildSKURoute";
 import EmailTemplateRoute from "../../views/EmailTemplate/EmailTemplateRoute";
 import InventoryRoute from "../../views/Inventory/InventoryRoute";
+import ManualOrderRoute from "../../views/ManualOrder/ManualOrderRoute";
 import ManufacturesRoute from "../../views/Manufactures/ManufacturesRoute";
 import OrderRoute from "../../views/Order/OrderRoute";
 import ParametersRoute from "../../views/Parameters/ParametersRoute";
@@ -79,6 +80,7 @@ const Routes = [
   ...OrderRoute,
   ...EmailTemplateRoute,
   ...SendBulkEmailRoute,
+  ...ManualOrderRoute,
   {
     path: "/",
     index: true,
