@@ -13,6 +13,7 @@ const Address = (data, onChange, errors) => {
   useEffect(() => {
     dispatch(getShipOptions());
   }, []);
+  
   return (
     <Fragment>
       <Row className="pt-2">

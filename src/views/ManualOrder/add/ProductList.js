@@ -1,14 +1,13 @@
 import "@styles/react/libs/flatpickr/flatpickr.scss";
 import "@styles/react/libs/react-select/_react-select.scss";
 import { selectThemeColors } from "@utils";
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import AsyncSelect from "react-select/async";
 import { Col, Input, Row } from "reactstrap";
 import { getProductOptions } from "../store";
 
 const ProductList = (data, onChange, errors) => {
-  console.log("🚀 ~ file: ProductList.js:11 ~ ProductList ~ data:", data)
   const dispatch = useDispatch();
 
   const loadOptions = async (inputValue) => {
@@ -39,6 +38,14 @@ const ProductList = (data, onChange, errors) => {
     array[index][e.target?.name] = e.target?.value;
     onChange({ target: { name: "items", value: array } });
   };
+
+  useEffect(() => { 
+    // const array = [...(data?.items ?? [])];
+    // array?.map((item, index) => {
+    //   item?.price = parseFloat(item?.price).toFixed(2);
+    //   item?.quantity = parseInt(item?.quantity);
+    // });
+  }, [data?.items]);
 
   return (
     <Fragment>
