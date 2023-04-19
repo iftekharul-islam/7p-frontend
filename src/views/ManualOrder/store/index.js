@@ -2,6 +2,18 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import Api from "@src/http";
 
+export const AddOrder = createAsyncThunk(
+  "ManualOrder/AddOrder",
+  async (data) => {
+    const response = await Api.post("orders", data);
+    if (response?.status == 201) {
+      return { status: true };
+    } else {
+      return { status: false, data: response?.data };
+    }
+  }
+);
+
 export const getStoreOptions = createAsyncThunk(
   "ManualOrder/getStoreOptions",
   async () => {

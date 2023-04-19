@@ -4,7 +4,7 @@ import { selectThemeColors } from "@utils";
 import { Fragment, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import AsyncSelect from "react-select/async";
-import { Col, Input, Row } from "reactstrap";
+import { Button, Col, Input, Row } from "reactstrap";
 import { getProductOptions } from "../store";
 
 const ProductList = (data, onChange, errors) => {
@@ -25,7 +25,7 @@ const ProductList = (data, onChange, errors) => {
     array?.push({
       sku: newValue?.data?.product_model,
       id_catalog: newValue?.data?.id_catalog,
-      desc: newValue?.data?.product_name,
+      description: newValue?.data?.product_name,
       image: newValue?.data?.product_thumb,
       price: newValue?.data?.product_price,
       quantity: 1,
@@ -39,14 +39,23 @@ const ProductList = (data, onChange, errors) => {
     onChange({ target: { name: "items", value: array } });
   };
 
-  useEffect(() => { 
-    // const array = [...(data?.items ?? [])];
-    // array?.map((item, index) => {
-    //   item?.price = parseFloat(item?.price).toFixed(2);
-    //   item?.quantity = parseInt(item?.quantity);
-    // });
+  useEffect(() => {
+    const subtotal = parseFloat(
+      data?.items.reduce(function (prev, cur) {
+        return (
+          parseFloat(prev) + parseFloat(cur?.price) * parseFloat(cur?.quantity)
+        );
+      }, 0)
+    ).toFixed(2);
+    onChange({ target: { name: "subtotal", value: subtotal } });
   }, [data?.items]);
 
+  const removeItem = (index) => {
+    const array = [...(data?.items ?? [])];
+    const filteredItems = array.slice(0, index).concat(array.slice(index+1, array?.length))
+     onChange({ target: { name: "items", value: filteredItems } });
+  };
+  
   return (
     <Fragment>
       <Row className="rounded bg-secondary p-1 my-1 text-uppercase">
@@ -66,9 +75,19 @@ const ProductList = (data, onChange, errors) => {
             </Col>
             <Col sm="3">
               <div>{item?.sku}</div>
-              <div>{item?.desc}</div>
+              <div>{item?.description}</div>
             </Col>
-            <Col sm="4"></Col>
+            <Col sm="4">
+              <Input
+                type="text"
+                Rows="1"
+                name="options"
+                id="options"
+                placeholder="Click Here"
+                value={item?.options}
+                onChange={(e) => onItemChange(e, index)}
+              />
+            </Col>
             <Col sm="1">
               <Input
                 type="number"
@@ -100,123 +119,16 @@ const ProductList = (data, onChange, errors) => {
               />
             </Col>
             <Col sm="1">
-              <i
-                className="fa fa-trash"
-                onClick={(e) => onItemChange(e, index)}
-              />
+              <Button
+                color="danger"
+                onClick={(e) => {
+                  e.preventDefault();
+                  removeItem(index);
+                }}
+              >Delete</Button>         
             </Col>
             <hr />
           </Row>
-
-          // <Row className="pt-1">
-          //   <Col sm="1" className="d-flex align-items-center">
-          //     <div className="form-check form-check-success">
-          //       <Input
-          //         type="checkbox"
-          //         name="is_active"
-          //         checked={parseInt(item?.line_item_field)}
-          //         onChange={(e) =>
-          //           onOptionChange(
-          //             "line_item_field",
-          //             e?.target?.checked ? "1" : "0",
-          //             index
-          //           )
-          //         }
-          //       />
-          //     </div>
-          //   </Col>
-          //   <Col sm="2">
-          //     <Input
-          //       type="text"
-          //       name="option_name"
-          //       id="option_name"
-          //       placeholder="Option Name"
-          //       value={item?.option_name}
-          //       onChange={(e) =>
-          //         onOptionChange("option_name", e?.target?.value, index)
-          //       }
-          //     />
-          //   </Col>
-          //   <Col sm="2">
-          //     <Select
-          //       className="react-select"
-          //       classNamePrefix="select"
-          //       theme={selectThemeColors}
-          //       placeholder="Select Category"
-          //       options={catOption}
-          //       value={catOption?.find(
-          //         (itm) => itm?.value === item?.option_category
-          //       )}
-          //       onChange={(e) =>
-          //         onOptionChange("option_category", e?.value, index)
-          //       }
-          //     />
-          //   </Col>
-          //   <Col sm="2">
-          //     <Input
-          //       type="text"
-          //       name="value"
-          //       id="value"
-          //       placeholder="Value"
-          //       value={item?.value}
-          //       onChange={(e) =>
-          //         onOptionChange("value", e?.target?.value, index)
-          //       }
-          //     />
-          //   </Col>
-          //   <Col sm="2">
-          //     <Input
-          //       type="text"
-          //       name="width"
-          //       id="width"
-          //       placeholder="Width"
-          //       value={item?.width}
-          //       onChange={(e) =>
-          //         onOptionChange("width", e?.target?.value, index)
-          //       }
-          //     />
-          //   </Col>
-          //   <Col sm="2">
-          //     <Select
-          //       className="react-select"
-          //       classNamePrefix="select"
-          //       theme={selectThemeColors}
-          //       placeholder="Select Format"
-          //       options={formatOption}
-          //       value={formatOption?.find((itm) => itm?.value === item?.format)}
-          //       onChange={(e) => onOptionChange("format", e?.value, index)}
-          //     />
-          //   </Col>
-          //   <Col sm="1" className="d-flex align-items-center">
-          //     <Link
-          //       className="text-truncate text-capitalize align-middle"
-          //       onClick={(e) => {
-          //         e.preventDefault();
-          //         positionUp(index);
-          //       }}
-          //     >
-          //       <ArrowUp size={18} className={`text-primary me-50`} />
-          //     </Link>
-          //     <Link
-          //       className="text-truncate text-capitalize align-middle"
-          //       onClick={(e) => {
-          //         e.preventDefault();
-          //         positionDown(index);
-          //       }}
-          //     >
-          //       <ArrowDown size={18} className={`text-primary me-50`} />
-          //     </Link>
-          //     <Link
-          //       className="text-truncate text-capitalize align-middle"
-          //       onClick={(e) => {
-          //         e.preventDefault();
-          //         removeItem(index);
-          //       }}
-          //     >
-          //       <Trash2 size={18} className={`text-danger me-50`} />
-          //     </Link>
-          //   </Col>
-          // </Row>
         );
       })}
       <Row className="pt-2">
