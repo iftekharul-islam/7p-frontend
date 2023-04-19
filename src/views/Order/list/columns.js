@@ -1,229 +1,179 @@
 import moment from "moment";
-import { useState } from "react";
-import { CheckCircle, Edit, Eye, Printer, Send, Trash2 } from "react-feather";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import {
-  Button,
-  Col,
-  Modal,
-  ModalBody,
-  ModalHeader,
-  Row,
-  UncontrolledTooltip,
-} from "reactstrap";
-import { DeleteOrder } from "../store";
-
-const renderAction = (row) => {
-  const dispatch = useDispatch();
-  const store = useSelector((state) => state.orders);
-  const [deleteItem, setDeleteItem] = useState(null);
-  const [deleteShow, setDeleteShow] = useState(false);
-
-  const onSubmitDelete = (e) => {
-    e.preventDefault();
-    dispatch(DeleteOrder(deleteItem.id));
-    setDeleteShow(!deleteShow);
-  };
-
-  return (
-    <div className="column-action">
-      {store?.params?.status == 1 ? (
-        <>
-          <Link
-            className="text-truncate text-capitalize align-middle"
-            to={`/order-view/${row.id}`}
-            id={`view-${row.id}`}
-          >
-            <Eye size={18} className={`text-primary me-50`} />
-          </Link>
-          <Link
-            className="text-truncate text-capitalize align-middle"
-            to={`/order-edit/${row.id}`}
-            id={`edit-${row.id}`}
-          >
-            <Edit size={18} className={`text-primary me-50`} />
-          </Link>
-          <Link
-            className="text-truncate text-capitalize align-middle"
-            onClick={(e) => {
-              e.preventDefault();
-              setDeleteItem(row);
-              setDeleteShow(true);
-            }}
-            id={`delete-${row.id}`}
-          >
-            <Trash2 size={18} className={`text-danger me-50`} />
-          </Link>
-          <Link
-            className="text-truncate text-capitalize align-middle"
-            to={`/order-receive/${row.id}`}
-            id={`receive-${row.id}`}
-          >
-            <CheckCircle size={18} className={`text-danger me-50`} />
-          </Link>
-          <Link
-            className="text-truncate text-capitalize align-middle"
-            onClick={(e) => {
-              e.preventDefault();
-            }}
-            id={`print-${row.id}`}
-          >
-            <Printer size={18} className={`text-danger me-50`} />
-          </Link>
-          <Link
-            className="text-truncate text-capitalize align-middle"
-            onClick={(e) => {
-              e.preventDefault();
-            }}
-            id={`send-${row.id}`}
-          >
-            <Send size={18} className={`text-danger me-50`} />
-          </Link>
-
-          <UncontrolledTooltip placement="top" target={`view-${row.id}`}>
-            Preview Order
-          </UncontrolledTooltip>
-          <UncontrolledTooltip placement="top" target={`edit-${row.id}`}>
-            Edit Order
-          </UncontrolledTooltip>
-          <UncontrolledTooltip placement="top" target={`delete-${row.id}`}>
-            Delete Order
-          </UncontrolledTooltip>
-          <UncontrolledTooltip placement="top" target={`receive-${row.id}`}>
-            Receive Order
-          </UncontrolledTooltip>
-          <UncontrolledTooltip placement="top" target={`print-${row.id}`}>
-            Print Order
-          </UncontrolledTooltip>
-          <UncontrolledTooltip placement="top" target={`send-${row.id}`}>
-            Send Order
-          </UncontrolledTooltip>
-        </>
-      ) : (
-        <>
-          <Link
-            className="text-truncate text-capitalize align-middle"
-            onClick={(e) => {
-              e.preventDefault();
-            }}
-            id={`print-${row.id}`}
-          >
-            <Printer size={18} className={`text-danger me-50`} />
-          </Link>
-          <UncontrolledTooltip placement="top" target={`print-${row.id}`}>
-            Print Order
-          </UncontrolledTooltip>
-        </>
-      )}
-
-      <Modal
-        isOpen={deleteShow}
-        toggle={() => setDeleteShow(!deleteShow)}
-        className="modal-dialog-centered modal-lg"
-      >
-        <ModalHeader
-          className="bg-transparent"
-          toggle={() => setDeleteShow(!deleteShow)}
-        ></ModalHeader>
-        <ModalBody className="px-2 pb-2">
-          <div className="text-center mb-4">
-            <h1>Are you sure to delete?</h1>
-          </div>
-          <Row tag="form" onSubmit={onSubmitDelete}>
-            <Col className="text-center mt-2" xs={12}>
-              <Button type="submit" color="danger" className="me-1">
-                Confirm
-              </Button>
-              <Button
-                // type="reset"
-                outline
-                onClick={() => setDeleteShow(!deleteShow)}
-              >
-                Cancel
-              </Button>
-            </Col>
-          </Row>
-        </ModalBody>
-      </Modal>
-    </div>
-  );
-};
 
 export const columns = [
   {
-    name: "Purchase Order",
+    name: "Order/PO",
     sortable: false,
-    minWidth: "100px",
-    sortField: "po_number",
-    selector: (row) => row.po_number,
+    minWidth: "200px",
+    sortField: "warehouse",
+    selector: (row) => row.warehouse,
     cell: (row) => (
-      <Link
-        className="text-truncate text-capitalize align-middle"
-        to={`/order-view/${row.id}`}
-      >
-        <span className="fw-bolder">{row.po_number}</span>
-      </Link>
+      <div>
+        <div>
+          <Link to={`/order-view/${row.id}`}>{row?.short_order}</Link>
+        </div>
+        <div>
+          <Link to={`/order-view/${row.id}`}>{row?.purchase_order}</Link>
+        </div>
+      </div>
     ),
   },
   {
     name: "Date",
     sortable: false,
-    minWidth: "120px",
-    sortField: "po_date",
-    selector: (row) => row.po_date,
+    minWidth: "280px",
+    sortField: "store",
+    selector: (row) => row.store,
     cell: (row) => (
-      <span className="fw-bolder">
-        {moment(row.po_date).format("DD MMM YYYY")}
-      </span>
+      <div>
+        <div>
+          {row?.store
+            ? row?.store?.company > 0
+              ? row?.store?.company[0]
+              : row?.store?.store_name
+            : "STORE NOT FOUND"}
+        </div>
+        <div>{moment(row?.order_date).format("YYYY-MM-DD HH:MM:ss a")}</div>
+      </div>
     ),
   },
   {
-    name: "Vendor",
+    name: "Customer",
+    sortable: false,
+    minWidth: "240px",
+    sortField: "customer",
+    selector: (row) => row.customer,
+    cell: (row) => (
+      <div>
+        <div>{row?.customer ? row?.customer?.ship_full_name : "#"}</div>
+        <div>
+          {row?.customer
+            ? `${row?.customer?.ship_state},${row?.customer?.ship_country}`
+            : "#"}
+        </div>
+      </div>
+    ),
+  },
+  {
+    name: "Items",
+    sortable: false,
+    minWidth: "60px",
+    sortField: "item_count",
+    selector: (row) => row.item_count,
+    cell: (row) => <div>{row?.item_count ?? 0}</div>,
+  },
+  {
+    name: "Subtotal",
+    sortable: false,
+    minWidth: "120px",
+    sortField: "items",
+    selector: (row) => row.items,
+    cell: (row) => (
+      <div>
+        $
+        {parseFloat(
+          row?.items.reduce(function (prev, cur) {
+            return parseFloat(prev) + parseFloat(cur?.item_total_price);
+          }, 0)
+        ).toFixed(2)}
+      </div>
+    ),
+  },
+  {
+    name: "Discount",
+    sortable: false,
+    minWidth: "120px",
+    sortField: "promotion_value",
+    selector: (row) => row.promotion_value,
+    cell: (row) => (
+      <div>
+        $
+        {parseFloat(
+          parseFloat(row?.promotion_value ?? 0) +
+            parseFloat(row?.coupon_value ?? 0)
+        ).toFixed(2)}
+      </div>
+    ),
+  },
+  {
+    name: "Shipping",
+    sortable: false,
+    minWidth: "120px",
+    sortField: "shipping_charge",
+    selector: (row) => row.shipping_charge,
+    cell: (row) => (
+      <div>${parseFloat(row?.shipping_charge ?? 0).toFixed(2)}</div>
+    ),
+  },
+  {
+    name: "Tax",
+    sortable: false,
+    minWidth: "120px",
+    sortField: "tax_charge",
+    selector: (row) => row.tax_charge,
+    cell: (row) => <div>${parseFloat(row?.tax_charge ?? 0).toFixed(2)}</div>,
+  },
+  {
+    name: "Total",
+    sortable: false,
+    minWidth: "120px",
+    sortField: "item_count",
+    selector: (row) => row.item_count,
+    cell: (row) => {
+      const diff =
+        parseFloat(
+          row?.items.reduce(function (prev, cur) {
+            return parseFloat(prev) + parseFloat(cur?.item_total_price);
+          }, 0)
+        ) -
+        (parseFloat(row?.promotion_value ?? 0) +
+          parseFloat(row?.coupon_value ?? 0)) +
+        parseFloat(row?.shipping_charge ?? 0) +
+        parseFloat(row?.tax_charge ?? 0) -
+        parseFloat(row?.total ?? 0);
+      return (
+        <div className={diff != 0 && `text-danger`}>
+          ${parseFloat(row?.total ?? 0).toFixed(2)}
+        </div>
+      );
+    },
+  },
+  {
+    name: "Status",
     sortable: false,
     minWidth: "180px",
-    sortField: "vendor_name",
-    selector: (row) => row.vendor_name,
-    cell: (row) => (
-      <Link
-        className="text-truncate text-capitalize align-middle"
-        to={`/vendor-view/${row?.vendor?.id}`}
-      >
-        <span className="fw-bolder">{row.vendor?.vendor_name}</span>
-      </Link>
-    ),
+    sortField: "order_status",
+    selector: (row) => row.order_status,
+    cell: (row) => {
+      const store = useSelector((state) => state.orders);
+      return (
+        <div>
+          <div>
+            {
+              store?.statusOptions?.find(
+                (item) => item?.value == row?.order_status
+              )?.label
+            }
+          </div>
+          <div>
+            {row?.carrier} {row?.method}
+          </div>
+        </div>
+      );
+    },
   },
   {
-    name: "Products",
+    name: "Coupon",
     sortable: false,
-    minWidth: "100px",
-    sortField: "total_products",
-    selector: (row) => row.total_products,
+    minWidth: "180px",
+    sortField: "item_count",
+    selector: (row) => row.item_count,
     cell: (row) => (
-      <span className="text-capitalize">{row?.total_products}</span>
+      <div>
+        {row?.promotion_id} {row?.coupon_id}
+      </div>
     ),
-  },
-  {
-    name: "Balance",
-    sortable: false,
-    minWidth: "100px",
-    sortField: "total_balance",
-    selector: (row) => row.total_balance,
-    cell: (row) => (
-      <span className="text-capitalize">{row?.total_balance}</span>
-    ),
-  },
-  {
-    name: "Tracking",
-    sortable: false,
-    minWidth: "100px",
-    sortField: "tracking",
-    selector: (row) => row.tracking,
-    cell: (row) => <span className="text-capitalize">{row?.tracking}</span>,
-  },
-  {
-    name: "Actions",
-    minWidth: "100px",
-    cell: (row) => renderAction(row),
   },
 ];

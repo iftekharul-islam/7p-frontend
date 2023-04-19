@@ -84,14 +84,19 @@ export const columns = [
     sortField: "price",
     selector: (row) => row.product_name,
     cell: (row) => (
-      <div>
-        <div>
-          <span>{row.product_name}</span>
-        </div>
-        <div>
-          <a href={row?.product_url} target="_new">
-            {row.id_catalog}
-          </a>
+      <div className="d-flex">
+        <img src={row?.product_thumb} width="50" height="50" />
+        <div className="px-1 d-flex align-items-center">
+          <div>
+            <div>{row.product_name}</div>
+            <Link
+              to={row?.product_url}
+              className="text-truncate text-capitalize align-middle"
+              target="_blank"
+            >
+              {row.id_catalog}
+            </Link>
+          </div>
         </div>
       </div>
     ),

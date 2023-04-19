@@ -3,19 +3,20 @@ import { Edit, Printer, Trash2 } from "react-feather";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { Button, Col, Modal, ModalBody, ModalHeader, Row } from "reactstrap";
-import { DeleteVendor } from "../store";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import { DeleteSpecifiction } from "../store";
 
 const renderAction = (row) => {
-
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const [deleteItem, setDeleteItem] = useState(null);
   const [deleteShow, setDeleteShow] = useState(false);
 
   const onSubmitDelete = (e) => {
-    e.preventDefault()
-    dispatch(DeleteVendor(deleteItem.id))
-    setDeleteShow(!deleteShow)
-  }
+    e.preventDefault();
+    dispatch(DeleteSpecifiction(deleteItem.id));
+    setDeleteShow(!deleteShow);
+  };
 
   return (
     <div className="column-action">
@@ -39,6 +40,14 @@ const renderAction = (row) => {
         className="text-truncate text-capitalize align-middle"
         onClick={(e) => {
           e.preventDefault();
+          const MySwal = withReactContent(Swal);
+          MySwal.fire({
+            position: "top-end",
+            icon: "error",
+            title: "This feature is not available yet",
+            showConfirmButton: false,
+            timer: 1500,
+          });
         }}
       >
         <Printer size={18} className={`text-danger me-50`} />
@@ -74,8 +83,8 @@ const renderAction = (row) => {
         </ModalBody>
       </Modal>
     </div>
-  )
-}
+  );
+};
 
 export const columns = [
   {
@@ -84,7 +93,7 @@ export const columns = [
     minWidth: "540px",
     sortField: "product_description",
     selector: (row) => row.product_description,
-    cell: (row) => <span className="fw-bolder">{row.product_description}</span>
+    cell: (row) => <span className="fw-bolder">{row.product_description}</span>,
   },
   {
     name: "Production category",
@@ -92,7 +101,7 @@ export const columns = [
     minWidth: "180px",
     sortField: "production_category",
     selector: (row) => row?.production_category,
-    cell: (row) => <span>{row.production_category}</span>
+    cell: (row) => <span>{row.production_category}</span>,
   },
   {
     name: "SKU",
@@ -100,7 +109,7 @@ export const columns = [
     minWidth: "120px",
     sortField: "product_sku",
     selector: (row) => row.product_sku,
-    cell: (row) => <span>{row?.product_sku}</span>
+    cell: (row) => <span>{row?.product_sku}</span>,
   },
   {
     name: "Web image status",
@@ -108,11 +117,11 @@ export const columns = [
     minWidth: "120px",
     sortField: "web_image_status",
     selector: (row) => row.web_image_status,
-    cell: (row) => <span>{row?.web_image_status}</span>
+    cell: (row) => <span>{row?.web_image_status}</span>,
   },
   {
     name: "Actions",
     minWidth: "120px",
-    cell: (row) => renderAction(row)
-  }
-]
+    cell: (row) => renderAction(row),
+  },
+];

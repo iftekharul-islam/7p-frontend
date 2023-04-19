@@ -1,9 +1,15 @@
+import "@styles/react/libs/flatpickr/flatpickr.scss";
+import "@styles/react/libs/react-select/_react-select.scss";
+import "@styles/react/libs/tables/react-dataTable-component.scss";
 import { Fragment, useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import { ChevronDown, PlusCircle } from "react-feather";
+import Flatpickr from "react-flatpickr";
+import ReactPaginate from "react-paginate";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Card, Col, Input, Label, Row, Spinner } from "reactstrap";
-import { columns } from "./columns";
+import { useNavigate } from "react-router-dom";
+import Select from "react-select";
+import { Button, Card, Col, Input, Row, Spinner } from "reactstrap";
 import {
   CalculateOrdering,
   getAllData,
@@ -12,13 +18,7 @@ import {
   setParams,
   setSearchParams,
 } from "./../store/index";
-import { useNavigate } from "react-router-dom";
-import ReactPaginate from "react-paginate";
-import "@styles/react/libs/react-select/_react-select.scss";
-import "@styles/react/libs/tables/react-dataTable-component.scss";
-import Select from "react-select";
-import Flatpickr from "react-flatpickr";
-import "@styles/react/libs/flatpickr/flatpickr.scss";
+import { columns } from "./columns";
 
 const index = () => {
   const dispatch = useDispatch();
@@ -266,9 +266,9 @@ const index = () => {
                 placeholder="Select Sections"
                 isMulti
                 options={store?.sectionOptions}
-                value={store?.sectionOptions?.find(
-                  (item) => item?.value == params?.operator_fourth
-                )}
+                // value={store?.sectionOptions?.find(
+                //   (item) => item?.value == params?.operator_fourth
+                // )}
                 onChange={(e) =>
                   onChange({ section_ids: e?.map((item) => item?.value) })
                 }

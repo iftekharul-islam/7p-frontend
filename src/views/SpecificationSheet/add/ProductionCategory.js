@@ -1,6 +1,6 @@
 import "@styles/react/libs/react-select/_react-select.scss";
 import { selectThemeColors } from "@utils";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import {
@@ -23,8 +23,6 @@ import {
 } from "../store";
 
 const ProductionCategory = () => {
-  const [data, setData] = useState(null);
-  const [errors, setErrors] = useState(null);
   const dispatch = useDispatch();
   const { specificationData, productionCategoriesOptions } = useSelector(
     (state) => state.productspecifications
@@ -40,8 +38,8 @@ const ProductionCategory = () => {
 
   const onNext = (e) => {
     e.preventDefault();
-    if (specificationData?.production_category) {
-      dispatch(getSkus({'production_category': specificationData?.production_category, 'gift-wrap':specificationData?.gift_wrap}));
+    if (specificationData?.production_category_id) {
+      dispatch(getSkus({'production_category': specificationData?.production_category_id, 'gift-wrap':specificationData?.gift_wrap}));
       dispatch(nextTab());
     } else {
       const MySwal = withReactContent(Swal)
@@ -75,10 +73,10 @@ const ProductionCategory = () => {
                       options={productionCategoriesOptions}
                       value={productionCategoriesOptions?.find(
                         (item) =>
-                          item?.value == specificationData?.production_category
+                          item?.value == specificationData?.production_category_id
                       )}
                       onChange={(e) =>
-                        onChange({ production_category: e?.value })
+                        onChange({ production_category_id: e?.value })
                       }
                     />
                   </Col>

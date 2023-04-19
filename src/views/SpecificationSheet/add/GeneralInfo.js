@@ -11,14 +11,14 @@ import {
   Form,
   Input,
   Label,
-  Row
+  Row,
 } from "reactstrap";
 import {
   getStatusesOptions,
   getWebImageStatusOptions,
   nextTab,
   prevTab,
-  setSpecificationData
+  setSpecificationData,
 } from "../store";
 
 const GeneralInfo = () => {
@@ -35,9 +35,9 @@ const GeneralInfo = () => {
   const onChange = (data) => {
     dispatch(setSpecificationData(data));
   };
-  const onImageChange =(e) =>{
-    dispatch(setSpecificationData({[e?.target?.name]: e?.target?.files[0]}));
-  }
+  const onImageChange = (e) => {
+    dispatch(setSpecificationData({ [e?.target?.name]: e?.target?.files }));
+  };
 
   return (
     <Fragment>
@@ -58,12 +58,9 @@ const GeneralInfo = () => {
                       placeholder="Select Status"
                       options={statusesOptions}
                       value={statusesOptions?.find(
-                        (item) =>
-                          item?.value == specificationData?.status
+                        (item) => item?.value == specificationData?.status
                       )}
-                      onChange={(e) =>
-                        onChange({ status: e?.value })
-                      }
+                      onChange={(e) => onChange({ status: e?.value })}
                     />
                   </Col>
                   <Col sm="8"></Col>
@@ -81,9 +78,7 @@ const GeneralInfo = () => {
                         (item) =>
                           item?.value == specificationData?.web_image_status
                       )}
-                      onChange={(e) =>
-                        onChange({ web_image_status: e?.value })
-                      }
+                      onChange={(e) => onChange({ web_image_status: e?.value })}
                     />
                   </Col>
                   <Col sm="8"></Col>
@@ -94,8 +89,9 @@ const GeneralInfo = () => {
                     </Label>
                     <Input
                       type="file"
-                      name="product_images"                      
+                      name="product_images"
                       onChange={onImageChange}
+                      multiple
                     />
                   </Col>
                   <Col sm="8" className="mb-1"></Col>
@@ -140,7 +136,9 @@ const GeneralInfo = () => {
                       id="previous_sku"
                       placeholder="Enter previous SKU to copy or leave empty"
                       value={specificationData?.previous_sku}
-                      onChange={(e) => onChange({ previous_sku: e?.target?.value })}
+                      onChange={(e) =>
+                        onChange({ previous_sku: e?.target?.value })
+                      }
                     />
                   </Col>
                   <Col sm="2" className="mb-1"></Col>
@@ -157,9 +155,9 @@ const GeneralInfo = () => {
                       placeholder="Product Description"
                       value={specificationData?.product_description}
                       onChange={(e) =>
-                        onChange({ product_description: e?.target?.value }) 
+                        onChange({ product_description: e?.target?.value })
                       }
-                      />
+                    />
                   </Col>
                   <Col sm="8" className="mb-1"></Col>
                   <Col sm="4" className="mb-1">
@@ -172,11 +170,13 @@ const GeneralInfo = () => {
                       name="general_note"
                       id="general_note"
                       placeholder="General Note"
-                      value={specificationData?.general_note}
-                      onChange={onChange}
+                      value={specificationData?.product_general_note}
+                      onChange={(e) =>
+                        onChange({ product_general_note: e?.target?.value })
+                      } 
                     />
                   </Col>
-                  <Col sm="8" className="mb-1"></Col>                  
+                  <Col sm="8" className="mb-1"></Col>
                 </Row>
                 <Row>
                   <Col sm="12">

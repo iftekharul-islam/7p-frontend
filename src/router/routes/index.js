@@ -13,7 +13,10 @@ import PublicRoute from "@components/routes/PublicRoute";
 // ** Utils
 import { isObjEmpty } from "@utils";
 import AdjustmentRoute from "../../views/Adjustment/AdjustmentRoute";
+import ConfigChildSKURoute from "../../views/ConfigChildSKU/ConfigChildSKURoute";
+import EmailTemplateRoute from "../../views/EmailTemplate/EmailTemplateRoute";
 import InventoryRoute from "../../views/Inventory/InventoryRoute";
+import ManualOrderRoute from "../../views/ManualOrder/ManualOrderRoute";
 import ManufacturesRoute from "../../views/Manufactures/ManufacturesRoute";
 import OrderRoute from "../../views/Order/OrderRoute";
 import ParametersRoute from "../../views/Parameters/ParametersRoute";
@@ -21,11 +24,13 @@ import PermissionRoute from "../../views/Permission/PermissionRoute";
 import ProductRoute from "../../views/Product/ProductRoute";
 import ProductSKURoute from "../../views/ProductSKU/ProductSKURoute";
 import ProductionCategoriesRoute from "../../views/ProductionCategories/ProductionCategoriesRoute";
+import PurchaseOrderRoute from "../../views/PurchaseOrder/PurchaseOrderRoute";
 import RejectionReasonRoute from "../../views/RejectionReason/RejectionReasonRoute";
 import RoleRoute from "../../views/Role/RoleRoute";
 import RouteRoute from "../../views/Route/RouteRoute";
 import RouteTemplatesRoute from "../../views/RouteTemplates/RouteTemplatesRoute";
 import SectionRoute from "../../views/Section/SectionRoute";
+import SendBulkEmailRoute from "../../views/SendBulkEmail/SendBulkEmailRoute";
 import SpecificationSheetRoute from "../../views/SpecificationSheet/SpecificationSheetRoute";
 import StationRoute from "../../views/Station/StationRoute";
 import UserRoute from "../../views/User/UserRoute";
@@ -58,7 +63,7 @@ const Routes = [
   ...PermissionRoute,
   ...ProductRoute,
   ...VendorRoute,
-  ...OrderRoute,
+  ...PurchaseOrderRoute,
   ...InventoryRoute,
   ...AdjustmentRoute,
   ...SectionRoute,
@@ -71,6 +76,11 @@ const Routes = [
   ...RouteRoute,
   ...ProductSKURoute,
   ...SpecificationSheetRoute,
+  ...ConfigChildSKURoute,
+  ...OrderRoute,
+  ...EmailTemplateRoute,
+  ...SendBulkEmailRoute,
+  ...ManualOrderRoute,
   {
     path: "/",
     index: true,

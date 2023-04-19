@@ -2,50 +2,72 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import Api from "@src/http";
 
-export const getAllData = createAsyncThunk("Order/getAllData", async (data) => {
-  const response = await Api.get("purchased-orders", { params: data });
+export const getAllData = createAsyncThunk(
+  "Orders/getAllData",
+  async (_, { getState }) => {
+    const { params, searchParams } = getState()?.orders;
+    const response = await Api.get("orders", {
+      params: { ...params, ...searchParams },
+    });
+    return response.data;
+  }
+);
+
+export const AddStock = createAsyncThunk("Inventory/AddStock", async (data) => {
+  const response = await Api.post("inventories", data);
+  if (response?.status == 201) {
+    return { status: true };
+  } else {
+    return { status: false, data: response?.data };
+  }
+});
+
+export const UpdateStock = createAsyncThunk(
+  "Inventory/UpdateStock",
+  async (data) => {
+    const response = await Api.post(`inventories/${data?.id}`, data?.data);
+    if (response?.status == 201) {
+      return { status: true };
+    } else {
+      return { status: false, data: response?.data };
+    }
+  }
+);
+
+export const CalculateOrdering = createAsyncThunk(
+  "Inventory/CalculateOrdering",
+  async (data) => {
+    const response = await Api.post(`calculate-ordering`, data);
+    if (response?.status == 201) {
+      return { status: true };
+    } else {
+      return { status: false, data: response?.data };
+    }
+  }
+);
+
+export const getStock = createAsyncThunk("Inventory/getStock", async (id) => {
+  const response = await Api.get(`inventories/${id}`);
   return response.data;
 });
 
-export const getVendor = createAsyncThunk("Order/getVendor", async (id) => {
+export const getAllSections = createAsyncThunk(
+  "Inventory/getAllSections",
+  async () => {
+    const response = await Api.get("section-options");
+    return response.data;
+  }
+);
+
+export const getVendor = createAsyncThunk("Inventory/getVendor", async (id) => {
   const response = await Api.get(`vendors/${id}`);
   return response.data;
 });
 
-export const getOrder = createAsyncThunk("Order/getOrder", async (id) => {
-  const response = await Api.get(`purchased-orders/${id}`);
-  return response.data;
-});
-
-
-export const AddPurchaseOrder = createAsyncThunk(
-  "Order/AddPurchaseOrder",
-  async (data, { dispatch }) => {
-    const response = await Api.post("purchased-orders", data);
-    if (response?.status == 201) {
-      return { status: true };
-    } else {
-      return { status: false, data: response?.data };
-    }
-  }
-);
-
-export const UpdatePurchaseOrder = createAsyncThunk(
-  "Order/UpdatePurchaseOrder",
-  async (data, { dispatch }) => {
-    const response = await Api.post(`orders/${data?.id}`, data?.data);
-    if (response?.status == 201) {
-      return { status: true };
-    } else {
-      return { status: false, data: response?.data };
-    }
-  }
-);
-
-export const DeleteOrder = createAsyncThunk(
-  "Order/DeleteOrder",
+export const DeleteInventory = createAsyncThunk(
+  "Inventory/DeleteVendor",
   async (id, { dispatch }) => {
-    const response = await Api.post(`purchased-orders-orders/${id}`);
+    const response = await Api.post(`destroy-inventories/${id}`);
     if (response?.status == 201) {
       dispatch(getAllData());
       return { status: true };
@@ -55,11 +77,12 @@ export const DeleteOrder = createAsyncThunk(
   }
 );
 
-export const ReceiveOrder = createAsyncThunk(
-  "Order/ReceiveOrder",
-  async (data) => {
-    const response = await Api.post(`receive-purchased-orders`, data);
+export const AddVendor = createAsyncThunk(
+  "Vendor/AddVendor",
+  async (data, { dispatch }) => {
+    const response = await Api.post("vendors", data);
     if (response?.status == 201) {
+      dispatch(getAllData());
       return { status: true };
     } else {
       return { status: false, data: response?.data };
@@ -67,62 +90,158 @@ export const ReceiveOrder = createAsyncThunk(
   }
 );
 
+export const UpdateVendor = createAsyncThunk(
+  "Vendor/UpdateVendor",
+  async (data, { dispatch }) => {
+    const response = await Api.post(`vendors/${data?.id}`, data?.data);
+    if (response?.status == 201) {
+      dispatch(getAllData());
+      return { status: true };
+    } else {
+      return { status: false, data: response?.data };
+    }
+  }
+);
+
+export const getAllStocks = createAsyncThunk(
+  "Vendor/getAllStocks",
+  async (data) => {
+    const response = await Api.get("stock-options", data);
+    return response.data;
+  }
+);
+
 export const getAllVendors = createAsyncThunk(
-  "Order/getAllVendors",
+  "Inventory/getAllVendors",
   async (data) => {
     const response = await Api.get("vendor-options", data);
     return response.data;
   }
 );
-export const getAllProductByVendor = createAsyncThunk(
-  "Order/getAllProductByVendor",
-  async (id) => {
-    const response = await Api.get(`product-options/${id}`);
+
+export const UpdateBinQty = createAsyncThunk(
+  "Vendor/UpdateBinQty",
+  async (data, { dispatch }) => {
+    const response = await Api.post(`update-bin-&-qty`, data);
+    dispatch(getAllData());
     return response.data;
   }
 );
 
-export const OrderSlice = createSlice({
-  name: "Order",
+export const getOperatorOptions = createAsyncThunk(
+  "Order/getOperatorOptions",
+  async () => {
+    const response = await Api.get(`order-operator-options`);
+    return response.data;
+  }
+);
+export const getSearchOptions = createAsyncThunk(
+  "Order/getSearchOptions",
+  async () => {
+    const response = await Api.get(`order-search-options`);
+    return response.data;
+  }
+);
+export const getStatusOptions = createAsyncThunk(
+  "Order/getStatusOptions",
+  async () => {
+    const response = await Api.get(`order-status-options`);
+    return response.data;
+  }
+);
+export const getStoreOptions = createAsyncThunk(
+  "Order/getStoreOptions",
+  async () => {
+    const response = await Api.get(`order-store-options`);
+    return response.data;
+  }
+);
+
+export const OrdersSlice = createSlice({
+  name: "Orders",
   initialState: {
     data: [],
     total: 1,
+    totalData: {},
 
     params: {
-      status:1
+      page: 1,
     },
+
+    searchParams: {
+      search_for_first: null,
+      operator_first: null,
+      search_in_first: null,
+
+      search_for_second: null,
+      operator_second: null,
+      search_in_second: null,
+
+      start_date: null,
+      end_date: null,
+
+      status: null,
+      store: null,
+    },
+
     allData: [],
 
     vendor: {},
-    order: {},
 
-    vendorOptions: [],
-    skuOptions: [],
+    operatorOptions: [],
+    searchOptions: [],
+    statusOptions: [],
+    storeOptions: [],
   },
   extraReducers: (builder) => {
     builder
       .addCase(getAllData.fulfilled, (state, action) => {
-        state.data = action.payload?.data;
-        state.total = action.payload?.total;
+        state.data = action.payload?.order?.data;
+        state.total = action.payload?.order?.total;
+        state.totalData = {
+          ...action.payload?.total,
+          total: action.payload?.order?.total,
+        };
       })
+      .addCase(getOperatorOptions.fulfilled, (state, action) => {
+        state.operatorOptions = action.payload;
+      })
+      .addCase(getSearchOptions.fulfilled, (state, action) => {
+        state.searchOptions = action.payload;
+      })
+      .addCase(getStatusOptions.fulfilled, (state, action) => {
+        state.statusOptions = action.payload;
+      })
+      .addCase(getStoreOptions.fulfilled, (state, action) => {
+        state.storeOptions = action.payload;
+      })
+      
+      
       .addCase(getVendor.fulfilled, (state, action) => {
         state.vendor = action.payload;
       })
-      .addCase(getOrder.fulfilled, (state, action) => {
-        state.order = action.payload;
+      .addCase(getAllStocks.fulfilled, (state, action) => {
+        state.stockOptions = action.payload;
       })
       .addCase(getAllVendors.fulfilled, (state, action) => {
         state.vendorOptions = action.payload;
       })
-      .addCase(getAllProductByVendor.fulfilled, (state, action) => {
-        state.skuOptions = action.payload;
+      .addCase(getAllSections.fulfilled, (state, action) => {
+        state.sectionOptions = action.payload;
+      })
+      .addCase(getStock.fulfilled, (state, action) => {
+        state.stock = action.payload;
       });
   },
   reducers: {
-    updateParams(state, action) {
-      state.params = {...state.params, ...action.payload}
-    }
+    setParams: (state, action) => {
+      state.params = { ...state.params, ...action.payload };
+    },
+    setSearchParams: (state, action) => {
+      state.searchParams = { ...state.searchParams, ...action.payload };
+    },
   },
 });
-export const { updateParams } = OrderSlice.actions
-export default OrderSlice.reducer;
+
+export const { setParams, setSearchParams } = OrdersSlice.actions;
+export default OrdersSlice.reducer;

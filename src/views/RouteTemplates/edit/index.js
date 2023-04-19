@@ -1,4 +1,9 @@
+import { selectThemeColors } from "@utils";
 import { Fragment, useEffect, useState } from "react";
+import { ArrowDown, ArrowUp, Trash2 } from "react-feather";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import Select from "react-select";
 import {
   Button,
   Card,
@@ -9,15 +14,9 @@ import {
   Form,
   Input,
   Label,
-  Row,
-  Spinner,
+  Row
 } from "reactstrap";
-import { useDispatch, useSelector } from "react-redux";
-import { getTemplate, UpdateTemplate } from "../store";
-import { selectThemeColors } from "@utils";
-import Select from "react-select";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { ArrowDown, ArrowUp, Trash2 } from "react-feather";
+import { UpdateTemplate, getTemplate } from "../store";
 
 const index = () => {
   const { id } = useParams();
