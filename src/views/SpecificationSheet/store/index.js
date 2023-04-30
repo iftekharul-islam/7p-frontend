@@ -145,6 +145,7 @@ export const SpecificationSlice = createSlice({
       })
       .addCase(getSpecifiction.fulfilled, (state, action) => {
         state.specificationData = action.payload;
+        state.active = 1;
       })
       .addCase(getSearchableFieldsOptions.fulfilled, (state, action) => {
         state.searchableFieldsOptions = action.payload;

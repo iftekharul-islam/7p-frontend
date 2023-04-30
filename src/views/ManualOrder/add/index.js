@@ -2,6 +2,7 @@ import "@styles/react/libs/flatpickr/flatpickr.scss";
 import "@styles/react/libs/react-select/_react-select.scss";
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import {
   Card,
   CardBody,
@@ -19,6 +20,7 @@ import ProductList from "./ProductList";
 
 const index = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const store = useSelector((state) => state.manualOrders);
   const [data, setData] = useState({ items: [] });
   const [errors, setErrors] = useState(null);
@@ -40,7 +42,7 @@ const index = () => {
     const res = await dispatch(AddOrder(data));
     if (res?.payload?.status) {
       setData({ items: [] });
-      setTimeout(() => window.location.reload(), 1500);
+      setTimeout(() => navigate('/customer-order'), 1500);
     } else {
       setErrors(res?.payload?.data?.errors);
     }

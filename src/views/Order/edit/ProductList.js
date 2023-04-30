@@ -23,7 +23,7 @@ const ProductList = (data, onChange, errors) => {
   const handleInputChange = (newValue) => {
     const array = [...(data?.items ?? [])];
     array?.push({
-      child_sku: newValue?.data?.product_model,
+      sku: newValue?.data?.product_model,
       id_catalog: newValue?.data?.id_catalog,
       item_description: newValue?.data?.product_name,
       item_thumb: newValue?.data?.product_thumb,
