@@ -12,10 +12,10 @@ export const columns = [
     cell: (row) => (
       <div>
         <div>
-          <Link to={`/order-view/${row.id}`}>{row?.short_order}</Link>
+          <Link to={`/customer-order-edit/${row.id}`}>{row?.short_order}</Link>
         </div>
         <div>
-          <Link to={`/order-view/${row.id}`}>{row?.purchase_order}</Link>
+          <Link to={`/customer-order-edit/${row.id}`}>#{row?.purchase_order}</Link>
         </div>
       </div>
     ),

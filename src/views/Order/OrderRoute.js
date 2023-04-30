@@ -2,8 +2,7 @@
 import { lazy } from "react";
 
 const OrderList = lazy(() => import("./list"));
-const InventoryAdd = lazy(() => import("./add"));
-const InventoryEdit = lazy(() => import("./edit"));
+const OrderEdit = lazy(() => import("./edit"));
 
 const OrderRoute = [
   {
@@ -11,13 +10,9 @@ const OrderRoute = [
     path: "/customer-order",
   },
   {
-    element: <InventoryAdd />,
-    path: "/inventory-add",
+    element: <OrderEdit />,
+    path: "/customer-order-edit/:id",
   },
-  {
-    element: <InventoryEdit />,
-    path: "/inventory-edit/:id",
-  }
 ];
 
 export default OrderRoute;

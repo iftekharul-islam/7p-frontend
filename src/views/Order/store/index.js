@@ -13,118 +13,24 @@ export const getAllData = createAsyncThunk(
   }
 );
 
-export const AddStock = createAsyncThunk("Inventory/AddStock", async (data) => {
-  const response = await Api.post("inventories", data);
-  if (response?.status == 201) {
-    return { status: true };
-  } else {
-    return { status: false, data: response?.data };
-  }
-});
-
-export const UpdateStock = createAsyncThunk(
-  "Inventory/UpdateStock",
-  async (data) => {
-    const response = await Api.post(`inventories/${data?.id}`, data?.data);
-    if (response?.status == 201) {
-      return { status: true };
-    } else {
-      return { status: false, data: response?.data };
-    }
-  }
-);
-
-export const CalculateOrdering = createAsyncThunk(
-  "Inventory/CalculateOrdering",
-  async (data) => {
-    const response = await Api.post(`calculate-ordering`, data);
-    if (response?.status == 201) {
-      return { status: true };
-    } else {
-      return { status: false, data: response?.data };
-    }
-  }
-);
-
-export const getStock = createAsyncThunk("Inventory/getStock", async (id) => {
-  const response = await Api.get(`inventories/${id}`);
-  return response.data;
-});
-
-export const getAllSections = createAsyncThunk(
-  "Inventory/getAllSections",
-  async () => {
-    const response = await Api.get("section-options");
+export const getOrder = createAsyncThunk(
+  "Orders/getOrder",
+  async (id) => {
+    const response = await Api.get(`orders/${id}`);
     return response.data;
   }
 );
 
-export const getVendor = createAsyncThunk("Inventory/getVendor", async (id) => {
-  const response = await Api.get(`vendors/${id}`);
-  return response.data;
-});
-
-export const DeleteInventory = createAsyncThunk(
-  "Inventory/DeleteVendor",
-  async (id, { dispatch }) => {
-    const response = await Api.post(`destroy-inventories/${id}`);
-    if (response?.status == 201) {
-      dispatch(getAllData());
-      return { status: true };
-    } else {
-      return { status: false, data: response?.data };
-    }
-  }
-);
-
-export const AddVendor = createAsyncThunk(
-  "Vendor/AddVendor",
-  async (data, { dispatch }) => {
-    const response = await Api.post("vendors", data);
-    if (response?.status == 201) {
-      dispatch(getAllData());
-      return { status: true };
-    } else {
-      return { status: false, data: response?.data };
-    }
-  }
-);
-
-export const UpdateVendor = createAsyncThunk(
-  "Vendor/UpdateVendor",
-  async (data, { dispatch }) => {
-    const response = await Api.post(`vendors/${data?.id}`, data?.data);
-    if (response?.status == 201) {
-      dispatch(getAllData());
-      return { status: true };
-    } else {
-      return { status: false, data: response?.data };
-    }
-  }
-);
-
-export const getAllStocks = createAsyncThunk(
-  "Vendor/getAllStocks",
+export const EditOrder = createAsyncThunk(
+  "Orders/AddOrder",
   async (data) => {
-    const response = await Api.get("stock-options", data);
-    return response.data;
-  }
-);
-
-export const getAllVendors = createAsyncThunk(
-  "Inventory/getAllVendors",
-  async (data) => {
-    const response = await Api.get("vendor-options", data);
-    return response.data;
-  }
-);
-
-export const UpdateBinQty = createAsyncThunk(
-  "Vendor/UpdateBinQty",
-  async (data, { dispatch }) => {
-    const response = await Api.post(`update-bin-&-qty`, data);
-    dispatch(getAllData());
-    return response.data;
+    console.log("🚀 ~ file: index.js:19 ~ data:", data)
+    // const response = await Api.post("orders", data);
+    // if (response?.status == 201) {
+    //   return { status: true };
+    // } else {
+    //   return { status: false, data: response?.data };
+    // }
   }
 );
 
@@ -156,6 +62,20 @@ export const getStoreOptions = createAsyncThunk(
     return response.data;
   }
 );
+export const getShipOptions = createAsyncThunk(
+  "Order/getShipOptions",
+  async () => {
+    const response = await Api.get(`order-ship-options`);
+    return response.data;
+  }
+);
+export const getProductOptions = createAsyncThunk(
+  "Order/getProductOptions",
+  async (query) => {
+    const response = await Api.post("order-product-options", { query });
+    return response.data;
+  }
+);
 
 export const OrdersSlice = createSlice({
   name: "Orders",
@@ -163,6 +83,8 @@ export const OrdersSlice = createSlice({
     data: [],
     total: 1,
     totalData: {},
+
+    order: null,
 
     params: {
       page: 1,
@@ -186,12 +108,11 @@ export const OrdersSlice = createSlice({
 
     allData: [],
 
-    vendor: {},
-
     operatorOptions: [],
     searchOptions: [],
     statusOptions: [],
     storeOptions: [],
+    shipOptions: [],
   },
   extraReducers: (builder) => {
     builder
@@ -202,6 +123,9 @@ export const OrdersSlice = createSlice({
           ...action.payload?.total,
           total: action.payload?.order?.total,
         };
+      })
+      .addCase(getOrder.fulfilled, (state, action) => {
+        state.order = {...action.payload, ...action.payload?.customer};
       })
       .addCase(getOperatorOptions.fulfilled, (state, action) => {
         state.operatorOptions = action.payload;
@@ -215,22 +139,8 @@ export const OrdersSlice = createSlice({
       .addCase(getStoreOptions.fulfilled, (state, action) => {
         state.storeOptions = action.payload;
       })
-      
-      
-      .addCase(getVendor.fulfilled, (state, action) => {
-        state.vendor = action.payload;
-      })
-      .addCase(getAllStocks.fulfilled, (state, action) => {
-        state.stockOptions = action.payload;
-      })
-      .addCase(getAllVendors.fulfilled, (state, action) => {
-        state.vendorOptions = action.payload;
-      })
-      .addCase(getAllSections.fulfilled, (state, action) => {
-        state.sectionOptions = action.payload;
-      })
-      .addCase(getStock.fulfilled, (state, action) => {
-        state.stock = action.payload;
+      .addCase(getShipOptions.fulfilled, (state, action) => {
+        state.shipOptions = action.payload;
       });
   },
   reducers: {
