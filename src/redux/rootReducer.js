@@ -2,7 +2,9 @@ import adjustments from "@src/views/Adjustment/store";
 import Auth from "@src/views/Auth/store";
 import configchildskus from "@src/views/ConfigChildSKU/store";
 import emailTemplate from "@src/views/EmailTemplate/store";
+import graphicItemsList from "@src/views/GraphicItemsList/store";
 import inventories from "@src/views/Inventory/store";
+import itemsList from "@src/views/ItemsList/store";
 import manualOrders from "@src/views/ManualOrder/store";
 import manufactures from "@src/views/Manufactures/store";
 import orders from "@src/views/Order/store";
@@ -52,6 +54,8 @@ const rootReducer = {
   emailTemplate,
   bulkEmails,
   manualOrders,
+  itemsList,
+  graphicItemsList,
 };
 
 export default rootReducer;

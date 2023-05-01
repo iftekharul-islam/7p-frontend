@@ -15,7 +15,9 @@ import { isObjEmpty } from "@utils";
 import AdjustmentRoute from "../../views/Adjustment/AdjustmentRoute";
 import ConfigChildSKURoute from "../../views/ConfigChildSKU/ConfigChildSKURoute";
 import EmailTemplateRoute from "../../views/EmailTemplate/EmailTemplateRoute";
+import GraphicItemsListRoute from "../../views/GraphicItemsList/GraphicItemsListRoute";
 import InventoryRoute from "../../views/Inventory/InventoryRoute";
+import ItemsListRoute from "../../views/ItemsList/ItemsListRoute";
 import ManualOrderRoute from "../../views/ManualOrder/ManualOrderRoute";
 import ManufacturesRoute from "../../views/Manufactures/ManufacturesRoute";
 import OrderRoute from "../../views/Order/OrderRoute";
@@ -81,6 +83,8 @@ const Routes = [
   ...EmailTemplateRoute,
   ...SendBulkEmailRoute,
   ...ManualOrderRoute,
+  ...ItemsListRoute,
+  ...GraphicItemsListRoute,
   {
     path: "/",
     index: true,
@@ -203,3 +207,4 @@ const getRoutes = (layout) => {
 };
 
 export { DefaultRoute, TemplateTitle, Routes, getRoutes };
+
