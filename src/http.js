@@ -3,8 +3,8 @@ import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 
 let Api = axios.create({
-  // baseURL: 'https://api-7p.viserx.dev/api',
-  baseURL: 'http://7p.test/api',
+  baseURL: 'https://api-7p.viserx.dev/api',
+  // baseURL: 'http://7p.test/api',
 
   headers: {
     "Content-type": "multipart/form-data",
