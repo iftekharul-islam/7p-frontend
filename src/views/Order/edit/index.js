@@ -16,12 +16,17 @@ import { EditOrder, getOrder } from "../store";
 import Address from "./Address";
 import Calculation from "./Calculation";
 import Details from "./Details";
+import MailModal from "./MailModal";
 import ProductList from "./ProductList";
+import TrackingModal from "./TrackingModal";
 
 const index = () => {
   const {id} = useParams();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.orders);
+  const [showMail, setShowMail] = useState(false)
+  const [showTracking, setShowTracking] = useState(false)
+  const [itemTracking, setItemTracking] = useState(null)
   const [data, setData] = useState({ items: [] });
   const [errors, setErrors] = useState(null);
 
@@ -31,15 +36,9 @@ const index = () => {
   
   useEffect(() => {
     if (store?.order) {
-      setData({...data, ...store?.order});
+      setData(store?.order);
     }
   }, [store?.order])
-
-  useEffect(() => {
-    if (store?.stock) {
-      setData({ ...store?.stock, stock_no_unique: null });
-    }
-  }, [store?.stock]);
 
   const onChange = (e) => {
     setData({
@@ -49,7 +48,7 @@ const index = () => {
   };
 
   const onSubmit = async () => {
-    const res = await dispatch(EditOrder(data));
+    const res = await dispatch(EditOrder({data, id}));
     if (res?.payload?.status) {
       setData({ items: [] });
       setTimeout(() => window.location.reload(), 1500);
@@ -69,9 +68,11 @@ const index = () => {
               </CardHeader>
               <CardBody>
                 {Details(data, onChange, errors)}
-                {Address(data, onChange, errors)}
-                {ProductList(data, onChange, errors)}
+                {Address(data, onChange, errors, setShowMail)}
+                {ProductList(data, onChange, errors, setShowTracking, setItemTracking)}
                 {Calculation(data, onChange, onSubmit, errors)}
+                {TrackingModal(showTracking, setShowTracking, itemTracking)}
+                {MailModal(showMail, setShowMail, data)}
               </CardBody>
             </Card>
           </Col>

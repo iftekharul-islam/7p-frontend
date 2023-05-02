@@ -79,10 +79,10 @@ export const GraphicItemsListSlice = createSlice({
       .addCase(getAllData.fulfilled, (state, action) => {
         state.data = action.payload?.items?.data;
         state.total = action.payload?.total;
-        state.totalData = {
-          ...action.payload?.total,
-          total: action.payload?.order?.total,
-        };
+        // state.totalData = {
+        //   ...action.payload?.total,
+        //   total: action.payload?.order?.total,
+        // };
       })
       .addCase(getSearchOptions.fulfilled, (state, action) => {
         state.searchOptions = action.payload;

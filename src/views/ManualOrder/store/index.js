@@ -5,7 +5,7 @@ import Api from "@src/http";
 export const AddOrder = createAsyncThunk(
   "ManualOrder/AddOrder",
   async (data) => {
-    const response = await Api.post("orders", data);
+    const response = await Api.post("orders/create", data);
     if (response?.status == 201) {
       return { status: true };
     } else {

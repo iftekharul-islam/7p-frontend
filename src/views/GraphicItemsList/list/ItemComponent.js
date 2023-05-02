@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const ItemComponent = (item) => {
   return (
-    <div className="p-1">
+    <div className="border">
       <img src={item?.item_thumb} height={100} />
       <div>
         <u>

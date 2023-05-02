@@ -198,7 +198,7 @@ const Calculation = (data, onChange, onSubmit, errors) => {
                     onSubmit();
                   }}
                 >
-                  Submit
+                  Update Order
                 </Button>
               </div>
             </Col>

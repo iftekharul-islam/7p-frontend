@@ -1,19 +1,18 @@
 import "@styles/react/libs/flatpickr/flatpickr.scss";
 import "@styles/react/libs/react-select/_react-select.scss";
-import { selectThemeColors } from "@utils";
 import { Fragment, useEffect } from "react";
+import { Eye, Mail } from "react-feather";
 import { useDispatch, useSelector } from "react-redux";
-import Select from "react-select";
 import { Col, Input, Label, Row } from "reactstrap";
 import { getShipOptions } from "../store";
 
-const Address = (data, onChange, errors) => {
+const Address = (data, onChange, errors, setShowMail) => {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.manualOrders);
   useEffect(() => {
     dispatch(getShipOptions());
   }, []);
-  
+
   return (
     <Fragment>
       <Row className="pt-2">
@@ -115,7 +114,7 @@ const Address = (data, onChange, errors) => {
                 onChange={onChange}
               />
             </Col>
-            <Col sm="3">
+            <Col sm="4">
               <Label className="form-label" for="ship_state">
                 State
               </Label>
@@ -128,7 +127,7 @@ const Address = (data, onChange, errors) => {
                 onChange={onChange}
               />
             </Col>
-            <Col sm="5">
+            <Col sm="4">
               <Label className="form-label" for="ship_zip">
                 ZipCode
               </Label>
@@ -165,42 +164,6 @@ const Address = (data, onChange, errors) => {
                 placeholder="Enter Phone"
                 value={data?.ship_phone}
                 onChange={onChange}
-              />
-            </Col>
-            <Col sm="4">
-              <Label className="form-label" for="bill_email">
-                Email
-              </Label>
-              <Input
-                type="text"
-                name="bill_email"
-                id="bill_email"
-                placeholder="Enter Email"
-                value={data?.bill_email}
-                onChange={onChange}
-              />
-            </Col>
-            <Col sm="8">
-              <Label className="form-label" for="shipping">
-                Ship Via
-              </Label>
-              <Select
-                className="react-select"
-                classNamePrefix="select"
-                theme={selectThemeColors}
-                placeholder="Select..."
-                options={store?.shipOptions}
-                value={store?.shipOptions?.find(
-                  (item) => item?.value === data?.shipping
-                )}
-                onChange={(e) =>
-                  onChange({
-                    target: {
-                      name: "shipping",
-                      value: e?.value,
-                    },
-                  })
-                }
               />
             </Col>
           </Row>
@@ -304,7 +267,7 @@ const Address = (data, onChange, errors) => {
                 onChange={onChange}
               />
             </Col>
-            <Col sm="3">
+            <Col sm="4">
               <Label className="form-label" for="bill_state">
                 State
               </Label>
@@ -317,7 +280,7 @@ const Address = (data, onChange, errors) => {
                 onChange={onChange}
               />
             </Col>
-            <Col sm="5">
+            <Col sm="4">
               <Label className="form-label" for="bill_zip">
                 ZipCode
               </Label>
@@ -357,6 +320,70 @@ const Address = (data, onChange, errors) => {
               />
             </Col>
           </Row>
+        </Col>
+      </Row>
+      <hr />
+      <Row className="pt-1">
+        <Col sm="2" className="d-flex align-items-center">
+          <Label className="form-label" for="bill_email">
+            Email
+          </Label>
+        </Col>
+        <Col sm="3">
+          <Input
+            type="text"
+            name="bill_email"
+            id="bill_email"
+            placeholder="Enter Email"
+            value={data?.customer?.bill_email}
+            onChange={onChange}
+          />
+        </Col>
+        <Col sm="2" className="d-flex align-items-center">
+          <div
+            onClick={(e) => {
+              setShowMail(true);
+              e.preventDefault();
+            }}
+          >
+            <Mail size={20} className="mx-1" />
+          </div>
+          |
+          <Eye size={20} className="mx-1" />
+        </Col>
+      </Row>
+      <Row className="pt-1">
+        <Col sm="2" className="d-flex align-items-center">
+          <Label className="form-label" for="order_comments">
+            Customer comment
+          </Label>
+        </Col>
+        <Col sm="3">
+          <Input
+            type="text"
+            name="order_comments"
+            id="order_comments"
+            placeholder="Enter Customer comment"
+            value={data?.order_comments}
+            onChange={onChange}
+          />
+        </Col>
+      </Row>
+      <Row className="pt-1">
+        <Col sm="2" className="d-flex align-items-center">
+          <Label className="form-label" for="ship_message">
+            Shipper Message
+          </Label>
+        </Col>
+        <Col sm="3">
+          <Input
+            type="textarea"
+            name="ship_message"
+            id="ship_message"
+            placeholder="Enter Shipper Message"
+            value={data?.ship_message}
+            onChange={onChange}
+          />
         </Col>
       </Row>
     </Fragment>
