@@ -1,1 +1,0 @@
-import{a as r,r as i,bz as c,j as o}from"./index.545d534b.js";import{a as p}from"./App.979e7298.js";const n=()=>{var a;const e=p(),s=r(t=>t.permissions);return i.exports.useEffect(()=>{e(c())},[]),o("div",{className:"app-user-list",children:(a=s==null?void 0:s.data)==null?void 0:a.map(t=>{})})};export{n as default};
