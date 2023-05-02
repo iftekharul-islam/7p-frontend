@@ -7,7 +7,7 @@ import AsyncSelect from "react-select/async";
 import { Button, Col, Input, Row } from "reactstrap";
 import { getProductOptions } from "../store";
 
-const ProductList = (data, onChange, errors) => {
+const ProductList = (data, onChange, errors, setShowTracking, setItemTracking) => {
   const dispatch = useDispatch();
 
   const loadOptions = async (inputValue) => {
@@ -29,6 +29,7 @@ const ProductList = (data, onChange, errors) => {
       item_thumb: newValue?.data?.product_thumb,
       item_unit_price: newValue?.data?.product_price,
       item_quantity: 1,
+      is_new: true,
     });
     onChange({ target: { name: "items", value: array } });
   };
@@ -43,7 +44,8 @@ const ProductList = (data, onChange, errors) => {
     const subtotal = parseFloat(
       data?.items.reduce(function (prev, cur) {
         return (
-          parseFloat(prev) + parseFloat(cur?.item_unit_price) * parseFloat(cur?.item_quantity)
+          parseFloat(prev) +
+          parseFloat(cur?.item_unit_price) * parseFloat(cur?.item_quantity)
         );
       }, 0)
     ).toFixed(2);
@@ -52,10 +54,12 @@ const ProductList = (data, onChange, errors) => {
 
   const removeItem = (index) => {
     const array = [...(data?.items ?? [])];
-    const filteredItems = array.slice(0, index).concat(array.slice(index+1, array?.length))
-     onChange({ target: { name: "items", value: filteredItems } });
+    const filteredItems = array
+      .slice(0, index)
+      .concat(array.slice(index + 1, array?.length));
+    onChange({ target: { name: "items", value: filteredItems } });
   };
-  
+
   return (
     <Fragment>
       <Row className="rounded bg-secondary p-1 my-1 text-uppercase">
@@ -71,7 +75,12 @@ const ProductList = (data, onChange, errors) => {
         return (
           <Row className="" key={index}>
             <Col sm="1">
-              <img src={item?.item_thumb} alt={item?.child_sku} height="50" width="50" />
+              <img
+                src={item?.item_thumb}
+                alt={item?.child_sku}
+                height="50"
+                width="50"
+              />
             </Col>
             <Col sm="3">
               <div>{item?.child_sku}</div>
@@ -114,18 +123,35 @@ const ProductList = (data, onChange, errors) => {
                 name="total_price"
                 id="total_price"
                 placeholder="Price"
-                value={parseFloat(item?.item_quantity * item?.item_unit_price).toFixed(2)}
+                value={parseFloat(
+                  item?.item_quantity * item?.item_unit_price
+                ).toFixed(2)}
                 disabled
               />
             </Col>
             <Col sm="1">
-              <Button
-                color="danger"
-                onClick={(e) => {
-                  e.preventDefault();
-                  removeItem(index);
-                }}
-              >Delete</Button>         
+              {item?.is_new ? (
+                <Button
+                  color="danger"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    removeItem(index);
+                  }}
+                >
+                  Delete
+                </Button>
+              ) : (
+                <Button
+                  color="success"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setShowTracking(true);
+                    setItemTracking(item)
+                  }}
+                >
+                  Tracking
+                </Button>
+              )}
             </Col>
             <hr />
           </Row>

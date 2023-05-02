@@ -3,6 +3,7 @@ import "@styles/react/libs/react-select/_react-select.scss";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 import { Fragment, useEffect, useState } from "react";
 import Flatpickr from "react-flatpickr";
+import ReactPaginate from "react-paginate";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import { Button, Card, Col, Input, Row } from "reactstrap";
@@ -11,7 +12,8 @@ import {
   getSearchOptions,
   getStatusOptions,
   getStoreOptions,
-  setSearchParams
+  setParams,
+  setSearchParams,
 } from "../store";
 import ItemComponent from "./ItemComponent";
 
@@ -143,20 +145,63 @@ const index = () => {
                 }
               />
             </Col>
-            <Col sm="2" className="d-flex justify-content-center">
+            <Col sm="1"></Col>
+            <Col sm="1">
               <Button color="primary" onClick={onSearch} disabled={loading}>
                 {loading ? "Searching" : "Search"}
               </Button>
             </Col>
           </Row>
         </Card>
-        <Card>
-          <Row>
-            {store?.data?.map((item) => {
-              return <Col sm="2">{ItemComponent(item)}</Col>;
-            })}
-          </Row>
-        </Card>
+        {store?.data?.length > 0 && (
+          <Card className="px-1">
+            <div className="d-flex justify-content-between">
+              <div className="m-1">
+                {store?.total?.count} Items found{" "}
+                <small>(Total Quantity: {store?.total?.sum})</small>
+              </div>
+              <div className="m-1">
+                {store?.total?.unassignedProductCount} products need routes /
+                {store?.total?.unassignedOrderCount} unbatched items need routes
+              </div>
+            </div>
+            <Row>
+              {store?.data?.map((item) => {
+                return (
+                  <Col sm="2" className="p-1">
+                    {ItemComponent(item)}
+                  </Col>
+                );
+              })}
+            </Row>
+            <div className="d-flex justify-content-end">
+              <ReactPaginate
+                nextLabel=""
+                pageCount={Number(Math.ceil(store?.total?.count / 48))}
+                breakLabel="..."
+                previousLabel=""
+                pageRangeDisplayed={5}
+                marginPagesDisplayed={2}
+                forcePage={
+                  store?.params?.page !== 0 ? store?.params?.page - 1 : 0
+                }
+                onPageChange={(page) =>
+                  dispatch(setParams({ page: page.selected + 1 }))
+                }
+                activeClassName="active"
+                pageClassName="page-item"
+                breakClassName="page-item"
+                nextLinkClassName="page-link"
+                pageLinkClassName="page-link"
+                nextClassName="page-item next"
+                breakLinkClassName="page-link"
+                previousLinkClassName="page-link"
+                previousClassName="page-item prev"
+                containerClassName="pagination react-paginate"
+              />
+            </div>
+          </Card>
+        )}
       </Fragment>
     </div>
   );

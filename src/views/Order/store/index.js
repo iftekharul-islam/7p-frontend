@@ -24,13 +24,33 @@ export const getOrder = createAsyncThunk(
 export const EditOrder = createAsyncThunk(
   "Orders/AddOrder",
   async (data) => {
-    console.log("🚀 ~ file: index.js:19 ~ data:", data)
-    // const response = await Api.post("orders", data);
-    // if (response?.status == 201) {
-    //   return { status: true };
-    // } else {
-    //   return { status: false, data: response?.data };
-    // }
+    const response = await Api.post(`orders/${data?.id}`, data?.data);
+    if (response?.status == 201) {
+      return { status: true };
+    } else {
+      return { status: false, data: response?.data };
+    }
+  }
+);
+
+export const UpdateStore = createAsyncThunk(
+  "Orders/UpdateStore",
+  async (data) => {
+    const response = await Api.post('orders-update-store', data);
+  }
+);
+
+export const UpdateMethod = createAsyncThunk(
+  "Orders/UpdateMethod",
+  async (data) => {
+    const response = await Api.post('orders-update_method', data);
+  }
+);
+
+export const UpdateShipDate = createAsyncThunk(
+  "Orders/UpdateShipDate",
+  async (data) => {
+    const response = await Api.post('orders-update_shipdate', data);
   }
 );
 
