@@ -97,6 +97,40 @@ export const getProductOptions = createAsyncThunk(
   }
 );
 
+export const getEmailTypeOptions = createAsyncThunk(
+  "Order/getEmailTypeOptions",
+  async () => {
+    const response = await Api.get("order-email-type-options");
+    return response.data;
+  }
+);
+
+export const getShippingMethodOptions = createAsyncThunk(
+  "Order/getShippingMethodOptions",
+  async () => {
+    const response = await Api.get("order-shipping-method-options");
+    return response.data;
+  }
+);
+
+export const sendEmail = createAsyncThunk(
+  "Order/sendEmail",
+  async (data) => {
+    const response = await Api.post("orders-send-email", data);
+    return response.data;
+  }
+);
+
+
+export const updateTracking = createAsyncThunk(
+  "Order/updateTracking",
+  async (data) => {
+    const response = await Api.post("orders-item-tracking", data);
+    return response.data;
+  }
+);
+
+
 export const OrdersSlice = createSlice({
   name: "Orders",
   initialState: {
@@ -133,6 +167,8 @@ export const OrdersSlice = createSlice({
     statusOptions: [],
     storeOptions: [],
     shipOptions: [],
+    emailTypeOptions: [],
+    shippingMethodOptions: []
   },
   extraReducers: (builder) => {
     builder
@@ -161,7 +197,14 @@ export const OrdersSlice = createSlice({
       })
       .addCase(getShipOptions.fulfilled, (state, action) => {
         state.shipOptions = action.payload;
+      })
+      .addCase(getEmailTypeOptions.fulfilled, (state, action) => {
+        state.emailTypeOptions = action.payload;
+      })
+      .addCase(getShippingMethodOptions.fulfilled, (state, action) => {
+        state.shippingMethodOptions = action.payload;
       });
+      
   },
   reducers: {
     setParams: (state, action) => {

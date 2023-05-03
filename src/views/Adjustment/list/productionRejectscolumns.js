@@ -1,15 +1,14 @@
 import moment from "moment";
 import { CheckSquare, XCircle } from "react-feather";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { UncontrolledTooltip } from "reactstrap";
 import { updateAdjustInventoryData } from "../store";
-import { useDispatch } from "react-redux";
 
 const renderAction = (row) => {
   const dispatch = useDispatch();
 
   const onUpdate = (term) => {
-    console.log("🚀 ~ file: productionRejectscolumns.js:12 ~ onUpdate ~ term:", term)
     const qData = {
       rejection_id: row?.id,
       action: term,
