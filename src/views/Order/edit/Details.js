@@ -43,6 +43,16 @@ const Details = (data, onChange, errors) => {
     });
   };
 
+  const onShipChange = (e) => {
+    dispatch(UpdateMethod({ id, ship_date: e[0] }));
+    onChange({
+      target: {
+        name: "ship_date",
+        value: e[0],
+      },
+    });
+  };
+
   const onShipDateChange = (e) => {
     dispatch(UpdateMethod({ id, ship_date: e[0] }));
     onChange({
@@ -71,14 +81,14 @@ const Details = (data, onChange, errors) => {
             placeholder="Select Store"
             options={store?.storeOptions}
             value={store?.storeOptions?.find(
-              (item) => item?.value === data?.store_select ?? data?.store_id
+              (item) => item?.value === data?.store_id
             )}
             onChange={onStoreChange}
           />
         </Col>
 
         <Col sm="4">
-          <Label className="form-label" for="date">
+          {/* <Label className="form-label" for="date">
             Status
           </Label>
           <Select
@@ -91,6 +101,7 @@ const Details = (data, onChange, errors) => {
               (item) =>
                 item?.value === data?.status_select ?? data?.order_status
             )}
+            onChange={onShipChange}
             onChange={(e) =>
               onChange({
                 target: {
@@ -99,7 +110,7 @@ const Details = (data, onChange, errors) => {
                 },
               })
             }
-          />
+          /> */}
         </Col>
       </Row>
       <hr />
@@ -114,10 +125,21 @@ const Details = (data, onChange, errors) => {
             classNamePrefix="select"
             theme={selectThemeColors}
             placeholder="Ship Via"
-            options={store?.storeOptions}
-            value={store?.storeOptions?.find(
-              (item) => item?.value === data?.shipping_method
-            )}
+            options={store?.shipOptions}
+            value={store?.shipOptions?.find((item) => {
+              if (data?.store?.change_method == "1" && data?.carrier != "MN") {
+                return item?.value === `${data?.carrier}*${data?.method}`;
+              } else if (data?.store?.change_method == "1") {
+                return item?.value === `${data?.carrier}*`;
+              } else {
+                if (data?.carrier) {
+                  return {label: data?.carrier+data?.method, value: data?.carrier+data?.method }
+                } else {
+                  item?.value === '';
+                }
+              }
+            })}
+            isDisabled={data?.store?.change_method == "1" ? false : true}
             onChange={onMethodChange}
           />
         </Col>

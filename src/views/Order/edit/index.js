@@ -50,8 +50,7 @@ const index = () => {
   const onSubmit = async () => {
     const res = await dispatch(EditOrder({data, id}));
     if (res?.payload?.status) {
-      setData({ items: [] });
-      setTimeout(() => window.location.reload(), 1500);
+      dispatch(getOrder(id))
     } else {
       setErrors(res?.payload?.data?.errors);
     }
@@ -71,7 +70,7 @@ const index = () => {
                 {Address(data, onChange, errors, setShowMail)}
                 {ProductList(data, onChange, errors, setShowTracking, setItemTracking)}
                 {Calculation(data, onChange, onSubmit, errors)}
-                {TrackingModal(showTracking, setShowTracking, itemTracking)}
+                {TrackingModal(showTracking, setShowTracking, itemTracking, data?.id, data?.short_order)}
                 {MailModal(showMail, setShowMail, data)}
               </CardBody>
             </Card>

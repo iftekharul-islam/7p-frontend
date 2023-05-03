@@ -21,9 +21,10 @@ const ProductList = (data, onChange, errors, setShowTracking, setItemTracking) =
   };
 
   const handleInputChange = (newValue) => {
-    const array = [...(data?.items ?? [])];
+    const array = data?.items?.map((item) => ({ ...item })); 
     array?.push({
-      sku: newValue?.data?.product_model,
+      item_id: newValue?.data?.item_id,
+      child_sku: newValue?.data?.product_model,
       id_catalog: newValue?.data?.id_catalog,
       item_description: newValue?.data?.product_name,
       item_thumb: newValue?.data?.product_thumb,
@@ -35,7 +36,7 @@ const ProductList = (data, onChange, errors, setShowTracking, setItemTracking) =
   };
 
   const onItemChange = (e, index) => {
-    const array = [...(data?.items ?? [])];
+    const array = data?.items?.map((item) => ({ ...item }));    
     array[index][e.target?.name] = e.target?.value;
     onChange({ target: { name: "items", value: array } });
   };

@@ -1,4 +1,8 @@
+import { selectThemeColors } from "@utils";
 import { Fragment, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import Select from "react-select";
 import {
   Button,
   Card,
@@ -9,25 +13,19 @@ import {
   Form,
   Input,
   Label,
-  Row,
-  Spinner,
+  Row
 } from "reactstrap";
-import { useDispatch, useSelector } from "react-redux";
 import {
   UpdateRoute,
   getRoute,
   getStationOption,
   getTemplateOption,
 } from "../store";
-import { selectThemeColors } from "@utils";
-import Select from "react-select";
-import { useNavigate, useParams } from "react-router-dom";
 
 const index = () => {
   const { id } = useParams();
   const [data, setData] = useState(null);
   const [station, setStation] = useState(null);
-  console.log("🚀 ~ file: index.js:30 ~ index ~ station:", station)
   const [errors, setErrors] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
