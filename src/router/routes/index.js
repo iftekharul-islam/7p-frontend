@@ -14,6 +14,7 @@ import PublicRoute from "@components/routes/PublicRoute";
 import { isObjEmpty } from "@utils";
 import AdjustmentRoute from "../../views/Adjustment/AdjustmentRoute";
 import ConfigChildSKURoute from "../../views/ConfigChildSKU/ConfigChildSKURoute";
+import CustomerServiceRoute from "../../views/CustomerService/CustomerServiceRoute";
 import EmailTemplateRoute from "../../views/EmailTemplate/EmailTemplateRoute";
 import GraphicItemsListRoute from "../../views/GraphicItemsList/GraphicItemsListRoute";
 import InventoryRoute from "../../views/Inventory/InventoryRoute";
@@ -85,6 +86,7 @@ const Routes = [
   ...ManualOrderRoute,
   ...ItemsListRoute,
   ...GraphicItemsListRoute,
+  ...CustomerServiceRoute,
   {
     path: "/",
     index: true,
