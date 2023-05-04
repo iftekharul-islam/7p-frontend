@@ -3,28 +3,28 @@ import moment from "moment";
 import DataTable from "react-data-table-component";
 import { Card } from "reactstrap";
 
-const Backorders = ({data}) => {  
+const BoSummary = ({data}) => {  
   const columns = [
     {
-      name: "Order",
+      name: "Quantity",
       minWidth: "20px",
       selector: (row) => row?.qty,
       cell: (row) => <div>{row?.qty}</div>,
     },
     {
-      name: "Date",
+      name: "Description",
       minWidth: "300px",
       selector: (row) => row?.stock_name_discription,
       cell: (row) => <div>{row?.stock_name_discription}</div>,
     },
     {
-      name: "Customer",
+      name: "First Order Date",
       minWidth: "120px",
       selector: (row) => row?.min_date,
       cell: (row) => <div>{moment(row?.min_date).format('DD-MM-YYYY')}</div>,
     },
     {
-      name: "Item",
+      name: "Inventory Item",
       minWidth: "120px",
       selector: (row) => row?.stock_no_unique,
       cell: (row) => <div>{row?.stock_no_unique}</div>,
@@ -44,4 +44,4 @@ const Backorders = ({data}) => {
     </Card>
   );
 };
-export default Backorders;
+export default BoSummary;

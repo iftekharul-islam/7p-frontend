@@ -10,6 +10,15 @@ export const getAllData = createAsyncThunk(
   }
 );
 
+export const actionButton = createAsyncThunk(
+  "CustomerService/actionButton",
+  async (data, {dispatch}) => {
+    const response = await Api.get("customer-service-action", { params: data });
+    dispatch(getAllData({ tab: data?.tab }));
+    return response.data;
+  }
+);
+
 export const AddRoute = createAsyncThunk("Routes/AddRoute", async (data) => {
   const response = await Api.post("route", data);
   if (response?.status == 201) {
@@ -71,7 +80,7 @@ export const CustomerServiceSlice = createSlice({
     params: {},
     allData: [],
 
-    active: "address",
+    active: "other",
     route: {},
 
     stationOptions: [],

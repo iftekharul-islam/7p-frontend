@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllData, setActive } from "../store";
 import Backorders from "./Backorders";
 import BadAddress from "./BadAddress";
+import BoSummary from "./BoSummary";
 import CSRejects from "./CSRejects";
 import Incompatible from "./Incompatible";
 import OtherHolds from "./OtherHolds";
@@ -16,8 +17,9 @@ import UpdateLog from "./UpdateLog";
 
 const index = () => {
   const dispatch = useDispatch();
-  const { active } = useSelector((state) => state?.customerServices);
-  const { total } = useSelector((state) => state?.customerServices);
+  const { data, active, total } = useSelector(
+    (state) => state?.customerServices
+  );
 
   const toggle = (tab) => {
     if (active !== tab) {
@@ -66,13 +68,17 @@ const index = () => {
 
         <TabContent activeTab={active}>
           <TabPane tabId="address">
-            <BadAddress />
+            <BadAddress data={data} />
           </TabPane>
           <TabPane tabId="backorder">
-            <CSRejects />
+            {data?.backorders?.length > 0 ? (
+              <Backorders data={data?.backorders} />
+            ) : (
+              <BoSummary data={data?.bo_summary} />
+            )}
           </TabPane>
           <TabPane tabId="rejects">
-            <Backorders />
+            <CSRejects data={data} />
           </TabPane>
           <TabPane tabId="reship">
             <ReturnedShipments />
@@ -87,7 +93,7 @@ const index = () => {
             <ShippingHolds />
           </TabPane>
           <TabPane tabId="other">
-            <OtherHolds />
+            <OtherHolds data={data}/>
           </TabPane>
           <TabPane tabId="updates">
             <UpdateLog />
