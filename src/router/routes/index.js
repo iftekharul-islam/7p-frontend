@@ -33,7 +33,9 @@ import RoleRoute from "../../views/Role/RoleRoute";
 import RouteRoute from "../../views/Route/RouteRoute";
 import RouteTemplatesRoute from "../../views/RouteTemplates/RouteTemplatesRoute";
 import SectionRoute from "../../views/Section/SectionRoute";
+import SectionReportRoute from "../../views/SectionReport/SectionReportRoute";
 import SendBulkEmailRoute from "../../views/SendBulkEmail/SendBulkEmailRoute";
+import ShipDateReportRoute from "../../views/ShipDateReport/ShipDateReportRoute";
 import SpecificationSheetRoute from "../../views/SpecificationSheet/SpecificationSheetRoute";
 import StationRoute from "../../views/Station/StationRoute";
 import UserRoute from "../../views/User/UserRoute";
@@ -87,6 +89,8 @@ const Routes = [
   ...ItemsListRoute,
   ...GraphicItemsListRoute,
   ...CustomerServiceRoute,
+  ...SectionReportRoute,
+  ...ShipDateReportRoute,
   {
     path: "/",
     index: true,

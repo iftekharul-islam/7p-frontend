@@ -20,7 +20,9 @@ import roles from "@src/views/Role/store";
 import routes from "@src/views/Route/store";
 import templates from "@src/views/RouteTemplates/store";
 import sections from "@src/views/Section/store";
+import sectionReports from "@src/views/SectionReport/store";
 import bulkEmails from "@src/views/SendBulkEmail/store";
+import shipDateReports from "@src/views/ShipDateReport/store";
 import productspecifications from "@src/views/SpecificationSheet/store";
 import stations from "@src/views/Station/store";
 import users from "@src/views/User/store";
@@ -58,6 +60,8 @@ const rootReducer = {
   itemsList,
   graphicItemsList,
   customerServices,
+  sectionReports,
+  shipDateReports
 };
 
 export default rootReducer;
