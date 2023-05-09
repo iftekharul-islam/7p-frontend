@@ -9,6 +9,7 @@ import itemsList from "@src/views/ItemsList/store";
 import manualOrders from "@src/views/ManualOrder/store";
 import manufactures from "@src/views/Manufactures/store";
 import orders from "@src/views/Order/store";
+import orderItemsReports from "@src/views/OrderItemsReport/store";
 import parameters from "@src/views/Parameters/store";
 import permissions from "@src/views/Permission/store";
 import products from "@src/views/Product/store";
@@ -19,6 +20,7 @@ import reasons from "@src/views/RejectionReason/store";
 import roles from "@src/views/Role/store";
 import routes from "@src/views/Route/store";
 import templates from "@src/views/RouteTemplates/store";
+import salesSummaryReports from "@src/views/SalesSummaryReport/store";
 import sections from "@src/views/Section/store";
 import sectionReports from "@src/views/SectionReport/store";
 import bulkEmails from "@src/views/SendBulkEmail/store";
@@ -61,7 +63,9 @@ const rootReducer = {
   graphicItemsList,
   customerServices,
   sectionReports,
-  shipDateReports
+  shipDateReports,
+  orderItemsReports,
+  salesSummaryReports
 };
 
 export default rootReducer;

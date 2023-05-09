@@ -224,7 +224,7 @@ export default [
         title: "Order Items Report",
         icon: <Circle size={20} />,
         isAccess: check(["user"]),
-        navLink: "/order-items-report",
+        navLink: "/report-order-items",
       },
       {
         id: "wap_missing_items",
@@ -238,7 +238,7 @@ export default [
         title: "Sales Summary",
         icon: <Circle size={20} />,
         isAccess: check(["user"]),
-        navLink: "/ship-date-report",
+        navLink: "/report-sales-summary",
       },
       {
         id: "coupon_report",
