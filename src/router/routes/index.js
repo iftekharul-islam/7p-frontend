@@ -22,6 +22,7 @@ import ItemsListRoute from "../../views/ItemsList/ItemsListRoute";
 import ManualOrderRoute from "../../views/ManualOrder/ManualOrderRoute";
 import ManufacturesRoute from "../../views/Manufactures/ManufacturesRoute";
 import OrderRoute from "../../views/Order/OrderRoute";
+import OrderItemsReportRoute from "../../views/OrderItemsReport/OrderItemsReportRoute";
 import ParametersRoute from "../../views/Parameters/ParametersRoute";
 import PermissionRoute from "../../views/Permission/PermissionRoute";
 import ProductRoute from "../../views/Product/ProductRoute";
@@ -32,6 +33,7 @@ import RejectionReasonRoute from "../../views/RejectionReason/RejectionReasonRou
 import RoleRoute from "../../views/Role/RoleRoute";
 import RouteRoute from "../../views/Route/RouteRoute";
 import RouteTemplatesRoute from "../../views/RouteTemplates/RouteTemplatesRoute";
+import SalesSummaryReportRoute from "../../views/SalesSummaryReport/SalesSummaryReportRoute";
 import SectionRoute from "../../views/Section/SectionRoute";
 import SectionReportRoute from "../../views/SectionReport/SectionReportRoute";
 import SendBulkEmailRoute from "../../views/SendBulkEmail/SendBulkEmailRoute";
@@ -91,6 +93,8 @@ const Routes = [
   ...CustomerServiceRoute,
   ...SectionReportRoute,
   ...ShipDateReportRoute,
+  ...OrderItemsReportRoute,
+  ...SalesSummaryReportRoute,
   {
     path: "/",
     index: true,
