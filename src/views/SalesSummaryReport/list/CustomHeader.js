@@ -5,12 +5,8 @@ import { useEffect, useState } from "react";
 import Flatpickr from "react-flatpickr";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
-import { Button, Col, Row } from "reactstrap";
-import {
-  getAllData,
-  getStoreOptions,
-  setSearchParams,
-} from "../store";
+import { Button, Col, Row, Spinner } from "reactstrap";
+import { getAllData, getStoreOptions, setSearchParams } from "../store";
 
 const CustomHeader = () => {
   const dispatch = useDispatch();
@@ -66,7 +62,13 @@ const CustomHeader = () => {
       </Col>
       <Col sm="2" className="d-flex justify-content-center">
         <Button color="primary" onClick={onSearch} disabled={loading}>
-          {loading ? "Searching" : "Search"}
+          {loading ? (
+            <>
+              <Spinner className="me-25" size="sm" /> Searching
+            </>
+          ) : (
+            "Search"
+          )}
         </Button>
       </Col>
     </Row>
