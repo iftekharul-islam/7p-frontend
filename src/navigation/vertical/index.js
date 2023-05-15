@@ -320,4 +320,19 @@ export default [
       },
     ],
   },
+  {
+    id: "market-place",
+    title: "Market Place",
+    icon: <Circle size={20} />,
+    isAccess: check(["product", "vendor"]),
+    children: [
+      {
+        id: "manage-stores",
+        title: "Manage Stores",
+        icon: <Circle size={20} />,
+        isAccess: check(["user"]),
+        navLink: "/stores",
+      }
+    ],
+  },
 ];

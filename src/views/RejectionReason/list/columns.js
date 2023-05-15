@@ -1,5 +1,5 @@
-import { ArrowDown, ArrowUp, Trash2 } from "react-feather";
 import { useState } from "react";
+import { ArrowDown, ArrowUp, Trash2 } from "react-feather";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { Button, Col, Modal, ModalBody, ModalHeader, Row } from "reactstrap";
@@ -7,14 +7,14 @@ import { DeleteReason, sortOrderReason } from "../store";
 
 const renderSort = (row, index) => {
   const dispatch = useDispatch();
-  const {data} = useSelector(state => state.reasons)
+  const { data } = useSelector((state) => state.reasons);
 
   const onSort = (direction) => {
     dispatch(sortOrderReason({ direction, id: row?.id }));
   };
   return (
     <div className="column-action">
-      {index > 0 && (
+      {index > 0 ? (
         <Link
           className="text-truncate text-capitalize align-middle"
           onClick={(e) => {
@@ -24,8 +24,10 @@ const renderSort = (row, index) => {
         >
           <ArrowUp size={18} className={`text-primary me-50`} />
         </Link>
+      ) : (
+        <span className="text-truncate text-capitalize align-middle text-white">aaa</span>
       )}
-      {index < data?.length-1 && (
+      {index < data?.length - 1 && (
         <Link
           className="text-truncate text-capitalize align-middle"
           onClick={(e) => {

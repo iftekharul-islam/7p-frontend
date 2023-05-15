@@ -40,6 +40,7 @@ import SendBulkEmailRoute from "../../views/SendBulkEmail/SendBulkEmailRoute";
 import ShipDateReportRoute from "../../views/ShipDateReport/ShipDateReportRoute";
 import SpecificationSheetRoute from "../../views/SpecificationSheet/SpecificationSheetRoute";
 import StationRoute from "../../views/Station/StationRoute";
+import StoresRoute from "../../views/Stores/StoresRoute";
 import UserRoute from "../../views/User/UserRoute";
 import VendorRoute from "../../views/Vendor/VendorRoute";
 
@@ -95,6 +96,7 @@ const Routes = [
   ...ShipDateReportRoute,
   ...OrderItemsReportRoute,
   ...SalesSummaryReportRoute,
+  ...StoresRoute,
   {
     path: "/",
     index: true,
