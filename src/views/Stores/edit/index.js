@@ -1,7 +1,7 @@
 import { selectThemeColors } from "@utils";
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Select from "react-select";
 import {
   Button,
@@ -16,16 +16,19 @@ import {
   Row,
 } from "reactstrap";
 import {
-  AddStore,
+  UpdateStore,
   getBatchOptions,
   getCompanyOptions,
   getConfirmOptions,
   getInputOptions,
+  getQCOptions,
+  getStore
 } from "../store";
 
 const index = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { id } = useParams();
   const [data, setData] = useState(null);
   const store = useSelector((state) => state.stores);
 
@@ -34,7 +37,15 @@ const index = () => {
     dispatch(getInputOptions());
     dispatch(getBatchOptions());
     dispatch(getConfirmOptions());
+    dispatch(getQCOptions());
+    dispatch(getStore(id));
   }, []);
+
+  useEffect(() => {
+    if (store?.store) {
+      setData(store?.store);
+    }
+  }, [store?.store]);
 
   const onChange = (e) => {
     setData({
@@ -48,9 +59,15 @@ const index = () => {
       [name]: value,
     });
   };
+  const onCheckboxChange = (e) => {
+    setData({
+      ...data,
+      [e.target?.name]: e.target?.checked,
+    });
+  };
 
   const onSubmit = async () => {
-    const res = await dispatch(AddStore(data));
+    const res = await dispatch(UpdateStore({id, data}));
     if (res?.payload?.status) {
       navigate("/stores");
     }
@@ -61,7 +78,7 @@ const index = () => {
       <Form>
         <Card>
           <CardHeader>
-            <CardTitle tag="h4">New Store</CardTitle>
+            <CardTitle tag="h4">Update Store</CardTitle>
           </CardHeader>
           <CardBody>
             <Row>
@@ -76,6 +93,7 @@ const index = () => {
                   placeholder="Name"
                   value={data?.store_name}
                   onChange={onChange}
+                  disabled
                 />
               </Col>
               <Col sm="4">
@@ -102,7 +120,7 @@ const index = () => {
                   placeholder="Select Company"
                   options={store?.companyOptions}
                   value={store?.companyOptions?.find(
-                    (item) => item?.value === data?.company
+                    (item) => item?.value === parseInt(data?.company)
                   )}
                   onChange={(e) => onSelectChange("company", e.value)}
                   isClearable={false}
@@ -147,7 +165,7 @@ const index = () => {
                   placeholder="Select Data Input"
                   options={store?.inputOptions}
                   value={store?.inputOptions?.find(
-                    (item) => item?.value === data?.input
+                    (item) => item?.value === parseInt(data?.input)
                   )}
                   onChange={(e) => onSelectChange("input", e.value)}
                   isClearable={false}
@@ -167,7 +185,7 @@ const index = () => {
                   placeholder="Select..."
                   options={store?.changeItemsOptions}
                   value={store?.changeItemsOptions?.find(
-                    (item) => item?.value === data?.change_items
+                    (item) => item?.value === parseInt(data?.change_items)
                   )}
                   onChange={(e) => onSelectChange("change_items", e.value)}
                   isClearable={false}
@@ -184,7 +202,7 @@ const index = () => {
                   placeholder="Select Batch Items"
                   options={store?.batchOptions}
                   value={store?.batchOptions?.find(
-                    (item) => item?.value === data?.batch
+                    (item) => item?.value === parseInt(data?.batch)
                   )}
                   onChange={(e) => onSelectChange("batch", e.value)}
                   isClearable={false}
@@ -201,11 +219,10 @@ const index = () => {
                   placeholder="Select Quality Control"
                   options={store?.qcOptions}
                   value={store?.qcOptions?.find(
-                    (item) => item?.value === data?.qc
+                    (item) => item?.value === parseInt(data?.qc)
                   )}
                   onChange={(e) => onSelectChange("qc", e.value)}
                   isClearable={false}
-                  isDisabled
                 />
               </Col>
             </Row>
@@ -222,7 +239,7 @@ const index = () => {
                   placeholder="Select Order Confirmation"
                   options={store?.confirmOptions}
                   value={store?.confirmOptions?.find(
-                    (item) => item?.value === data?.confirm
+                    (item) => item?.value === parseInt(data?.confirm)
                   )}
                   onChange={(e) => onSelectChange("confirm", e.value)}
                   isClearable={false}
@@ -239,7 +256,7 @@ const index = () => {
                   placeholder="Select Shipping Notification"
                   options={store?.confirmOptions}
                   value={store?.confirmOptions?.find(
-                    (item) => item?.value === data?.ship
+                    (item) => item?.value === parseInt(data?.ship)
                   )}
                   onChange={(e) => onSelectChange("ship", e.value)}
                   isClearable={false}
@@ -256,7 +273,7 @@ const index = () => {
                   placeholder="Select QuickBooks Export"
                   options={store?.qbOptions}
                   value={store?.qbOptions?.find(
-                    (item) => item?.value === data?.qb_export
+                    (item) => item?.value === parseInt(data?.qb_export)
                   )}
                   onChange={(e) => onSelectChange("qb_export", e.value)}
                   isClearable={false}
@@ -324,7 +341,7 @@ const index = () => {
                   placeholder="Select Validate Addresses"
                   options={store?.multiOptions}
                   value={store?.multiOptions?.find(
-                    (item) => item?.value === data?.validate_addresses
+                    (item) => item?.value === parseInt(data?.validate_addresses)
                   )}
                   onChange={(e) =>
                     onSelectChange("validate_addresses", e.value)
@@ -343,7 +360,7 @@ const index = () => {
                   placeholder="Select Multiple Package Shipping"
                   options={store?.multiOptions}
                   value={store?.multiOptions?.find(
-                    (item) => item?.value === data?.multi_carton
+                    (item) => item?.value === parseInt(data?.multi_carton)
                   )}
                   onChange={(e) => onSelectChange("multi_carton", e.value)}
                   isClearable={false}
@@ -375,7 +392,7 @@ const index = () => {
                   placeholder="Select Change Shipping Method"
                   options={store?.multiOptions}
                   value={store?.multiOptions?.find(
-                    (item) => item?.value === data?.change_method
+                    (item) => item?.value === parseInt(data?.change_method)
                   )}
                   onChange={(e) => onSelectChange("change_method", e.value)}
                   isClearable={false}
@@ -392,7 +409,7 @@ const index = () => {
                   placeholder="Select UPS"
                   options={store?.upsOptions}
                   value={store?.upsOptions?.find(
-                    (item) => item?.value === data?.ups_type
+                    (item) => item?.value === parseInt(data?.ups_type)
                   )}
                   onChange={(e) => onSelectChange("ups_type", e.value)}
                   isClearable={false}
@@ -424,7 +441,7 @@ const index = () => {
                   placeholder="Select Additional Shipping Label"
                   options={store?.multiOptions}
                   value={store?.multiOptions?.find(
-                    (item) => item?.value === data?.ship_label
+                    (item) => item?.value === parseInt(data?.ship_label)
                   )}
                   onChange={(e) => onSelectChange("ship_label", e.value)}
                   isClearable={false}
@@ -490,7 +507,7 @@ const index = () => {
                   placeholder="Select Packing List"
                   options={store?.listOptions}
                   value={store?.listOptions?.find(
-                    (item) => item?.value === data?.packing_list
+                    (item) => item?.value === parseInt(data?.packing_list)
                   )}
                   onChange={(e) => onSelectChange("packing_list", e.value)}
                   isClearable={false}
@@ -507,7 +524,7 @@ const index = () => {
                   placeholder="Select FedEx"
                   options={store?.upsOptions}
                   value={store?.upsOptions?.find(
-                    (item) => item?.value === data?.fedex_type
+                    (item) => item?.value === parseInt(data?.fedex_type)
                   )}
                   onChange={(e) => onSelectChange("fedex_type", e.value)}
                   isClearable={false}
@@ -516,18 +533,47 @@ const index = () => {
             </Row>
             <Row>
               <Col sm="4">
-                <Label className="form-label" for="phone">
-                  Phone Number
-                </Label>
-                <Input
-                  type="text"
-                  name="phone"
-                  id="phone"
-                  placeholder="Phone Number"
-                  value={data?.phone}
-                  onChange={onChange}
-                />
+                <Row>
+                  <Col sm="12">
+                    <Label className="form-label" for="phone">
+                      Phone Number
+                    </Label>
+                    <Input
+                      type="text"
+                      name="phone"
+                      id="phone"
+                      placeholder="Phone Number"
+                      value={data?.phone}
+                      onChange={onCheckboxChange}
+                    />
+                  </Col>
+                  <Col sm="12">
+                    <Input
+                      type="checkbox"
+                      id="dropship"
+                      name="dropship"
+                      checked={data?.dropship}
+                      onChange={onCheckboxChange}
+                    />
+                    <Label className="form-check-label" for="success-checkbox">
+                      Dropship Qualifier
+                    </Label>
+                  </Col>
+                  <Col sm="12">
+                    <Input
+                      type="checkbox"
+                      id="dropship_tracking"
+                      name="dropship_tracking"
+                      checked={data?.dropship_tracking}
+                      onChange={onChange}
+                    />
+                    <Label className="form-check-label" for="success-checkbox">
+                      Dropship Tracking Import
+                    </Label>
+                  </Col>
+                </Row>
               </Col>
+
               <Col sm="4"> </Col>
               <Col sm="4">
                 <Row>
@@ -594,7 +640,7 @@ const index = () => {
                       onSubmit();
                     }}
                   >
-                    Submit
+                    Update
                   </Button>
                 </div>
               </Col>

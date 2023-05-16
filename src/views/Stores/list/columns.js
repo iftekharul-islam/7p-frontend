@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { ArrowDown, ArrowUp, Edit, Eye, EyeOff, Menu } from "react-feather";
+import { ArrowDown, ArrowUp, Edit, Eye, EyeOff, Menu, Trash2 } from "react-feather";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Button,
   Col,
@@ -11,7 +11,7 @@ import {
   Row,
   UncontrolledTooltip,
 } from "reactstrap";
-import { UpdateVisibility, sortStore } from "../store";
+import { DeleteStore, UpdateVisibility, sortStore } from "../store";
 
 const renderSort = (row, index) => {
   const dispatch = useDispatch();
@@ -66,12 +66,13 @@ const renderSort = (row, index) => {
 
 const renderAction = (row) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [deleteItem, setDeleteItem] = useState(null);
   const [deleteShow, setDeleteShow] = useState(false);
 
   const onSubmitDelete = (e) => {
     e.preventDefault();
-    // dispatch(DeleteReason(deleteItem.id));
+    dispatch(DeleteStore(deleteItem.id));
     setDeleteShow(!deleteShow);
   };
 
@@ -99,8 +100,7 @@ const renderAction = (row) => {
         className="text-truncate text-capitalize align-middle"
         onClick={(e) => {
           e.preventDefault();
-          setDeleteItem(row);
-          setDeleteShow(true);
+          navigate("/store-edit/" + row.id);
         }}
         id={`edit-${row.id}`}
       >
@@ -112,6 +112,16 @@ const renderAction = (row) => {
           e.preventDefault();
           setDeleteItem(row);
           setDeleteShow(true);
+        }}
+        id={`delete-${row.id}`}
+      >
+        <Trash2 size={18} className={`text-danger me-50`} />
+      </Link>
+      <Link
+        className="text-truncate text-capitalize align-middle"
+        onClick={(e) => {
+          e.preventDefault();
+          navigate("/store-items/" + row.id);
         }}
         id={`map-${row.id}`}
       >
@@ -127,6 +137,9 @@ const renderAction = (row) => {
       </UncontrolledTooltip>
       <UncontrolledTooltip placement="top" target={`edit-${row.id}`}>
         Edit
+      </UncontrolledTooltip>
+      <UncontrolledTooltip placement="top" target={`delete-${row.id}`}>
+        Delete
       </UncontrolledTooltip>
       <Modal
         isOpen={deleteShow}
