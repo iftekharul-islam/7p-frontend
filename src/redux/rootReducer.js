@@ -4,6 +4,7 @@ import configchildskus from "@src/views/ConfigChildSKU/store";
 import customerServices from "@src/views/CustomerService/store";
 import emailTemplate from "@src/views/EmailTemplate/store";
 import graphicItemsList from "@src/views/GraphicItemsList/store";
+import imports from "@src/views/ImportOrders/store";
 import inventories from "@src/views/Inventory/store";
 import itemsList from "@src/views/ItemsList/store";
 import manualOrders from "@src/views/ManualOrder/store";
@@ -67,7 +68,8 @@ const rootReducer = {
   shipDateReports,
   orderItemsReports,
   salesSummaryReports,
-  stores
+  stores,
+  imports
 };
 
 export default rootReducer;
