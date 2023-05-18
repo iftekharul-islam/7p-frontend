@@ -17,6 +17,7 @@ import ConfigChildSKURoute from "../../views/ConfigChildSKU/ConfigChildSKURoute"
 import CustomerServiceRoute from "../../views/CustomerService/CustomerServiceRoute";
 import EmailTemplateRoute from "../../views/EmailTemplate/EmailTemplateRoute";
 import GraphicItemsListRoute from "../../views/GraphicItemsList/GraphicItemsListRoute";
+import ImportOrdersRoute from "../../views/ImportOrders/ImportOrdersRoute";
 import InventoryRoute from "../../views/Inventory/InventoryRoute";
 import ItemsListRoute from "../../views/ItemsList/ItemsListRoute";
 import ManualOrderRoute from "../../views/ManualOrder/ManualOrderRoute";
@@ -97,6 +98,7 @@ const Routes = [
   ...OrderItemsReportRoute,
   ...SalesSummaryReportRoute,
   ...StoresRoute,
+  ...ImportOrdersRoute,
   {
     path: "/",
     index: true,

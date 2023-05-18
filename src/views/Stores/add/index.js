@@ -16,7 +16,6 @@ import {
   Row,
 } from "reactstrap";
 import {
-  AddStore,
   getBatchOptions,
   getCompanyOptions,
   getConfirmOptions,
@@ -56,10 +55,111 @@ const index = () => {
     }
   };
 
+  // const onSubmit = async () => {
+  //   const accessToken =
+  //     "SPJ09NISFLGI9CA0KEIWIFVDJ5SF9FWX0HMXLD7MPNJFFT6YWMEAVBOW9U7GY6I3";
+  //   const file = document.getElementById("fileInput").files[0];
+  //   const data = {
+  //     service: "mock",
+  //     params: {
+  //       sleepSeconds: 5,
+  //     },
+  //   };
+
+  //   const formData = new FormData();
+  //   formData.append("file", file);
+  //   formData.append("data", JSON.stringify(data));
+
+  //   const config = {
+  //     headers: {
+  //       "Content-Type": "multipart/form-data",
+  //       "X-Analyxus-AccessToken": accessToken,
+  //     },
+  //   };
+
+  //   try {
+  //     const response = await axios.post(
+  //       "http://35.184.30.3:6000/submit",
+  //       formData,
+  //       config
+  //     );
+  //     console.log("Job submitted:", response.data);
+  //   } catch (error) {
+  //     console.error("Error submitting job:", error);
+  //   }
+  // };
+
+  // const onSubmit = async () => {
+  //   const url = 'http://35.184.30.3:6001/';
+  //   const jobId = 'bb1eac99-f29c-4710-92fc-2a273d37ddea';
+  //   const accessToken = 'SPJ09NISFLGI9CA0KEIWIFVDJ5SF9FWX0HMXLD7MPNJFFT6YWMEAVBOW9U7GY6I3';
+
+  //   const headers = {
+  //     'X-Analyxus-AccessToken': accessToken,
+  //     'Access-Control-Allow-Origin': 'http://localhost:3000',
+  //   };
+
+  //   axios.get(url, {
+  //     headers: headers,
+  //     params: {
+  //       jobId: jobId
+  //     }
+  //   })
+  //     .then(response => {
+  //       console.log("🚀 ~ file: index.js:111 ~ onSubmit ~ response:", response)
+  //     })
+  //     .catch(error => {
+  //       console.log("🚀 ~ file: index.js:112 ~ onSubmit ~ error:", error)
+  //     });
+  // };
+
+  // const onSubmit = async () => {
+  //   const url = "http://35.184.30.3:6001/get-result/5";
+  //   const accessToken =
+  //     "SPJ09NISFLGI9CA0KEIWIFVDJ5SF9FWX0HMXLD7MPNJFFT6YWMEAVBOW9U7GY6I3";
+
+  //   const mockData = {
+  //     service: "mock",
+  //     params: {
+  //       sleepSeconds: 5,
+  //     },
+  //   };
+
+  //   const formData = new FormData();
+  //   formData.append("data", JSON.stringify(mockData));
+
+  //   try {
+  //     const response = await axios.post(url, formData, {
+  //       headers: {
+  //         "X-Analyxus-AccessToken": accessToken,
+  //       },
+  //     });
+  //     console.log("🚀 ~ file: index.js:86 ~ onSubmit ~ response.data:", response.data)
+  //   } catch (error) {
+  //     console.log("🚀 ~ file: index.js:87 ~ onSubmit ~ error:", error)
+  //   }
+  // };
+
   return (
     <Fragment>
       <Form>
         <Card>
+          <div>
+            <input type="file" id="fileInput" />
+            <div className="d-flex">
+              <Button
+                className="me-1"
+                color="primary"
+                type="submit"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onSubmit();
+                }}
+              >
+                Submit
+              </Button>
+            </div>
+          </div>
           <CardHeader>
             <CardTitle tag="h4">New Store</CardTitle>
           </CardHeader>
