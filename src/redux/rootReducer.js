@@ -3,6 +3,7 @@ import Auth from "@src/views/Auth/store";
 import configchildskus from "@src/views/ConfigChildSKU/store";
 import customerServices from "@src/views/CustomerService/store";
 import emailTemplate from "@src/views/EmailTemplate/store";
+import exports from "@src/views/ExportShipments/store";
 import graphicItemsList from "@src/views/GraphicItemsList/store";
 import imports from "@src/views/ImportOrders/store";
 import inventories from "@src/views/Inventory/store";
@@ -69,7 +70,8 @@ const rootReducer = {
   orderItemsReports,
   salesSummaryReports,
   stores,
-  imports
+  imports,
+  exports,
 };
 
 export default rootReducer;

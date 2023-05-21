@@ -339,6 +339,13 @@ export default [
         icon: <Circle size={20} />,
         isAccess: check(["user"]),
         navLink: "/transfer-import",
+      },
+      {
+        id: "export-hipments",
+        title: "Export Shipments",
+        icon: <Circle size={20} />,
+        isAccess: check(["user"]),
+        navLink: "/transfer-export",
       }
     ],
   },
