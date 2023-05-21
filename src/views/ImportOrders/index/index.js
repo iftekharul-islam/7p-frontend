@@ -17,7 +17,6 @@ const index = () => {
   const dispatch = useDispatch();
   const {orderStoreOptions, trackingStoreOptions} = useSelector((state) => state.imports);
   const [orderData, setOrderData] = useState({});
-  console.log("🚀 ~ file: index.js:20 ~ index ~ orderData:", orderData)
   const [trackingData, setTrackingData] = useState({});
   const [zakekeData, setZakekeData] = useState({});
 
