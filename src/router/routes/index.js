@@ -27,6 +27,7 @@ import OrderRoute from "../../views/Order/OrderRoute";
 import OrderItemsReportRoute from "../../views/OrderItemsReport/OrderItemsReportRoute";
 import ParametersRoute from "../../views/Parameters/ParametersRoute";
 import PermissionRoute from "../../views/Permission/PermissionRoute";
+import PreviewBatchesRoute from "../../views/PreviewBatches/PreviewBatchesRoute";
 import ProductRoute from "../../views/Product/ProductRoute";
 import ProductSKURoute from "../../views/ProductSKU/ProductSKURoute";
 import ProductionCategoriesRoute from "../../views/ProductionCategories/ProductionCategoriesRoute";
@@ -101,6 +102,7 @@ const Routes = [
   ...StoresRoute,
   ...ImportOrdersRoute,
   ...ExportShipmentsRoute,
+  ...PreviewBatchesRoute,
   {
     path: "/",
     index: true,
