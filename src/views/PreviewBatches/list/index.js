@@ -5,13 +5,13 @@ import { Fragment, useEffect, useState } from "react";
 import Flatpickr from "react-flatpickr";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
-import { Button, Card, Col, Row } from "reactstrap";
+import { Button, Card, CardBody, Col, Row } from "reactstrap";
 import {
-    getAllData,
-    getCompanyOptions,
-    getManufactureOptions,
-    getStoreOptions,
-    setSearchParams,
+  getAllData,
+  getCompanyOptions,
+  getManufactureOptions,
+  getStoreOptions,
+  setSearchParams,
 } from "../store";
 
 const index = () => {
@@ -89,7 +89,7 @@ const index = () => {
               />
             </Col>
             <Col sm="2">
-            <Flatpickr
+              <Flatpickr
                 className="form-control"
                 id="date"
                 placeholder="Start Date"
@@ -99,7 +99,7 @@ const index = () => {
               />
             </Col>
             <Col sm="2">
-            <Flatpickr
+              <Flatpickr
                 className="form-control"
                 id="date"
                 placeholder="Start Date"
@@ -117,6 +117,9 @@ const index = () => {
               </Button>
             </Col>
           </Row>
+        </Card>
+        <Card>
+          <CardBody>Under Maintenance</CardBody>
         </Card>
       </Fragment>
     </div>

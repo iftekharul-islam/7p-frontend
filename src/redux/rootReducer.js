@@ -30,6 +30,7 @@ import shipDateReports from "@src/views/ShipDateReport/store";
 import productspecifications from "@src/views/SpecificationSheet/store";
 import stations from "@src/views/Station/store";
 import stores from "@src/views/Stores/store";
+import unbatchableItems from "@src/views/UnbatchableItems/store";
 import users from "@src/views/User/store";
 import vendors from "@src/views/Vendor/store";
 import layout from "./layout";
@@ -72,6 +73,7 @@ const rootReducer = {
   stores,
   imports,
   exports,
+  unbatchableItems
 };
 
 export default rootReducer;
