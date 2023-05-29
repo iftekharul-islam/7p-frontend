@@ -44,6 +44,7 @@ import ShipDateReportRoute from "../../views/ShipDateReport/ShipDateReportRoute"
 import SpecificationSheetRoute from "../../views/SpecificationSheet/SpecificationSheetRoute";
 import StationRoute from "../../views/Station/StationRoute";
 import StoresRoute from "../../views/Stores/StoresRoute";
+import UnbatchableItemsRoute from "../../views/UnbatchableItems/UnbatchableItemsRoute";
 import UserRoute from "../../views/User/UserRoute";
 import VendorRoute from "../../views/Vendor/VendorRoute";
 
@@ -103,6 +104,7 @@ const Routes = [
   ...ImportOrdersRoute,
   ...ExportShipmentsRoute,
   ...PreviewBatchesRoute,
+  ...UnbatchableItemsRoute,
   {
     path: "/",
     index: true,
