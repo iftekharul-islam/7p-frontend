@@ -1,6 +1,7 @@
 import adjustments from "@src/views/Adjustment/store";
 import Auth from "@src/views/Auth/store";
 import configchildskus from "@src/views/ConfigChildSKU/store";
+import createGraphics from "@src/views/CreateGraphics/store";
 import customerServices from "@src/views/CustomerService/store";
 import emailTemplate from "@src/views/EmailTemplate/store";
 import exports from "@src/views/ExportShipments/store";
@@ -26,6 +27,7 @@ import salesSummaryReports from "@src/views/SalesSummaryReport/store";
 import sections from "@src/views/Section/store";
 import sectionReports from "@src/views/SectionReport/store";
 import bulkEmails from "@src/views/SendBulkEmail/store";
+import sentToPrinter from "@src/views/SentToPrinter/store";
 import shipDateReports from "@src/views/ShipDateReport/store";
 import productspecifications from "@src/views/SpecificationSheet/store";
 import stations from "@src/views/Station/store";
@@ -73,7 +75,9 @@ const rootReducer = {
   stores,
   imports,
   exports,
-  unbatchableItems
+  unbatchableItems,
+  createGraphics,
+  sentToPrinter
 };
 
 export default rootReducer;

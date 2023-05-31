@@ -4,7 +4,6 @@ import withReactContent from 'sweetalert2-react-content';
 import baseUrl from "./config";
 
 let Api = axios.create({
-  // baseURL: 'https://api-7p.viserx.dev/api',
   baseURL: baseUrl,
 
   headers: {
