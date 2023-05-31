@@ -14,6 +14,7 @@ import PublicRoute from "@components/routes/PublicRoute";
 import { isObjEmpty } from "@utils";
 import AdjustmentRoute from "../../views/Adjustment/AdjustmentRoute";
 import ConfigChildSKURoute from "../../views/ConfigChildSKU/ConfigChildSKURoute";
+import CreateGraphicsRoute from "../../views/CreateGraphics/CreateGraphicsRoute";
 import CustomerServiceRoute from "../../views/CustomerService/CustomerServiceRoute";
 import EmailTemplateRoute from "../../views/EmailTemplate/EmailTemplateRoute";
 import ExportShipmentsRoute from "../../views/ExportShipments/ExportShipmentsRoute";
@@ -40,6 +41,7 @@ import SalesSummaryReportRoute from "../../views/SalesSummaryReport/SalesSummary
 import SectionRoute from "../../views/Section/SectionRoute";
 import SectionReportRoute from "../../views/SectionReport/SectionReportRoute";
 import SendBulkEmailRoute from "../../views/SendBulkEmail/SendBulkEmailRoute";
+import SentToPrinterRoute from "../../views/SentToPrinter/SentToPrinterRoute";
 import ShipDateReportRoute from "../../views/ShipDateReport/ShipDateReportRoute";
 import SpecificationSheetRoute from "../../views/SpecificationSheet/SpecificationSheetRoute";
 import StationRoute from "../../views/Station/StationRoute";
@@ -105,6 +107,8 @@ const Routes = [
   ...ExportShipmentsRoute,
   ...PreviewBatchesRoute,
   ...UnbatchableItemsRoute,
+  ...CreateGraphicsRoute,
+  ...SentToPrinterRoute,
   {
     path: "/",
     index: true,
