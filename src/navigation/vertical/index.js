@@ -179,6 +179,43 @@ export default [
     ],
   },
   {
+    id: "production",
+    title: "Production",
+    icon: <Circle size={20} />,
+    isAccess: check(["product", "vendor"]),
+    children: [
+      {
+        id: "batch_list",
+        title: "Batch List",
+        icon: <Circle size={20} />,
+        isAccess: check(["user"]),
+        navLink: "/batch-list",
+      },
+      {
+        id: "move-batches",
+        title: "Move Batches",
+        icon: <Circle size={20} />,
+        isAccess: check(["user"]),
+        navLink: "/move-batches",
+      },
+      {
+        id: "rejects",
+
+        title: "Rejects",
+        icon: <Circle size={20} />,
+        isAccess: check(["user"]),
+        navLink: "/rejects",
+      },
+      {
+        id: "back-orders",
+        title: "Back Orders",
+        icon: <Circle size={20} />,
+        isAccess: check(["user"]),
+        navLink: "/back-orders",
+      },
+    ],
+  },
+  {
     id: "graphics",
     title: "Graphics",
     icon: <Circle size={20} />,
@@ -239,8 +276,8 @@ export default [
         icon: <Circle size={20} />,
         isAccess: check(["user"]),
         navLink: "/move-to-qc",
-      }
-    ]
+      },
+    ],
   },
   {
     id: "customers_service",
@@ -410,7 +447,7 @@ export default [
         icon: <Circle size={20} />,
         isAccess: check(["user"]),
         navLink: "/transfer-export",
-      }
+      },
     ],
   },
 ];

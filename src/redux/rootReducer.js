@@ -1,5 +1,7 @@
 import adjustments from "@src/views/Adjustment/store";
 import Auth from "@src/views/Auth/store";
+import backOrders from "@src/views/BackOrders/store";
+import batchList from "@src/views/BatchList/store";
 import configchildskus from "@src/views/ConfigChildSKU/store";
 import createGraphics from "@src/views/CreateGraphics/store";
 import customerServices from "@src/views/CustomerService/store";
@@ -11,6 +13,7 @@ import inventories from "@src/views/Inventory/store";
 import itemsList from "@src/views/ItemsList/store";
 import manualOrders from "@src/views/ManualOrder/store";
 import manufactures from "@src/views/Manufactures/store";
+import moveBatches from "@src/views/MoveBatches/store";
 import orders from "@src/views/Order/store";
 import orderItemsReports from "@src/views/OrderItemsReport/store";
 import parameters from "@src/views/Parameters/store";
@@ -20,6 +23,7 @@ import productskus from "@src/views/ProductSKU/store";
 import categories from "@src/views/ProductionCategories/store";
 import purchaseOrders from "@src/views/PurchaseOrder/store";
 import reasons from "@src/views/RejectionReason/store";
+import rejects from "@src/views/Rejects/store";
 import roles from "@src/views/Role/store";
 import routes from "@src/views/Route/store";
 import templates from "@src/views/RouteTemplates/store";
@@ -77,7 +81,11 @@ const rootReducer = {
   exports,
   unbatchableItems,
   createGraphics,
-  sentToPrinter
+  sentToPrinter,
+  batchList,
+  moveBatches,
+  rejects,
+  backOrders
 };
 
 export default rootReducer;

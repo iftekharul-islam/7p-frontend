@@ -13,6 +13,8 @@ import PublicRoute from "@components/routes/PublicRoute";
 // ** Utils
 import { isObjEmpty } from "@utils";
 import AdjustmentRoute from "../../views/Adjustment/AdjustmentRoute";
+import BackOrdersRoute from "../../views/BackOrders/BackOrdersRoute";
+import BatchListRoute from "../../views/BatchList/BatchListRoute";
 import ConfigChildSKURoute from "../../views/ConfigChildSKU/ConfigChildSKURoute";
 import CreateGraphicsRoute from "../../views/CreateGraphics/CreateGraphicsRoute";
 import CustomerServiceRoute from "../../views/CustomerService/CustomerServiceRoute";
@@ -24,6 +26,7 @@ import InventoryRoute from "../../views/Inventory/InventoryRoute";
 import ItemsListRoute from "../../views/ItemsList/ItemsListRoute";
 import ManualOrderRoute from "../../views/ManualOrder/ManualOrderRoute";
 import ManufacturesRoute from "../../views/Manufactures/ManufacturesRoute";
+import MoveBatchesRoute from "../../views/MoveBatches/MoveBatchesRoute";
 import OrderRoute from "../../views/Order/OrderRoute";
 import OrderItemsReportRoute from "../../views/OrderItemsReport/OrderItemsReportRoute";
 import ParametersRoute from "../../views/Parameters/ParametersRoute";
@@ -34,6 +37,7 @@ import ProductSKURoute from "../../views/ProductSKU/ProductSKURoute";
 import ProductionCategoriesRoute from "../../views/ProductionCategories/ProductionCategoriesRoute";
 import PurchaseOrderRoute from "../../views/PurchaseOrder/PurchaseOrderRoute";
 import RejectionReasonRoute from "../../views/RejectionReason/RejectionReasonRoute";
+import RejectsRoute from "../../views/Rejects/RejectsRoute";
 import RoleRoute from "../../views/Role/RoleRoute";
 import RouteRoute from "../../views/Route/RouteRoute";
 import RouteTemplatesRoute from "../../views/RouteTemplates/RouteTemplatesRoute";
@@ -109,6 +113,10 @@ const Routes = [
   ...UnbatchableItemsRoute,
   ...CreateGraphicsRoute,
   ...SentToPrinterRoute,
+  ...BatchListRoute,
+  ...MoveBatchesRoute,
+  ...RejectsRoute,
+  ...BackOrdersRoute,
   {
     path: "/",
     index: true,
