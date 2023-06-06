@@ -3,97 +3,57 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import Api from "@src/http";
 
 export const getAllData = createAsyncThunk(
-  "batchList/getAllData",
+  "backOrders/getAllData",
   async (_, { getState }) => {
-    const { params, searchParams } = getState()?.batchList;
-    const response = await Api.get("batch-list", {
-      params: { ...params, ...searchParams },
+    const { params } = getState()?.backOrders;
+    const response = await Api.get("back-orders", {
+      params: { ...params },
     });
     return response.data;
   }
 );
 
-export const getRouteOptions = createAsyncThunk(
-  "batchList/getRouteOptions",
-  async () => {
-    const response = await Api.get("batch-route-options");
+export const getData = createAsyncThunk(
+  "backOrders/getData",
+  async (_, { getState }) => {
+    const { searchParams } = getState()?.backOrders;
+    const response = await Api.get("back-orders-show", {
+      params: { ...searchParams },
+    });
     return response.data;
   }
 );
 
-export const getStationOptions = createAsyncThunk(
-  "batchList/getStationOptions",
-  async () => {
-    const response = await Api.get("advance-station-options");
-    return response.data;
-  }
-);
-
-export const getStatusOptions = createAsyncThunk(
-  "batchList/getStatusOptions",
-  async () => {
-    const response = await Api.get("batch-status-options");
-    return response.data;
-  }
-);
-
-export const getStoreOptions = createAsyncThunk(
-  "batchList/getStoreOptions",
-  async () => {
-    const response = await Api.get("order-store-options");
-    return response.data;
-  }
-);
-
-export const batchListSlice = createSlice({
-  name: "batchList",
+export const backOrdersSlice = createSlice({
+  name: "backOrders",
   initialState: {
+    allData: [],
     data: [],
-    total: 1,
-    cost: null,
 
-    params: {
-      page: 1,
-    },
+    active: "summary",
+    tab: "by_batch",
+
+    params: {},
 
     searchParams: {
-      route: null,
-      station: null,
-      start_date: null,
-      end_date: null,
-      filter_username: null,
-      batch: null,
-      status: null,
-      store: [],
-      order_start_date: null,
-      order_end_date: null,
+      search_for: null,
+      search_in: null,
+      tab: "by_batch",
     },
 
-    allData: [],
-
-    routeOptions: [],
-    stationOptions: [],
-    statusOptions: [],
-    storeOptions: [],
+    search_inOptions: [
+      { value: "batch_number", label: "Batch Number" },
+      { value: "stock_no_unique", label: "Stock Number" },
+    ],
   },
   extraReducers: (builder) => {
     builder
       .addCase(getAllData.fulfilled, (state, action) => {
-        state.data = action.payload?.inventories?.data;
-        state.cost = action.payload?.total_cost;
-        state.total = action.payload?.inventories?.total;
+        state.allData = action.payload;
       })
-      .addCase(getRouteOptions.fulfilled, (state, action) => {
-        state.routeOptions = action.payload;
-      })
-      .addCase(getStationOptions.fulfilled, (state, action) => {
-        state.stationOptions = action.payload;
-      })
-      .addCase(getStatusOptions.fulfilled, (state, action) => {
-        state.statusOptions = action.payload;
-      })
-      .addCase(getStoreOptions.fulfilled, (state, action) => {
-        state.storeOptions = action.payload;
+      .addCase(getData.fulfilled, (state, action) => {
+        state.data = action.payload?.data;
+        state.tab = action.payload?.tab;
       });
   },
   reducers: {
@@ -103,8 +63,12 @@ export const batchListSlice = createSlice({
     setSearchParams: (state, action) => {
       state.searchParams = { ...state.searchParams, ...action.payload };
     },
+    setActive: (state, action) => {
+      state.active = action.payload;
+    },
   },
 });
 
-export const { setParams, setSearchParams } = batchListSlice.actions;
-export default batchListSlice.reducer;
+export const { setParams, setSearchParams, setActive } =
+  backOrdersSlice.actions;
+export default backOrdersSlice.reducer;
