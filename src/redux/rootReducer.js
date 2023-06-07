@@ -14,6 +14,7 @@ import itemsList from "@src/views/ItemsList/store";
 import manualOrders from "@src/views/ManualOrder/store";
 import manufactures from "@src/views/Manufactures/store";
 import moveBatches from "@src/views/MoveBatches/store";
+import mustShipReport from "@src/views/MustShipReport/store";
 import orders from "@src/views/Order/store";
 import orderItemsReports from "@src/views/OrderItemsReport/store";
 import parameters from "@src/views/Parameters/store";
@@ -22,6 +23,7 @@ import products from "@src/views/Product/store";
 import productskus from "@src/views/ProductSKU/store";
 import categories from "@src/views/ProductionCategories/store";
 import purchaseOrders from "@src/views/PurchaseOrder/store";
+import qualityControls from "@src/views/QualityControl/store";
 import reasons from "@src/views/RejectionReason/store";
 import rejects from "@src/views/Rejects/store";
 import roles from "@src/views/Role/store";
@@ -85,7 +87,9 @@ const rootReducer = {
   batchList,
   moveBatches,
   rejects,
-  backOrders
+  backOrders,
+  mustShipReport,
+  qualityControls
 };
 
 export default rootReducer;
