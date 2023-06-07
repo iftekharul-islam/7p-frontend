@@ -27,6 +27,7 @@ import ItemsListRoute from "../../views/ItemsList/ItemsListRoute";
 import ManualOrderRoute from "../../views/ManualOrder/ManualOrderRoute";
 import ManufacturesRoute from "../../views/Manufactures/ManufacturesRoute";
 import MoveBatchesRoute from "../../views/MoveBatches/MoveBatchesRoute";
+import MustShipReportRoute from "../../views/MustShipReport/MustShipReportRoute";
 import OrderRoute from "../../views/Order/OrderRoute";
 import OrderItemsReportRoute from "../../views/OrderItemsReport/OrderItemsReportRoute";
 import ParametersRoute from "../../views/Parameters/ParametersRoute";
@@ -36,6 +37,7 @@ import ProductRoute from "../../views/Product/ProductRoute";
 import ProductSKURoute from "../../views/ProductSKU/ProductSKURoute";
 import ProductionCategoriesRoute from "../../views/ProductionCategories/ProductionCategoriesRoute";
 import PurchaseOrderRoute from "../../views/PurchaseOrder/PurchaseOrderRoute";
+import QualityControlRoute from "../../views/QualityControl/QualityControlRoute";
 import RejectionReasonRoute from "../../views/RejectionReason/RejectionReasonRoute";
 import RejectsRoute from "../../views/Rejects/RejectsRoute";
 import RoleRoute from "../../views/Role/RoleRoute";
@@ -117,6 +119,8 @@ const Routes = [
   ...MoveBatchesRoute,
   ...RejectsRoute,
   ...BackOrdersRoute,
+  ...MustShipReportRoute,
+  ...QualityControlRoute,
   {
     path: "/",
     index: true,
