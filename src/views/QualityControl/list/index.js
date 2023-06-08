@@ -1,7 +1,7 @@
 import "@styles/react/libs/react-select/_react-select.scss";
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Button,
   Card,
@@ -16,20 +16,27 @@ import { getAllData, setSearchParams } from "../store";
 
 const index = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const { data, searchParams, storeOptions, statusOptions } = useSelector(
     (state) => state.qualityControls
   );
 
   const handleSearch = async () => {
-    setLoading(true);
-    await dispatch(getAllData());
-    setLoading(false);
+    console.log("A");
   };
 
   useEffect(() => {
-    handleSearch();
+    setLoading(true);
+    dispatch(getAllData());
+    setLoading(false);
   }, []);
+
+  const listNavigate = async (e, section) => {
+    await dispatch(setSearchParams({ station_id: section?.station_id }));
+    e.preventDefault();
+    navigate("/quality-control/list");
+  };
 
   return (
     <Fragment>
@@ -72,7 +79,7 @@ const index = () => {
                   <Row>
                     <Col md="2"></Col>
                     <Col md="8">
-                      <Link to={`/quality-control/${section?.station_id}`}>
+                      <Link onClick={(e) => listNavigate(e, section)}>
                         <Row key={index}>
                           <Col md="3" className="p-1 border">
                             {section?.section
