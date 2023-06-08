@@ -170,27 +170,13 @@ const index = () => {
               </h4>
             </CardHeader>
             {/* TODO need to update with data format */}
-            {/* <CardBody>
-              {store?.data?.summary?.map((line, index) => (
+            <CardBody>
+              {store?.data?.batch_array?.map((line, index) => (
                 <Row key={index}>
-                  <Col sm="5">
-                    {
-                      store?.graphic_statusOptions?.find(
-                        (item) => item?.value == line?.graphic_status
-                      )?.label
-                    }
-                  </Col>
-                  <Col sm="5">
-                    {
-                      store?.reasonOptions?.find(
-                        (item) => item?.value == line?.rejection_reason
-                      )?.label
-                    }
-                  </Col>
-                  <Col sm="2">{line?.count}</Col>
+                  Test
                 </Row>
               ))}
-            </CardBody> */}
+            </CardBody>
           </Card>
         ) : (
           <Card>

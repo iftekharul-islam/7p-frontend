@@ -3,6 +3,7 @@ import "@styles/react/libs/react-select/_react-select.scss";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 import { Fragment, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import { Card, CardBody, CardHeader, CardTitle, Row } from "reactstrap";
 import { getAllData } from "../store";
 
@@ -44,7 +45,7 @@ const index = () => {
                         </strong>
                       </div>
                       <div>Item# {item?.item_table_id}</div>
-                      <div>Order# {item?.order?.order_no}</div>
+                      <div>Order# <Link to={`/customer-order-edit/${item?.order?.order_no}`} >{item?.order?.order_no}</Link></div>
                       {item?.store_id != "52053152" && (
                         <div>
                           {item?.store_id

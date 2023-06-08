@@ -3,12 +3,12 @@ import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Select from "react-select";
-import { Button, Card, CardBody, CardHeader, Col, Row } from "reactstrap";
+import { Button, Card, CardBody, CardHeader, Col, Row, Spinner } from "reactstrap";
 import { getAllData, getPrinterOptions } from "../store";
 
 const index = () => {
   const dispatch = useDispatch();
-  const { data, printerOptions } = useSelector((state) => state?.sentToPrinter);
+  const { data, printerOptions, loading } = useSelector((state) => state?.sentToPrinter);
 
   const [printer, setPrinter] = useState(null);
 
@@ -19,6 +19,7 @@ const index = () => {
 
   const update = (e, itm, date) => {
     e.preventDefault();
+    setPrinter(itm?.to_printer);
     dispatch(getAllData({ printer: itm?.to_printer, date: date }));
   };
 
@@ -47,8 +48,9 @@ const index = () => {
                 onClick={() => {
                   dispatch(getAllData({ printer: printer }));
                 }}
+                disabled={loading}
               >
-                Filter
+                {loading ? <><Spinner size ="sm" />Filtering...</> : "Filter"}
               </Button>
             </Col>
           </Row>
