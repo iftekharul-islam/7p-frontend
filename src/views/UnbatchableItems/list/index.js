@@ -26,6 +26,7 @@ const index = () => {
             {store?.data?.length > 0 ? (
               <div>
                 <h6>{store?.data?.length} Items found</h6>
+                <hr />
                 {store?.data?.map((item, index) => (
                   <Row key={index}>
                     <Col sm="2">
@@ -45,7 +46,14 @@ const index = () => {
                         </strong>
                       </div>
                       <div>Item# {item?.item_table_id}</div>
-                      <div>Order# <Link to={`/customer-order-edit/${item?.order?.order_no}`} >{item?.order?.order_no}</Link></div>
+                      <div>
+                        Order#
+                        <Link
+                          to={`/customer-order-edit/${item?.order?.order_no}`}
+                        >
+                          {item?.order?.order_no}
+                        </Link>
+                      </div>
                       {item?.store_id != "52053152" && (
                         <div>
                           {item?.store_id
@@ -57,17 +65,18 @@ const index = () => {
                         {moment(item?.order?.order_date).format("MM/DD/YYYY")}
                       </div>
                     </Col>
-                    <Col sm="2">
+                    <Col sm="1">
                       <img src={item?.item_thumb} width={70} height={70} />
                     </Col>
-                    <Col sm="3">
+                    <Col sm="2">
                       <div>{item?.item_description}</div>
                       <div>SKU: {item?.child_sku}</div>
                       <div>QTY: {item?.item_quantity}</div>
                     </Col>
-                    <Col sm="3">
+                    <Col sm="3">{item?.item_option}</Col>
+                    <Col sm="2">
                       <div>
-                        Order Status:{" "}
+                        Order Status:
                         {
                           store?.statusOptions?.find(
                             (status) =>
