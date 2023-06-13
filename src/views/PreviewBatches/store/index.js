@@ -3,69 +3,71 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import Api from "@src/http";
 
 export const getAllData = createAsyncThunk(
-  "SectionReports/getAllData",
+  "previewBatches/getAllData",
   async (_, { getState }) => {
-    const { params, searchParams } = getState()?.sectionReports;
-    const response = await Api.get("section-reports", {
+    const { params, searchParams } = getState()?.previewBatches;
+    const response = await Api.get("preview-batches", {
       params: { ...params, ...searchParams },
     });
     return response.data;
   }
 );
-export const getManufactureOptions = createAsyncThunk(
-  "SectionReports/getManufactureOptions",
+
+export const getSearchInOptions = createAsyncThunk(
+  "previewBatches/getSearchInOptions",
   async () => {
-    const response = await Api.get(`report-manufacture-options`);
-    return response.data;
-  }
-);
-export const getStoreOptions = createAsyncThunk(
-  "SectionReports/getStoreOptions",
-  async () => {
-    const response = await Api.get(`report-store-options`);
-    return response.data;
-  }
-);
-export const getCompanyOptions = createAsyncThunk(
-  "SectionReports/getCompanyOptions",
-  async () => {
-    const response = await Api.get(`report-company-options`);
+    const response = await Api.get("batch-search-in-options");
     return response.data;
   }
 );
 
-export const SectionReportSlice = createSlice({
-  name: "SectionReport",
-  initialState: { 
+export const getStoreOptions = createAsyncThunk(
+  "previewBatches/getStoreOptions",
+  async () => {
+    const response = await Api.get("batch-store-options");
+    return response.data;
+  }
+);
+
+export const getSectionOptions = createAsyncThunk(
+  "previewBatches/getSectionOptions",
+  async () => {
+    const response = await Api.get("section-options");
+    return response.data;
+  }
+);
+
+export const previewBatchesSlice = createSlice({
+  name: "previewBatches",
+  initialState: {
     data: [],
 
-    params: {
-      page: 1,
-    },
+    params: {},
 
     searchParams: {
+      backorder : '',
     },
 
     allData: [],
 
-    manufactureOptions: [],
+    searchInOptions: [],
     storeOptions: [],
-    companyOptions: [],
+    sectionOptions: [],
   },
   extraReducers: (builder) => {
     builder
       .addCase(getAllData.fulfilled, (state, action) => {
         state.data = action.payload;
       })
-      .addCase(getManufactureOptions.fulfilled, (state, action) => {
-        state.manufactureOptions = action.payload;
+      .addCase(getSearchInOptions.fulfilled, (state, action) => {
+        state.searchInOptions = action.payload;
       })
       .addCase(getStoreOptions.fulfilled, (state, action) => {
         state.storeOptions = action.payload;
       })
-      .addCase(getCompanyOptions.fulfilled, (state, action) => {
-        state.companyOptions = action.payload;
-      })
+      .addCase(getSectionOptions.fulfilled, (state, action) => {
+        state.sectionOptions = action.payload;
+      });
   },
   reducers: {
     setParams: (state, action) => {
@@ -77,5 +79,5 @@ export const SectionReportSlice = createSlice({
   },
 });
 
-export const { setParams, setSearchParams } = SectionReportSlice.actions;
-export default SectionReportSlice.reducer;
+export const { setParams, setSearchParams } = previewBatchesSlice.actions;
+export default previewBatchesSlice.reducer;

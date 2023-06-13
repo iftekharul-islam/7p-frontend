@@ -5,29 +5,29 @@ import { Fragment, useEffect, useState } from "react";
 import Flatpickr from "react-flatpickr";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
-import { Button, Card, CardBody, Col, Row } from "reactstrap";
+import { Button, Card, CardBody, Col, Input, Row } from "reactstrap";
 import {
   getAllData,
-  getCompanyOptions,
-  getManufactureOptions,
+  getSearchInOptions,
+  getSectionOptions,
   getStoreOptions,
-  setSearchParams,
+  setSearchParams
 } from "../store";
 
 const index = () => {
   const dispatch = useDispatch();
-  const store = useSelector((state) => state.sectionReports);
+  const store = useSelector((state) => state.previewBatches);
   const [loading, setLoading] = useState(false);
   const params = store?.searchParams;
 
   useEffect(() => {
-    if (store?.params) dispatch(getAllData());
+    onSearch();
   }, [store?.params]);
 
   useEffect(() => {
-    dispatch(getManufactureOptions());
+    dispatch(getSearchInOptions());
     dispatch(getStoreOptions());
-    dispatch(getCompanyOptions());
+    dispatch(getSectionOptions());
   }, []);
 
   const onSearch = async () => {
@@ -46,53 +46,58 @@ const index = () => {
         <Card className="p-2">
           <Row className="mb-1">
             <Col sm="2">
-              <Flatpickr
-                className="form-control"
-                id="max_date"
-                placeholder="Before"
-                value={params?.max_date ?? null}
-                options={{ dateFormat: "d-m-Y" }}
-                onChange={(date) => onChange({ max_date: date[0] })}
+              <Input
+                type="text"
+                id="search_for_first"
+                name="search_for_first"
+                placeholder="Search for"
+                value={params?.search_for_first}
+                onChange={(e) =>
+                  onChange({ search_for_first: e?.target?.value })
+                }
               />
             </Col>
             <Col sm="2">
               <Select
-                placeholder="Select Manufacture"
-                options={store?.manufactureOptions}
-                value={store?.manufactureOptions?.find(
-                  (item) => item?.value == params?.manufacture_id
+                className="react-select"
+                classNamePrefix="select"
+                placeholder="Search in"
+                options={store?.searchInOptions}
+                value={store?.searchInOptions?.find(
+                  (item) => item?.value == params?.search_in_first
                 )}
-                onChange={(e) => onChange({ manufacture_id: e?.value })}
+                onChange={(e) => onChange({ search_in_first: e?.value })}
               />
             </Col>
             <Col sm="2">
               <Select
+                className="react-select"
+                classNamePrefix="select"
                 placeholder="Select Store"
                 options={store?.storeOptions}
-                value={store?.storeOptions?.filter((item) =>
-                  params?.store_ids?.includes(item?.value)
+                value={store?.storeOptions?.find(
+                  (item) => item?.value == params?.store
                 )}
-                onChange={(data) =>
-                  onChange({ store_ids: data?.map((item) => item?.value) })
-                }
-                isMulti
+                onChange={(e) => onChange({ store: e?.value })}
               />
             </Col>
             <Col sm="2">
               <Select
-                placeholder="Select Company"
-                options={store?.companyOptions}
-                value={store?.companyOptions?.find(
-                  (item) => item?.value == params?.company
+                className="react-select"
+                classNamePrefix="select"
+                placeholder="Select Section"
+                options={store?.sectionOptions}
+                value={store?.sectionOptions?.find(
+                  (item) => item?.value == params?.section
                 )}
-                onChange={(e) => onChange({ company: e?.value })}
+                onChange={(e) => onChange({ section: e?.value })}
               />
             </Col>
             <Col sm="2">
               <Flatpickr
                 className="form-control"
                 id="date"
-                placeholder="Start Date"
+                placeholder="Order Start Date"
                 value={params?.start_date ?? null}
                 options={{ dateFormat: "d-m-Y" }}
                 onChange={(date) => onChange({ start_date: date[0] })}
@@ -102,10 +107,10 @@ const index = () => {
               <Flatpickr
                 className="form-control"
                 id="date"
-                placeholder="Start Date"
-                value={params?.start_date ?? null}
+                placeholder="Order End Date"
+                value={params?.end_date ?? null}
                 options={{ dateFormat: "d-m-Y" }}
-                onChange={(date) => onChange({ start_date: date[0] })}
+                onChange={(date) => onChange({ end_date: date[0] })}
               />
             </Col>
           </Row>

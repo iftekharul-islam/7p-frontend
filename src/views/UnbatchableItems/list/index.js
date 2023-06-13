@@ -1,15 +1,24 @@
 import "@styles/react/libs/flatpickr/flatpickr.scss";
 import "@styles/react/libs/react-select/_react-select.scss";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
+import moment from "moment";
 import { Fragment, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { Card, CardBody, CardHeader, CardTitle, Row } from "reactstrap";
+import {
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  CardTitle,
+  Col,
+  Row,
+} from "reactstrap";
 import { getAllData } from "../store";
 
 const index = () => {
   const dispatch = useDispatch();
-  const store = useSelector((state) => state.UnbatchableItems);
+  const store = useSelector((state) => state.unbatchableItems);
 
   useEffect(() => {
     dispatch(getAllData());
@@ -26,74 +35,87 @@ const index = () => {
             {store?.data?.length > 0 ? (
               <div>
                 <h6>{store?.data?.length} Items found</h6>
-                <hr />
-                {store?.data?.map((item, index) => (
-                  <Row key={index}>
-                    <Col sm="2">
-                      <div>{item?.hold}</div>
-                      {!item?.route && <div>Needs Route</div>}
-                      {!item?.stock_no && <div>Needs Stock Number</div>}
-                      {!item?.qty_av && <div>Insufficient Inventory</div>}
-                    </Col>
-                    <Col sm="2">
-                      <div>
-                        <strong>
-                          <u>
-                            {item?.order?.customer?.ship_full_name
-                              ? item?.order?.customer?.ship_full_name
-                              : item?.order?.customer?.bill_full_name}
-                          </u>
-                        </strong>
-                      </div>
-                      <div>Item# {item?.item_table_id}</div>
-                      <div>
-                        Order#
-                        <Link
-                          to={`/customer-order-edit/${item?.order?.order_no}`}
-                        >
-                          {item?.order?.order_no}
-                        </Link>
-                      </div>
-                      {item?.store_id != "52053152" && (
+                {store?.data?.map((item, index) => {
+                  console.log(
+                    "🚀 ~ file: index.js:31 ~ {store?.data?.map ~ item:",
+                    item
+                  );
+                  return (
+                    <Row key={index}>
+                      <Col sm="2" className="border">
+                        <div>{item?.hold}</div>
+                        {item?.parameter_option && (
+                          <span>
+                            <div>Child SKU doen not exist in 5P</div>
+                            <Button color="primary">Add Child SKU</Button>
+                          </span>
+                        )}
+                        {item?.route && <div>Needs Route</div>}
+                        {item?.stock_no && <div>Needs Stock Number</div>}
+                        {item?.qty_av && <div>Insufficient Inventory</div>}
+                      </Col>
+                      <Col sm="2" className="border">
                         <div>
-                          {item?.store_id
-                            ? item?.store?.store_name
-                            : `STORE: ${item?.store_id} NOT FOUND`}
+                          <strong>
+                            <u>
+                              {item?.item?.order?.customer?.ship_full_name
+                                ? item?.item?.order?.customer?.ship_full_name
+                                : item?.item?.order?.customer?.bill_full_name}
+                            </u>
+                          </strong>
                         </div>
-                      )}
-                      <div>
-                        {moment(item?.order?.order_date).format("MM/DD/YYYY")}
-                      </div>
-                    </Col>
-                    <Col sm="1">
-                      <img src={item?.item_thumb} width={70} height={70} />
-                    </Col>
-                    <Col sm="2">
-                      <div>{item?.item_description}</div>
-                      <div>SKU: {item?.child_sku}</div>
-                      <div>QTY: {item?.item_quantity}</div>
-                    </Col>
-                    <Col sm="3">{item?.item_option}</Col>
-                    <Col sm="2">
-                      <div>
-                        Order Status:
-                        {
-                          store?.statusOptions?.find(
-                            (status) =>
-                              status?.value == item?.order?.order_status
-                          )?.label
-                        }
-                      </div>
-                      <div>Item Status: {item?.item_status}</div>
-                      {item?.order?.coupon_id && (
-                        <div>{item?.order?.coupon_id}</div>
-                      )}
-                      {item?.order?.promotion_id && (
-                        <div>{item?.order?.promotion_id}</div>
-                      )}
-                    </Col>
-                  </Row>
-                ))}
+                        <div>Item# {item?.item?.item_table_id}</div>
+                        <div>
+                          Order#
+                          <Link
+                            to={`/customer-order-edit/${item?.item?.order_5p}`}
+                          >
+                            {item?.item?.order?.short_order}
+                          </Link>
+                        </div>
+                        {item?.item?.store_id != "52053152" && (
+                          <div>
+                            {item?.item?.store_id
+                              ? item?.item?.store?.store_name
+                              : `STORE: ${item?.item?.store_id} NOT FOUND`}
+                          </div>
+                        )}
+                        <div>
+                          {moment(item?.item?.order?.order_date).format("MM/DD/YYYY")}
+                        </div>
+                      </Col>
+                      <Col sm="1" className="border">
+                        <img src={item?.item?.item_thumb} width={70} height={70} />
+                      </Col>
+                      <Col sm="2" className="border">
+                        <div>{item?.item?.item_description}</div>
+                        <div>SKU: {item?.item?.child_sku}</div>
+                        <div>QTY: {item?.item?.item_quantity}</div>
+                      </Col>
+                      <Col sm="3" className="border">
+                        {item?.item_option}
+                      </Col>
+                      <Col sm="2" className="border">
+                        <div>
+                          Order Status:
+                          {
+                            store?.statusOptions?.find(
+                              (status) =>
+                                status?.value == item?.item?.order?.order_status
+                            )?.label
+                          }
+                        </div>
+                        <div>Item Status: {item?.item?.item_status}</div>
+                        {item?.item?.order?.coupon_id && (
+                          <div>{item?.item?.order?.coupon_id}</div>
+                        )}
+                        {item?.item?.order?.promotion_id && (
+                          <div>{item?.item?.order?.promotion_id}</div>
+                        )}
+                      </Col>
+                    </Row>
+                  );
+                })}
               </div>
             ) : (
               <h6>No Items found</h6>

@@ -19,6 +19,7 @@ import orders from "@src/views/Order/store";
 import orderItemsReports from "@src/views/OrderItemsReport/store";
 import parameters from "@src/views/Parameters/store";
 import permissions from "@src/views/Permission/store";
+import previewBatches from "@src/views/PreviewBatches/store";
 import products from "@src/views/Product/store";
 import productskus from "@src/views/ProductSKU/store";
 import categories from "@src/views/ProductionCategories/store";
@@ -89,7 +90,8 @@ const rootReducer = {
   rejects,
   backOrders,
   mustShipReport,
-  qualityControls
+  qualityControls,
+  previewBatches
 };
 
 export default rootReducer;
