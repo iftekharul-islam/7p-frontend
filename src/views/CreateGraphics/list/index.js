@@ -47,7 +47,7 @@ const index = () => {
       <Card className="p-1">
         <Nav pills className="mb-2 orange">
           <CustomNavItem text="Summary" tab="summary" />
-          <CustomNavItem text="To Export" total={total?.rejects ?? 0} tab="toexports" />
+          <CustomNavItem text="To Export" total={total?.rejects ?? 0} tab="to_export" />
           <CustomNavItem text="Exported Waiting for Graphics" total={total?.backorder ?? 0} tab="exported_waiting_for_graphics" />
           <CustomNavItem text="Graphics Error" total={total?.reship ?? 0} tab="graphics_error" />
           <CustomNavItem text="Manual" total={total?.incompatible ?? 0} tab="manual" />         
@@ -57,7 +57,7 @@ const index = () => {
           <TabPane tabId="summary">
             <Summary data={data} />
           </TabPane>
-          <TabPane tabId="toexports">
+          <TabPane tabId="to_export">
             <ToExport data={data} />
           </TabPane>
           <TabPane tabId="exported_waiting_for_graphics">
