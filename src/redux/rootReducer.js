@@ -20,6 +20,7 @@ import orderItemsReports from "@src/views/OrderItemsReport/store";
 import parameters from "@src/views/Parameters/store";
 import permissions from "@src/views/Permission/store";
 import previewBatches from "@src/views/PreviewBatches/store";
+import printSublimations from "@src/views/PrintSublimation/store";
 import products from "@src/views/Product/store";
 import productskus from "@src/views/ProductSKU/store";
 import categories from "@src/views/ProductionCategories/store";
@@ -91,7 +92,8 @@ const rootReducer = {
   backOrders,
   mustShipReport,
   qualityControls,
-  previewBatches
+  previewBatches,
+  printSublimations
 };
 
 export default rootReducer;
