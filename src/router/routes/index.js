@@ -33,6 +33,7 @@ import OrderItemsReportRoute from "../../views/OrderItemsReport/OrderItemsReport
 import ParametersRoute from "../../views/Parameters/ParametersRoute";
 import PermissionRoute from "../../views/Permission/PermissionRoute";
 import PreviewBatchesRoute from "../../views/PreviewBatches/PreviewBatchesRoute";
+import PrintSublimationRoute from "../../views/PrintSublimation/PrintSublimationRoute";
 import ProductRoute from "../../views/Product/ProductRoute";
 import ProductSKURoute from "../../views/ProductSKU/ProductSKURoute";
 import ProductionCategoriesRoute from "../../views/ProductionCategories/ProductionCategoriesRoute";
@@ -121,6 +122,7 @@ const Routes = [
   ...BackOrdersRoute,
   ...MustShipReportRoute,
   ...QualityControlRoute,
+  ...PrintSublimationRoute,
   {
     path: "/",
     index: true,
@@ -242,5 +244,5 @@ const getRoutes = (layout) => {
   return AllRoutes;
 };
 
-export { DefaultRoute, TemplateTitle, Routes, getRoutes };
+export { DefaultRoute, Routes, TemplateTitle, getRoutes };
 
