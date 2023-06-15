@@ -13,6 +13,17 @@ export const getAllData = createAsyncThunk(
   }
 );
 
+// getPrintData
+export const getPrintData = createAsyncThunk(
+  "printBatchSummaries/getPrintData",
+  async (params) => {
+    const response = await Api.post("batch-print", params);
+    if (response?.staus == 200) {
+      return { status: 200, data: response.data };
+    }
+  }
+);
+
 export const printBatchSummariesSlice = createSlice({
   name: "printBatchSummaries",
   initialState: {
