@@ -33,6 +33,7 @@ import OrderItemsReportRoute from "../../views/OrderItemsReport/OrderItemsReport
 import ParametersRoute from "../../views/Parameters/ParametersRoute";
 import PermissionRoute from "../../views/Permission/PermissionRoute";
 import PreviewBatchesRoute from "../../views/PreviewBatches/PreviewBatchesRoute";
+import PrintBatchSummariesRoute from "../../views/PrintBatchSummaries/PrintBatchSummariesRoute";
 import PrintSublimationRoute from "../../views/PrintSublimation/PrintSublimationRoute";
 import ProductRoute from "../../views/Product/ProductRoute";
 import ProductSKURoute from "../../views/ProductSKU/ProductSKURoute";
@@ -123,6 +124,7 @@ const Routes = [
   ...MustShipReportRoute,
   ...QualityControlRoute,
   ...PrintSublimationRoute,
+  ...PrintBatchSummariesRoute,
   {
     path: "/",
     index: true,
