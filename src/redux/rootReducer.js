@@ -20,6 +20,7 @@ import orderItemsReports from "@src/views/OrderItemsReport/store";
 import parameters from "@src/views/Parameters/store";
 import permissions from "@src/views/Permission/store";
 import previewBatches from "@src/views/PreviewBatches/store";
+import printBatchSummaries from "@src/views/PrintBatchSummaries/store";
 import printSublimations from "@src/views/PrintSublimation/store";
 import products from "@src/views/Product/store";
 import productskus from "@src/views/ProductSKU/store";
@@ -93,7 +94,8 @@ const rootReducer = {
   mustShipReport,
   qualityControls,
   previewBatches,
-  printSublimations
+  printSublimations,
+  printBatchSummaries
 };
 
 export default rootReducer;

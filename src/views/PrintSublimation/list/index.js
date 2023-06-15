@@ -63,8 +63,8 @@ const index = () => {
       </CardHeader>
       <CardBody>
         <Row className="mb-1">
-          <Col md="9"></Col>
-          <Col md="2">
+          <Col md="7"></Col>
+          <Col md="3">
             <Select
               className="react-select"
               classNamePrefix="select"
@@ -77,7 +77,7 @@ const index = () => {
               }}
             />
           </Col>
-          <Col md="1">
+          <Col md="2">
             <Button color="primary" onClick={printAll}>
               Print All
             </Button>
