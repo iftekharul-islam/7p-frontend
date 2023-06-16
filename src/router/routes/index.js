@@ -27,6 +27,8 @@ import ItemsListRoute from "../../views/ItemsList/ItemsListRoute";
 import ManualOrderRoute from "../../views/ManualOrder/ManualOrderRoute";
 import ManufacturesRoute from "../../views/Manufactures/ManufacturesRoute";
 import MoveBatchesRoute from "../../views/MoveBatches/MoveBatchesRoute";
+import MoveToProductionRoute from "../../views/MoveToProduction/MoveToProductionRoute";
+import MoveToQCRoute from "../../views/MoveToQC/MoveToQCRoute";
 import MustShipReportRoute from "../../views/MustShipReport/MustShipReportRoute";
 import OrderRoute from "../../views/Order/OrderRoute";
 import OrderItemsReportRoute from "../../views/OrderItemsReport/OrderItemsReportRoute";
@@ -125,6 +127,8 @@ const Routes = [
   ...QualityControlRoute,
   ...PrintSublimationRoute,
   ...PrintBatchSummariesRoute,
+  ...MoveToProductionRoute,
+  ...MoveToQCRoute,
   {
     path: "/",
     index: true,

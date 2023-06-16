@@ -14,6 +14,8 @@ import itemsList from "@src/views/ItemsList/store";
 import manualOrders from "@src/views/ManualOrder/store";
 import manufactures from "@src/views/Manufactures/store";
 import moveBatches from "@src/views/MoveBatches/store";
+import moveToProductions from "@src/views/MoveToProduction/store";
+import moveToQC from "@src/views/MoveToQC/store";
 import mustShipReport from "@src/views/MustShipReport/store";
 import orders from "@src/views/Order/store";
 import orderItemsReports from "@src/views/OrderItemsReport/store";
@@ -95,7 +97,9 @@ const rootReducer = {
   qualityControls,
   previewBatches,
   printSublimations,
-  printBatchSummaries
+  printBatchSummaries,
+  moveToProductions,
+  moveToQC
 };
 
 export default rootReducer;
