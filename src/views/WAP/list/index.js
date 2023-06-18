@@ -1,27 +1,27 @@
 import "@styles/react/libs/flatpickr/flatpickr.scss";
 import "@styles/react/libs/react-select/_react-select.scss";
+import moment from "moment";
 import { Fragment, useEffect, useState } from "react";
 import Flatpickr from "react-flatpickr";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
-    Button,
-    Card,
-    CardBody,
-    CardHeader,
-    Col,
-    Input,
-    Row,
-    Spinner,
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Col,
+  Input,
+  Row,
+  Spinner,
 } from "reactstrap";
-import { getAllData, setSearchParams } from "../store";
+import { getAllData, getShowData, setSearchParams } from "../store";
 
 const index = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const { data, searchParams } = useSelector((state) => state.WAP);
-  console.log("🚀 ~ file: index.js:24 ~ index ~ data:", data?.sorted_bins?.length)
 
   useEffect(() => {
     handleSearch();
@@ -31,7 +31,7 @@ const index = () => {
     setLoading(true);
     const res = await dispatch(getShowData());
     if (res?.payload?.status) {
-      navigate("/wap/details");
+      // navigate("/wap/bin");
     }
     setLoading(false);
   };
@@ -130,19 +130,24 @@ const index = () => {
                   return (
                     <Row key={index}>
                       <Col md="1" className="p-1 border">
-                        {bin?.name}
+                        <Link to={`/wap/details/${bin?.id}`}>
+                          {bin?.name}
+                        </Link>
                       </Col>
-                      <Col md="1" className="p-1 border">
+                      <Col md="1" className="p-1 border text-danger">
                         Ready to Ship
                       </Col>
                       <Col md="2" className="p-1 border">
                         {bin?.last}
                       </Col>
                       <Col md="2" className="p-1 border">
-                        {bin?.order?.short_order}
+                      <Link to={`/customer-order-edit/${bin?.order_id}`}>{bin?.order?.short_order}</Link>
+                        {bin?.order?.store_id != "52053152" && (
+                          <div>{bin?.order?.store_name}</div>
+                        )}
                       </Col>
                       <Col md="1" className="p-1 border">
-                        {bin?.order?.order_date}
+                        {moment(bin?.order?.order_date).format("YYYY-MM-DD")}
                       </Col>
                       <Col md="1" className="p-1 border">
                         {bin?.order?.shippable_items?.length}
@@ -154,19 +159,128 @@ const index = () => {
                   );
                 }
               })}
-              <Row>
-                <Col md="7"></Col>
-                <Col md="3" className="p-1">
-                  <b>Total</b>
-                </Col>
-                <Col md="2" className="p-1 d-flex justify-content-center">
-                  <b>
-                    {data?.bins?.reduce(function (prev, cur) {
-                      return prev + cur?.total;
-                    }, 0)}
-                  </b>
-                </Col>
-              </Row>
+              {data?.bins?.map((bin, index) => {
+                if (
+                  bin?.order?.shippable_items?.length > bin?.item_count &&
+                  (bin?.order?.order_status != 4 ||
+                    bin?.order?.order_status != 9)
+                ) {
+                  return (
+                    <Row key={index}>
+                      <Col md="1" className="p-1 border">
+                      <Link to={`/wap/details/${bin?.id}`}>
+                          {bin?.name}
+                        </Link>
+                      </Col>
+                      <Col md="1" className="p-1 border text-danger">
+                        {bin?.order?.order_status == 4 ||
+                        bin?.order?.order_status == 9
+                          ? "Incomplete"
+                          : data?.status?.find(
+                              (status) => status?.id == bin?.order?.order_status
+                            )?.label}
+                      </Col>
+                      <Col md="2" className="p-1 border">
+                        {bin?.last}
+                      </Col>
+                      <Col md="2" className="p-1 border">
+                      <Link to={`/customer-order-edit/${bin?.order_id}`}>{bin?.order?.short_order}</Link>
+                        {bin?.order?.store_id != "52053152" && (
+                          <div>{bin?.order?.store_name}</div>
+                        )}
+                      </Col>
+                      <Col
+                        md="1"
+                        className={
+                          new Date(bin?.order?.order_date).getTime() <
+                          new Date().setDate(new Date().getDate() - 7)
+                            ? "p-1 border"
+                            : "p-1 border text-danger"
+                        }
+                      >
+                        {moment(bin?.order?.order_date).format("YYYY-MM-DD")}
+                      </Col>
+                      <Col md="1" className="p-1 border">
+                        {bin?.order?.shippable_items?.length}
+                      </Col>
+                      <Col md="1" className="p-1 border">
+                        {bin?.item_count}
+                      </Col>
+                      <Col md="1" className="p-1 border">
+                        {bin.order.items.filter(
+                          (item) => item.item_status === "rejected"
+                        ).length > 0 &&
+                          bin.order.items.filter(
+                            (item) => item.item_status === "rejected"
+                          ).length}
+                      </Col>
+                      <Col md="2" className="p-1 border">
+                        {bin.order.items.filter(
+                          (item) => item.item_status === "back order"
+                        ).length > 0 &&
+                          bin.order.items.filter(
+                            (item) => item.item_status === "back order"
+                          ).length}
+                      </Col>
+                    </Row>
+                  );
+                } else if (
+                  bin?.order?.shippable_items?.length < bin?.item_count
+                ) {
+                  return (
+                    <Row key={index}>
+                      <Col md="1" className="p-1 border">
+                      <Link to={`/wap/details/${bin?.id}`}>
+                          {bin?.name}
+                        </Link>
+                      </Col>
+                      <Col md="1" className="p-1 border">
+                        ERROR
+                      </Col>
+                      <Col md="2" className="p-1 border"></Col>
+                      <Col md="2" className="p-1 border">
+                      <Link to={`/customer-order-edit/${bin?.order_id}`}>{bin?.order_id}</Link>
+                        {bin?.order?.store_id != "52053152" && (
+                          <div>{bin?.order?.store_name}</div>
+                        )}
+                      </Col>
+                      <Col
+                        md="1"
+                        className={
+                          new Date(bin?.order?.order_date).getTime() <
+                          new Date().setDate(new Date().getDate() - 7)
+                            ? "p-1 border"
+                            : "p-1 border text-danger"
+                        }
+                      >
+                        {moment(bin?.order?.order_date).format("YYYY-MM-DD")}
+                      </Col>
+                      <Col md="1" className="p-1 border">
+                        {bin?.order?.shippable_items?.length}
+                      </Col>
+                      <Col md="1" className="p-1 border">
+                        {bin?.item_count}
+                      </Col>
+                      <Col md="1" className="p-1 border">
+                        {bin.order.items.filter(
+                          (item) => item.item_status === "rejected"
+                        ).length > 0 &&
+                          bin.order.items.filter(
+                            (item) => item.item_status === "rejected"
+                          ).length}
+                      </Col>
+                      <Col md="2" className="p-1 border">
+                        {bin.order.items.filter(
+                          (item) => item.item_status === "back order"
+                        ).length > 0 &&
+                          bin.order.items.filter(
+                            (item) => item.item_status === "back order"
+                          ).length}
+                      </Col>
+                    </Row>
+                  );
+                }
+              })}
             </div>
           ) : (
             <Row>
