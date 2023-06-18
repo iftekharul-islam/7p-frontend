@@ -46,6 +46,7 @@ import stores from "@src/views/Stores/store";
 import unbatchableItems from "@src/views/UnbatchableItems/store";
 import users from "@src/views/User/store";
 import vendors from "@src/views/Vendor/store";
+import WAP from "@src/views/WAP/store";
 import layout from "./layout";
 import navbar from "./navbar";
 
@@ -99,7 +100,8 @@ const rootReducer = {
   printSublimations,
   printBatchSummaries,
   moveToProductions,
-  moveToQC
+  moveToQC,
+  WAP
 };
 
 export default rootReducer;

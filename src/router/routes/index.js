@@ -59,6 +59,7 @@ import StoresRoute from "../../views/Stores/StoresRoute";
 import UnbatchableItemsRoute from "../../views/UnbatchableItems/UnbatchableItemsRoute";
 import UserRoute from "../../views/User/UserRoute";
 import VendorRoute from "../../views/Vendor/VendorRoute";
+import WAPRoute from "../../views/WAP/WAPRoute";
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -129,6 +130,7 @@ const Routes = [
   ...PrintBatchSummariesRoute,
   ...MoveToProductionRoute,
   ...MoveToQCRoute,
+  ...WAPRoute,
   {
     path: "/",
     index: true,
