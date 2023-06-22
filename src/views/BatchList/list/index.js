@@ -4,7 +4,7 @@ import "@styles/react/libs/react-select/_react-select.scss";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 import { Fragment, useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
-import { ChevronDown, PlusCircle } from "react-feather";
+import { ChevronDown } from "react-feather";
 import Flatpickr from "react-flatpickr";
 import ReactPaginate from "react-paginate";
 import { useDispatch, useSelector } from "react-redux";
@@ -55,15 +55,15 @@ const index = () => {
       <div className="invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75">
         <Row>
           <Col xl="10">
-            {store?.total} items found costing: $
-            {store?.cost?.cost?.toFixed(2) ?? 0}
+            ({store?.data?.total ?? 0} Batches Found ) Total lines :
+            {store?.cost?.count ?? 0} quantity :{store?.cost?.quantity ?? 0}
           </Col>
           <Col
             xl="2"
             className="d-flex align-items-sm-center justify-content-xl-end justify-content-start flex-xl-nowrap flex-wrap flex-sm-row flex-column pe-xl-1 p-0 mt-xl-0 mt-1"
           >
             <div className="d-flex align-items-center table-header-actions">
-              <Button
+              {/* <Button
                 className="add-new-user"
                 color="primary"
                 onClick={(e) => {
@@ -72,7 +72,7 @@ const index = () => {
                 }}
               >
                 <PlusCircle size={14} /> Stock
-              </Button>
+              </Button> */}
             </div>
           </Col>
         </Row>
@@ -240,7 +240,7 @@ const index = () => {
               sortIcon={<ChevronDown />}
               className="react-dataTable"
               paginationComponent={CustomPagination}
-              data={store.data}
+              data={store?.data?.data}
               subHeaderComponent={<CustomHeader />}
             />
           </div>

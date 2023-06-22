@@ -79,9 +79,9 @@ export const batchListSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getAllData.fulfilled, (state, action) => {
-        state.data = action.payload?.inventories?.data;
-        state.cost = action.payload?.total_cost;
-        state.total = action.payload?.inventories?.total;
+        state.data = action.payload?.batches;
+        state.total = action.payload?.batches?.total;
+        state.cost = action.payload?.total;
       })
       .addCase(getRouteOptions.fulfilled, (state, action) => {
         state.routeOptions = action.payload;
