@@ -13,6 +13,15 @@ export const getAllData = createAsyncThunk(
   }
 );
 
+export const getData = createAsyncThunk(
+  "batchList/getData",
+  async (id) => {
+    console.log(id);
+    const response = await Api.get(`batch-list/${id}`);
+    return response.data;
+  }
+);
+
 export const getRouteOptions = createAsyncThunk(
   "batchList/getRouteOptions",
   async () => {
@@ -49,6 +58,7 @@ export const batchListSlice = createSlice({
   name: "batchList",
   initialState: {
     data: [],
+    showData: [],
     total: 1,
     cost: null,
 
@@ -82,6 +92,9 @@ export const batchListSlice = createSlice({
         state.data = action.payload?.batches;
         state.total = action.payload?.batches?.total;
         state.cost = action.payload?.total;
+      })
+      .addCase(getData.fulfilled, (state, action) => {
+        state.showData = action.payload;
       })
       .addCase(getRouteOptions.fulfilled, (state, action) => {
         state.routeOptions = action.payload;

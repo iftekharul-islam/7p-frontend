@@ -213,9 +213,10 @@ export const ConfigChildSKUSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getAllData.fulfilled, (state, action) => {
-        state.data = action.payload?.inventories?.data;
-        state.cost = action.payload?.total_cost;
-        state.total = action.payload?.inventories?.total;
+        state.data = action.payload?.data;
+        // state.data = action.payload?.inventories?.data;
+        // state.cost = action.payload?.total_cost;
+        // state.total = action.payload?.inventories?.total;
       })
       .addCase(getVendor.fulfilled, (state, action) => {
         state.vendor = action.payload;
