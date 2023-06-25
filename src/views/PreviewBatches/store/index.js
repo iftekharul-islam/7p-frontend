@@ -5,9 +5,13 @@ import Api from "@src/http";
 export const getAllData = createAsyncThunk(
   "previewBatches/getAllData",
   async (_, { getState }) => {
-    const { params, searchParams } = getState()?.previewBatches;
+    const { params, searchParams, active } = getState()?.previewBatches;
     const response = await Api.get("preview-batches", {
-      params: { ...params, ...searchParams },
+      params: {
+        ...params,
+        ...searchParams,
+        backorder: active == "1" ? 1 : null,
+      },
     });
     return response.data;
   }
@@ -41,11 +45,11 @@ export const previewBatchesSlice = createSlice({
   name: "previewBatches",
   initialState: {
     data: [],
+    active: "0",
 
     params: {},
 
     searchParams: {
-      backorder : '',
     },
 
     allData: [],
@@ -76,8 +80,12 @@ export const previewBatchesSlice = createSlice({
     setSearchParams: (state, action) => {
       state.searchParams = { ...state.searchParams, ...action.payload };
     },
+    setActive: (state, action) => {
+      state.active = action.payload;
+    },
   },
 });
 
-export const { setParams, setSearchParams } = previewBatchesSlice.actions;
+export const { setParams, setSearchParams, setActive } =
+  previewBatchesSlice.actions;
 export default previewBatchesSlice.reducer;

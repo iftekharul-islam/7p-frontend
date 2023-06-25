@@ -5,13 +5,26 @@ import { Fragment, useEffect, useState } from "react";
 import Flatpickr from "react-flatpickr";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
-import { Button, Card, CardBody, Col, Input, Row } from "reactstrap";
+import {
+  Button,
+  Card,
+  CardBody,
+  Col,
+  Input,
+  Nav,
+  NavItem,
+  NavLink,
+  Row,
+  TabContent,
+  TabPane,
+} from "reactstrap";
 import {
   getAllData,
   getSearchInOptions,
   getSectionOptions,
   getStoreOptions,
-  setSearchParams
+  setActive,
+  setSearchParams,
 } from "../store";
 
 const index = () => {
@@ -20,9 +33,12 @@ const index = () => {
   const [loading, setLoading] = useState(false);
   const params = store?.searchParams;
 
+  var count = store?.data?.count - 1;
+  let serial = store?.data?.serial - 1;
+
   useEffect(() => {
     onSearch();
-  }, [store?.params]);
+  }, [store?.params, store?.active]);
 
   useEffect(() => {
     dispatch(getSearchInOptions());
@@ -38,6 +54,28 @@ const index = () => {
 
   const onChange = (data) => {
     dispatch(setSearchParams(data));
+  };
+
+  const toggle = (tab) => {
+    if (store?.active !== tab) {
+      dispatch(setActive(tab));
+    }
+  };
+
+  const CustomNavItem = ({ text, total = null, tab }) => {
+    return (
+      <NavItem>
+        <NavLink
+          active={store?.active === tab}
+          onClick={() => {
+            toggle(tab);
+          }}
+        >
+          {text}
+          {total != null ? ` (${total}) ` : null}
+        </NavLink>
+      </NavItem>
+    );
   };
 
   return (
@@ -124,7 +162,246 @@ const index = () => {
           </Row>
         </Card>
         <Card>
-          <CardBody>Under Maintenance</CardBody>
+          <CardBody>
+            <Row>
+              <Nav pills className="mb-2 orange">
+                <CustomNavItem text="In Stock" tab="0" />
+                <CustomNavItem text="Back Orders" tab="1" />
+              </Nav>
+              <TabContent activeTab={store?.active}>
+                <TabPane tabId="0">
+                  {loading ? (
+                    <div className="text-center">
+                      <h4>Loading...</h4>
+                    </div>
+                  ) : store?.data?.batch_routes?.length > 0 ? (
+                    <span>
+                      <Row>
+                        <Col sm="2" className="p-1 border">
+                          <b>Batch #</b>
+                        </Col>
+                        <Col sm="1" className="p-1 border">
+                          <b>S.L #</b>
+                        </Col>
+                        <Col sm="1" className="p-1 border">
+                          <b>Batch S.L #</b>
+                        </Col>
+                        <Col sm="2" className="border">
+                          <b>
+                            Item ID <br />
+                            Order #
+                          </b>
+                        </Col>
+                        <Col sm="3" className=" border">
+                          <b>
+                            Order date
+                            <br />
+                            Store
+                          </b>
+                        </Col>
+                        <Col sm="1" className="p-1 border">
+                          <b>SKU</b>
+                        </Col>
+                        <Col sm="2" className="p-1 border">
+                          <b>Quantity</b>
+                        </Col>
+                      </Row>
+                      {store?.data?.batch_routes?.map((batchRoute) => {
+                        var rowSerial = 1;
+                        count++;
+                        return (
+                          <div className="p-1 border">
+                            <Row key={batchRoute.id}>
+                              <Col sm="1" className="p-1 ">
+                                {count}
+                              </Col>
+                              <Col sm="4" className="p-1 ">
+                                Route: {batchRoute.batch_code} ={" "}
+                                {batchRoute.batch_route_name}
+                              </Col>
+                              <Col sm="7" className="p-1 ">
+                                Next station {">>>"} {batchRoute.next_station}
+                                <hr />
+                              </Col>
+                            </Row>
+
+                            {batchRoute?.items?.map((item) => {
+                              serial++;
+                              rowSerial++;
+                              return (
+                                <Row>
+                                  <Col sm="2" className="p-1">
+                                    <img
+                                      src={item.item_thumb}
+                                      alt="Item Thumbnail"
+                                      height={60}
+                                    />
+                                  </Col>
+                                  <Col sm="1" className="p-1">
+                                    {serial}
+                                  </Col>
+                                  <Col sm="1" className="p-1">
+                                    {rowSerial}
+                                  </Col>
+                                  <Col sm="2" className="p-1">
+                                    ***{item.item_table_id}
+                                    <br />
+                                    <a
+                                      href={`/customer-order-edit/${item.order_5p}`}
+                                      target="_blank"
+                                    >
+                                      {item.short_order}
+                                    </a>
+                                  </Col>
+                                  <Col sm="3" className="p-1">
+                                    {item.order_date.substring(0, 10)}
+                                    <br />
+                                    {item.store_name}
+                                  </Col>
+                                  <Col sm="1" className="p-1">
+                                    {item.item_code}
+                                  </Col>
+                                  <Col sm="2" className="p-1">
+                                    {item.quantity}
+                                  </Col>
+                                </Row>
+                              );
+                            })}
+                            <Row>
+                              <Col sm="10" className="p-1"></Col>
+                              <Col sm="2" className="p-1">
+                                <span>
+                                  {rowSerial - 1} of{" "}
+                                  {batchRoute.batch_max_units} Max
+                                </span>
+                              </Col>
+                            </Row>
+                          </div>
+                        );
+                      })}
+                    </span>
+                  ) : (
+                    <h4 className="text-center">No batches to create.</h4>
+                  )}
+                </TabPane>
+                <TabPane tabId="1">
+                  {loading ? (
+                    <div className="text-center">
+                      <h4>Loading...</h4>
+                    </div>
+                  ) : store?.data?.batch_routes?.length > 0 ? (
+                    <span>
+                      <Row>
+                        <Col sm="2" className="p-1 border">
+                          <b>Batch #</b>
+                        </Col>
+                        <Col sm="1" className="p-1 border">
+                          <b>S.L #</b>
+                        </Col>
+                        <Col sm="1" className="p-1 border">
+                          <b>Batch S.L #</b>
+                        </Col>
+                        <Col sm="2" className="border">
+                          <b>
+                            Item ID <br />
+                            Order #
+                          </b>
+                        </Col>
+                        <Col sm="3" className=" border">
+                          <b>
+                            Order date
+                            <br />
+                            Store
+                          </b>
+                        </Col>
+                        <Col sm="1" className="p-1 border">
+                          <b>SKU</b>
+                        </Col>
+                        <Col sm="2" className="p-1 border">
+                          <b>Quantity</b>
+                        </Col>
+                      </Row>
+                      {store?.data?.batch_routes?.map((batchRoute) => {
+                        var rowSerial = 1;
+                        count++;
+                        return (
+                          <div className="p-1 border">
+                            <Row key={batchRoute.id}>
+                              <Col sm="1" className="p-1 ">
+                                {count}
+                              </Col>
+                              <Col sm="4" className="p-1 ">
+                                Route: {batchRoute.batch_code} ={" "}
+                                {batchRoute.batch_route_name}
+                              </Col>
+                              <Col sm="7" className="p-1 ">
+                                Next station {">>>"} {batchRoute.next_station}
+                                <hr />
+                              </Col>
+                            </Row>
+
+                            {batchRoute?.items?.map((item) => {
+                              serial++;
+                              rowSerial++;
+                              return (
+                                <Row>
+                                  <Col sm="2" className="p-1">
+                                    <img
+                                      src={item.item_thumb}
+                                      alt="Item Thumbnail"
+                                      height={60}
+                                    />
+                                  </Col>
+                                  <Col sm="1" className="p-1">
+                                    {serial}
+                                  </Col>
+                                  <Col sm="1" className="p-1">
+                                    {rowSerial}
+                                  </Col>
+                                  <Col sm="2" className="p-1">
+                                    ***{item.item_table_id}
+                                    <br />
+                                    <a
+                                      href={`/customer-order-edit/${item.order_5p}`}
+                                      target="_blank"
+                                    >
+                                      {item.short_order}
+                                    </a>
+                                  </Col>
+                                  <Col sm="3" className="p-1">
+                                    {item.order_date.substring(0, 10)}
+                                    <br />
+                                    {item.store_name}
+                                  </Col>
+                                  <Col sm="1" className="p-1">
+                                    {item.item_code}
+                                  </Col>
+                                  <Col sm="2" className="p-1">
+                                    {item.quantity}
+                                  </Col>
+                                </Row>
+                              );
+                            })}
+                            <Row>
+                              <Col sm="10" className="p-1"></Col>
+                              <Col sm="2" className="p-1">
+                                <span>
+                                  {rowSerial - 1} of{" "}
+                                  {batchRoute.batch_max_units} Max
+                                </span>
+                              </Col>
+                            </Row>
+                          </div>
+                        );
+                      })}
+                    </span>
+                  ) : (
+                    <h4 className="text-center">No batches to create.</h4>
+                  )}
+                </TabPane>
+              </TabContent>
+            </Row>
+          </CardBody>
         </Card>
       </Fragment>
     </div>

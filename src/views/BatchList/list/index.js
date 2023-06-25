@@ -24,6 +24,7 @@ import { columns } from "./columns";
 
 const index = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const store = useSelector((state) => state.batchList);
   const [loading, setLoading] = useState(false);
   const params = store?.searchParams;
@@ -242,6 +243,7 @@ const index = () => {
               paginationComponent={CustomPagination}
               data={store?.data?.data}
               subHeaderComponent={<CustomHeader />}
+              onRowClicked={(row) => navigate(`/batch-list/${row?.id}`)}
             />
           </div>
         </Card>
