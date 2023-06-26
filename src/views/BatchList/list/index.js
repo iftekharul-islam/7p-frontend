@@ -243,7 +243,7 @@ const index = () => {
               paginationComponent={CustomPagination}
               data={store?.data?.data}
               subHeaderComponent={<CustomHeader />}
-              onRowClicked={(row) => navigate(`/batch-list/${row?.id}`)}
+              onRowClicked={(row) => navigate(`/batch-list/${row?.batch_number}`)}
             />
           </div>
         </Card>
