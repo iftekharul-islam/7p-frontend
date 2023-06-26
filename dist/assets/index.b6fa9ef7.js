@@ -1,1 +1,0 @@
-import{a as r,r as c,ck as i,j as o}from"./index.db14b012.js";import{a as p}from"./App.c9615b80.js";const n=()=>{var a;const e=p(),s=r(t=>t.permissions);return c.exports.useEffect(()=>{e(i())},[]),o("div",{className:"app-user-list",children:(a=s==null?void 0:s.data)==null?void 0:a.map(t=>{})})};export{n as default};
