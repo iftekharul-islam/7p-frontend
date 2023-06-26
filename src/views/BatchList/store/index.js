@@ -15,9 +15,8 @@ export const getAllData = createAsyncThunk(
 
 export const getData = createAsyncThunk(
   "batchList/getData",
-  async (id) => {
-    console.log(id);
-    const response = await Api.get(`batch-list/${id}`);
+  async (data) => {
+    const response = await Api.get(`batch-list/${data?.id}`, {params: {batch_note: data?.batchNote}});
     return response.data;
   }
 );
@@ -50,6 +49,15 @@ export const getStoreOptions = createAsyncThunk(
   "batchList/getStoreOptions",
   async () => {
     const response = await Api.get("order-store-options");
+    return response.data;
+  }
+);
+
+export const rejectBatch = createAsyncThunk(
+  "batchList/rejectBatch",
+  async (data, {dispatch}) => {
+    const response = await Api.get("reject_item", { params: data });
+    dispatch(getData(data))
     return response.data;
   }
 );

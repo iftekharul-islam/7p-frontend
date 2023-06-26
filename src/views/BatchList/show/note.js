@@ -1,14 +1,9 @@
 import moment from "moment";
-import { useState } from "react";
 import { useSelector } from "react-redux";
 import { Button, CardBody, Col, Input, Row } from "reactstrap";
 
-const Note = () => {
-  const [value, setValue] = useState("");
+const Note = ({batchNote, setBatchNote, onClick}) => {
   const { showData } = useSelector((state) => state.batchList);
-  const AddNote = () => {
-    console.log(value);
-  };
   return (
     <CardBody>
       <Row>
@@ -75,12 +70,12 @@ const Note = () => {
             name="note"
             id="note"
             placeholder="Enter Note"
-            value={value}
-            onChange={(e) => {setValue(e.target.value)}}
+            value={batchNote}
+            onChange={(e) => {setBatchNote(e.target.value)}}
           />
         </Col>
         <Col md="2">
-          <Button color="primary" onClick={AddNote}>
+          <Button color="primary" onClick={onClick}>
             Add Note
           </Button>
         </Col>

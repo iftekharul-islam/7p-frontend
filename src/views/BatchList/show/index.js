@@ -2,26 +2,48 @@ import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { Card, CardHeader } from "reactstrap";
-import { getData } from "../store";
+import { getData, rejectBatch } from "../store";
+import RejectModal from "./RejectModal";
+import UploadModal from "./UploadModal";
 import Details from "./details";
 import Note from "./note";
 import Table from "./table";
 
 const index = () => {
   const { id } = useParams();
+  const [batchNote, setBatchNote] = useState(null);
   const dispatch = useDispatch();
   const { showData } = useSelector((state) => state.batchList);
   const [loading, setLoading] = useState(false);
 
   const getBatchData = async () => {
     setLoading(true);
-    if (id) await dispatch(getData(id));
+    if (id) await dispatch(getData({ id, batchNote }));
+    setBatchNote("");
     setLoading(false);
   };
 
   useEffect(() => {
     getBatchData();
   }, []);
+
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(!show);
+
+  const handleUpload = () => {
+    setShow(!show);
+  };
+
+  const [rejectShow, setRejectShow] = useState(false);
+  const handleRejectClose = () => setRejectShow(!rejectShow);
+  const [rejectData, setRejectData] = useState(null);
+  const handleReject = async () => {
+    const res = dispatch(rejectBatch(rejectData));
+    if (res?.payload == 201) {
+      setRejectShow(!rejectShow);
+      getBatchData();
+    }
+  };
 
   return (
     <Fragment>
@@ -34,10 +56,30 @@ const index = () => {
           </h4>
         </CardHeader>
         <Details />
-        <Table />
-        <Note />
-
+        <Table
+          handleClose={handleClose}
+          setRejectData={setRejectData}
+          handleRejectClose={handleRejectClose}
+        />
+        <Note
+          batchNote={batchNote}
+          setBatchNote={setBatchNote}
+          onClick={getBatchData}
+        />
       </Card>
+
+      <UploadModal
+        show={show}
+        handleClose={handleClose}
+        handleUpload={handleUpload}
+      />
+      <RejectModal
+        isOpen={rejectShow}
+        toggle={handleRejectClose}
+        handleUpload={handleReject}
+        rejectData={rejectData}
+        setRejectData={setRejectData}
+      />
     </Fragment>
   );
 };
