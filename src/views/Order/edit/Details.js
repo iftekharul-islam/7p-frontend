@@ -14,7 +14,8 @@ import {
   getStoreOptions,
 } from "../store";
 
-const Details = (data, onChange, errors) => {
+const Details = (data, onChange, errors, batched) => {
+  console.log("🚀 ~ file: Details.js:18 ~ Details ~ data:", data)
   const dispatch = useDispatch();
   const { id } = useParams();
   const store = useSelector((state) => state.orders);
@@ -133,9 +134,12 @@ const Details = (data, onChange, errors) => {
                 return item?.value === `${data?.carrier}*`;
               } else {
                 if (data?.carrier) {
-                  return {label: data?.carrier+data?.method, value: data?.carrier+data?.method }
+                  return {
+                    label: data?.carrier + data?.method,
+                    value: data?.carrier + data?.method,
+                  };
                 } else {
-                  item?.value === '';
+                  item?.value === "";
                 }
               }
             })}
@@ -179,6 +183,14 @@ const Details = (data, onChange, errors) => {
                 )
               )}
             </div>
+          )}
+          {(data?.batched === 0 || data?.batched <= 2) && (
+            <Button
+              color="info"
+              onClick={() => batched(data?.order?.id)}
+            >
+              Batch
+            </Button>
           )}
         </Col>
       </Row>
