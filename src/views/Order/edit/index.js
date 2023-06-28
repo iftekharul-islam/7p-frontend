@@ -12,7 +12,7 @@ import {
   Form,
   Row,
 } from "reactstrap";
-import { EditOrder, getOrder } from "../store";
+import { BatchedOrder, EditOrder, getOrder } from "../store";
 import Address from "./Address";
 import Calculation from "./Calculation";
 import Details from "./Details";
@@ -56,6 +56,14 @@ const index = () => {
     }
   };
 
+  const batched = async(orderId) => {
+    const res = await dispatch(BatchedOrder(id));
+    if (res?.payload?.status) {
+      dispatch(getOrder(id))
+    }
+  }
+
+
   return (
     <Fragment>
       <Row>
@@ -66,7 +74,7 @@ const index = () => {
                 <CardTitle tag="h4">Edit Order</CardTitle>
               </CardHeader>
               <CardBody>
-                {Details(data, onChange, errors)}
+                {Details(data, onChange, errors, batched)}
                 {Address(data, onChange, errors, setShowMail)}
                 {ProductList(data, onChange, errors, setShowTracking, setItemTracking)}
                 {Calculation(data, onChange, onSubmit, errors)}

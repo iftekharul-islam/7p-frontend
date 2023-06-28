@@ -4,10 +4,17 @@ import { selectThemeColors } from "@utils";
 import { Fragment, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import AsyncSelect from "react-select/async";
-import { Button, Col, Input, Row } from "reactstrap";
+import { Col, Input, Row } from "reactstrap";
 import { getProductOptions } from "../store";
+import ItemComponent from "./ItemComponent";
 
-const ProductList = (data, onChange, errors, setShowTracking, setItemTracking) => {
+const ProductList = (
+  data,
+  onChange,
+  errors,
+  setShowTracking,
+  setItemTracking
+) => {
   const dispatch = useDispatch();
 
   const loadOptions = async (inputValue) => {
@@ -21,7 +28,7 @@ const ProductList = (data, onChange, errors, setShowTracking, setItemTracking) =
   };
 
   const handleInputChange = (newValue) => {
-    const array = data?.items?.map((item) => ({ ...item })); 
+    const array = data?.items?.map((item) => ({ ...item }));
     array?.push({
       item_id: newValue?.data?.item_id,
       child_sku: newValue?.data?.product_model,
@@ -36,7 +43,7 @@ const ProductList = (data, onChange, errors, setShowTracking, setItemTracking) =
   };
 
   const onItemChange = (e, index) => {
-    const array = data?.items?.map((item) => ({ ...item }));    
+    const array = data?.items?.map((item) => ({ ...item }));
     array[index][e.target?.name] = e.target?.value;
     onChange({ target: { name: "items", value: array } });
   };
@@ -131,28 +138,11 @@ const ProductList = (data, onChange, errors, setShowTracking, setItemTracking) =
               />
             </Col>
             <Col sm="1">
-              {item?.is_new ? (
-                <Button
-                  color="danger"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    removeItem(index);
-                  }}
-                >
-                  Delete
-                </Button>
-              ) : (
-                <Button
-                  color="success"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setShowTracking(true);
-                    setItemTracking(item)
-                  }}
-                >
-                  Tracking
-                </Button>
-              )}
+              <ItemComponent
+                item={item}
+                setShowTracking
+                setItemTracking={setItemTracking}
+              />
             </Col>
             <hr />
           </Row>

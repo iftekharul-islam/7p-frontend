@@ -13,22 +13,26 @@ export const getAllData = createAsyncThunk(
   }
 );
 
-export const getOrder = createAsyncThunk(
-  "Orders/getOrder",
-  async (id) => {
-    const response = await Api.get(`orders/${id}`);
-    return response.data;
-  }
-);
+export const getOrder = createAsyncThunk("Orders/getOrder", async (id) => {
+  const response = await Api.get(`orders/${id}`);
+  return response.data;
+});
 
-export const EditOrder = createAsyncThunk(
-  "Orders/AddOrder",
-  async (data) => {
-    const response = await Api.post(`orders/${data?.id}`, data?.data);
+export const EditOrder = createAsyncThunk("Orders/AddOrder", async (data) => {
+  const response = await Api.post(`orders/${data?.id}`, data?.data);
+  if (response?.status == 201) {
+    return { status: true };
+  } else {
+    return { status: false, data: response?.data };
+  }
+});
+
+export const BatchedOrder = createAsyncThunk(
+  "Orders/BatchedOrder",
+  async (id) => {
+    const response = await Api.get(`batched-orders/${id}`);
     if (response?.status == 201) {
       return { status: true };
-    } else {
-      return { status: false, data: response?.data };
     }
   }
 );
@@ -36,21 +40,21 @@ export const EditOrder = createAsyncThunk(
 export const UpdateStore = createAsyncThunk(
   "Orders/UpdateStore",
   async (data) => {
-    const response = await Api.post('orders-update-store', data);
+    const response = await Api.post("orders-update-store", data);
   }
 );
 
 export const UpdateMethod = createAsyncThunk(
   "Orders/UpdateMethod",
   async (data) => {
-    const response = await Api.post('orders-update_method', data);
+    const response = await Api.post("orders-update_method", data);
   }
 );
 
 export const UpdateShipDate = createAsyncThunk(
   "Orders/UpdateShipDate",
   async (data) => {
-    const response = await Api.post('orders-update_shipdate', data);
+    const response = await Api.post("orders-update_shipdate", data);
   }
 );
 
@@ -113,14 +117,10 @@ export const getShippingMethodOptions = createAsyncThunk(
   }
 );
 
-export const sendEmail = createAsyncThunk(
-  "Order/sendEmail",
-  async (data) => {
-    const response = await Api.post("orders-send-email", data);
-    return response.data;
-  }
-);
-
+export const sendEmail = createAsyncThunk("Order/sendEmail", async (data) => {
+  const response = await Api.post("orders-send-email", data);
+  return response.data;
+});
 
 export const updateTracking = createAsyncThunk(
   "Order/updateTracking",
@@ -129,7 +129,6 @@ export const updateTracking = createAsyncThunk(
     return response.data;
   }
 );
-
 
 export const OrdersSlice = createSlice({
   name: "Orders",
@@ -168,7 +167,7 @@ export const OrdersSlice = createSlice({
     storeOptions: [],
     shipOptions: [],
     emailTypeOptions: [],
-    shippingMethodOptions: []
+    shippingMethodOptions: [],
   },
   extraReducers: (builder) => {
     builder
@@ -181,7 +180,7 @@ export const OrdersSlice = createSlice({
         };
       })
       .addCase(getOrder.fulfilled, (state, action) => {
-        state.order = {...action.payload, ...action.payload?.customer};
+        state.order = { ...action.payload, ...action.payload?.customer };
       })
       .addCase(getOperatorOptions.fulfilled, (state, action) => {
         state.operatorOptions = action.payload;
@@ -204,7 +203,6 @@ export const OrdersSlice = createSlice({
       .addCase(getShippingMethodOptions.fulfilled, (state, action) => {
         state.shippingMethodOptions = action.payload;
       });
-      
   },
   reducers: {
     setParams: (state, action) => {
