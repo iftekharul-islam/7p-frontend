@@ -32,7 +32,7 @@ function getTrackingUrl(trackingNumber) {
   }
 }
 
-function ItemComponent({ item, setShowTracking, setItemTracking }) {
+function ItemComponent({ item, setShowTracking, setItemTracking, carrier }) {
   const redoItem = (id, qty) => {
     console.log("redo item");
   };
@@ -45,15 +45,15 @@ function ItemComponent({ item, setShowTracking, setItemTracking }) {
             <a href={`/batch-list/${item?.batch_number}`} target="_blank">
               {item?.batch_number}
             </a>
-            {item?.batch.station && (
+            {item?.batch?.station && (
               <>
                 <br />
                 <span>
-                  {item?.batch.station.station_name}{" "}
-                  {item?.batch.station.station_description}
+                  {item?.batch?.station?.station_name}{" "}
+                  {item?.batch?.station?.station_description}
                 </span>
                 <br />
-                {item?.batch.change_date}
+                {item?.batch?.change_date}
               </>
             )}
           </p>
@@ -87,16 +87,16 @@ function ItemComponent({ item, setShowTracking, setItemTracking }) {
             <a href={`/batch-list/${item?.batch_number}`} target="_blank">
               {item?.batch_number}
             </a>
-            {item?.rejection.rejection_reason_info && (
+            {item?.rejection?.rejection_reason_info && (
               <>
                 <br />
-                {item?.rejection.rejection_reason_info.rejection_message}
+                {item?.rejection?.rejection_reason_info?.rejection_message}
               </>
             )}
             <br />
-            {item?.rejection.rejection_message}
+            {item?.rejection?.rejection_message}
             <br />
-            {item?.rejection.created_at}
+            {item?.rejection?.created_at}
           </>
         ) : (
           <>
@@ -104,10 +104,10 @@ function ItemComponent({ item, setShowTracking, setItemTracking }) {
             <a href={`/batch-list/${item?.batch_number}`} target="_blank">
               {item?.batch_number}
             </a>
-            {item?.rejection.rejection_reason_info && (
+            {item?.rejection?.rejection_reason_info && (
               <>
                 <br />
-                {item?.rejection.rejection_reason_info.rejection_message}
+                {item?.rejection?.rejection_reason_info?.rejection_message}
               </>
             )}
             <br />
@@ -136,39 +136,42 @@ function ItemComponent({ item, setShowTracking, setItemTracking }) {
             </>
           );
         })()
-      ) : item?.item_status !== "shipped" ? (
-        <>
-          <p>{item?.item_status}</p>
-          {item?.batch && (
-            <>
-              <a href={`/batch-list/${item?.batch_number}`} target="_blank">
-                {item?.batch_number}
-              </a>
-              <br />
-              {item?.batch.change_date}
-            </>
-          )}
-        </>
-      ) : item?.shipInfo && item?.shipInfo.tracking_number ? (
+      ) : (
+        item?.item_status !== "shipped" && (
+          <>
+            <p>{item?.item_status}</p>
+            {item?.batch && (
+              <>
+                <a href={`/batch-list/${item?.batch_number}`} target="_blank">
+                  {item?.batch_number}
+                </a>
+                <br />
+                {item?.batch.change_date}
+              </>
+            )}
+          </>
+        )
+      )}
+      {item?.ship_info && item?.ship_info?.tracking_number ? (
         <>
           <a
-            href={`/shipping?search_for_first=${item?.shipInfo.unique_order_id}&search_in_first=unique_order_id`}
+            href={`/shipping?search_for_first=${item?.ship_info.unique_order_id}&search_in_first=unique_order_id`}
           >
             Shipped
           </a>{" "}
           on{" "}
           {new Date(
-            item?.shipInfo.postmark_date || Date.now()
+            item?.ship_info.postmark_date || Date.now()
           ).toLocaleDateString()}
           <br />
-          {!item?.shipInfo.mail_class.toLowerCase().includes("innovation") && (
+          {!item?.ship_info.mail_class.toLowerCase().includes("innovation") && (
             <>
-              {item?.shipInfo.mail_class}
+              {item?.ship_info.mail_class}
               <br />
             </>
           )}
-          <a href={getTrackingUrl(item?.shipInfo.shipping_id)} target="_blank">
-            Trk# {item?.shipInfo.shipping_id}
+          <a href={getTrackingUrl(item?.ship_info.shipping_id)} target="_blank">
+            Trk# {item?.ship_info.shipping_id}
           </a>
           <br />
           {item?.batch && (
@@ -194,7 +197,7 @@ function ItemComponent({ item, setShowTracking, setItemTracking }) {
         </a>
       ) : item?.item_status !== "shipped" &&
         item?.item_status !== "cancelled" &&
-        order.carrier !== "MN" ? (
+        carrier !== "MN" ? (
         <>
           <br />
           <br />

@@ -142,6 +142,7 @@ const ProductList = (
                 item={item}
                 setShowTracking
                 setItemTracking={setItemTracking}
+                carrier={data?.carrier}
               />
             </Col>
             <hr />
