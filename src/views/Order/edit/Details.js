@@ -184,7 +184,7 @@ const Details = (data, onChange, errors, batched) => {
               )}
             </div>
           )}
-          {(data?.batched === 0 || data?.batched <= 2) && (
+          {(data?.batched == 0 || data?.batched <= 2) && (
             <Button
               color="info"
               onClick={() => batched(data?.order?.id)}
