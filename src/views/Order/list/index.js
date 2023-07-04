@@ -7,6 +7,7 @@ import { ChevronDown } from "react-feather";
 import Flatpickr from "react-flatpickr";
 import ReactPaginate from "react-paginate";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import { Button, Card, Col, Input, Row } from "reactstrap";
 import {
@@ -22,6 +23,7 @@ import { columns } from "./columns";
 
 const index = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const store = useSelector((state) => state.orders);
   const [loading, setLoading] = useState(false);
   const params = store?.searchParams;
@@ -243,10 +245,13 @@ const index = () => {
             <DataTable
               noHeader
               subHeader
+              striped
               sortServer
               pagination
               responsive
               paginationServer
+              pointerOnHover={true}
+              onRowClicked={(row) => navigate(`/customer-order-edit/${row.id}`)}
               columns={columns}
               sortIcon={<ChevronDown />}
               className="react-dataTable"

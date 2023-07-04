@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
-import { ChevronDown, PlusCircle, UserPlus } from "react-feather";
-import { useDispatch, useSelector } from "react-redux";
-import { Button, Card, Col, Input, Row } from "reactstrap";
-import { viewAdjustmentcolumns } from "./viewAdjustmentcolumns";
-import { getViewAdjustmentData } from "../store/index";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { ChevronDown } from "react-feather";
 import ReactPaginate from "react-paginate";
+import { useDispatch, useSelector } from "react-redux";
+import { useSearchParams } from "react-router-dom";
+import { Col, Row } from "reactstrap";
+import { getViewAdjustmentData } from "../store/index";
+import { viewAdjustmentcolumns } from "./viewAdjustmentcolumns";
 
 import "@styles/react/libs/react-select/_react-select.scss";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
@@ -94,6 +94,7 @@ const ViewAdjustment = () => {
     <div className="react-dataTable">
       <CustomHeader />
       <DataTable
+striped
         noHeader
         subHeader
         sortServer

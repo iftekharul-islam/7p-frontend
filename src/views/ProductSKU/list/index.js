@@ -147,6 +147,7 @@ const index = () => {
         <Card className="overflow-hidden">
           <div className="react-dataTable">
             <DataTable
+striped
               noHeader
               subHeader
               sortServer

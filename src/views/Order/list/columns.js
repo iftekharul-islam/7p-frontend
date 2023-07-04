@@ -1,6 +1,5 @@
 import moment from "moment";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
 
 export const columns = [
   {
@@ -11,12 +10,8 @@ export const columns = [
     selector: (row) => row.warehouse,
     cell: (row) => (
       <div>
-        <div>
-          <Link to={`/customer-order-edit/${row.id}`}>{row?.short_order}</Link>
-        </div>
-        <div>
-          <Link to={`/customer-order-edit/${row.id}`}>#{row?.purchase_order}</Link>
-        </div>
+        <div>{row?.short_order}</div>
+        <div>#{row?.purchase_order}</div>
       </div>
     ),
   },

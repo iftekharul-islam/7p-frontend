@@ -10,12 +10,12 @@ import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import { Button, Card, Col, Input, Row } from "reactstrap";
 import {
-  getAllData,
-  getMakeSampleDataOptions,
-  getProductionCategoriesOptions,
-  getSearchableFieldsOptions,
-  getStatusesOptions,
-  getWebImageStatusOptions,
+    getAllData,
+    getMakeSampleDataOptions,
+    getProductionCategoriesOptions,
+    getSearchableFieldsOptions,
+    getStatusesOptions,
+    getWebImageStatusOptions,
 } from "../store";
 import { columns } from "./columns";
 
@@ -251,6 +251,7 @@ const index = () => {
         <Card className="overflow-hidden">
           <div className="react-dataTable">
             <DataTable
+striped
               noHeader
               subHeader
               sortServer

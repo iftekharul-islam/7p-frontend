@@ -15,7 +15,6 @@ import {
 } from "../store";
 
 const Details = (data, onChange, errors, batched) => {
-  console.log("🚀 ~ file: Details.js:18 ~ Details ~ data:", data)
   const dispatch = useDispatch();
   const { id } = useParams();
   const store = useSelector((state) => state.orders);
@@ -82,7 +81,7 @@ const Details = (data, onChange, errors, batched) => {
             placeholder="Select Store"
             options={store?.storeOptions}
             value={store?.storeOptions?.find(
-              (item) => item?.value === data?.store_id
+              (item) => item?.value == data?.store_id
             )}
             onChange={onStoreChange}
           />

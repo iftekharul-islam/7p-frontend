@@ -6,10 +6,10 @@ import { PlusCircle } from "react-feather";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
-  Button,
-  Card,
-  Col,
-  Row
+    Button,
+    Card,
+    Col,
+    Row
 } from "reactstrap";
 import { getAllData } from "../store";
 import { columns } from "./columns";
@@ -57,6 +57,7 @@ const index = () => {
         <Card className="overflow-hidden">
           <div className="react-dataTable">
             <DataTable
+striped
               noHeader
               subHeader
               sortServer

@@ -1,9 +1,9 @@
+import "@styles/react/libs/react-select/_react-select.scss";
+import "@styles/react/libs/tables/react-dataTable-component.scss";
 import { Fragment } from "react";
 import DataTable from "react-data-table-component";
 import { Card } from "reactstrap";
 import { columns } from "./columns";
-import "@styles/react/libs/react-select/_react-select.scss";
-import "@styles/react/libs/tables/react-dataTable-component.scss";
 
 const ProductTable = ({ data, total }) => {
   const tablData = [];
@@ -17,6 +17,7 @@ const ProductTable = ({ data, total }) => {
         <Card className="overflow-hidden">
           <div className="react-dataTable">
             <DataTable
+striped
               subHeader
               responsive
               columns={columns}

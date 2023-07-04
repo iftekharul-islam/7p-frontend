@@ -199,8 +199,6 @@ function ItemComponent({ item, setShowTracking, setItemTracking, carrier }) {
         item?.item_status !== "cancelled" &&
         carrier !== "MN" ? (
         <>
-          <br />
-          <br />
           <button
             id="shipitem"
             onClick={(e) => {

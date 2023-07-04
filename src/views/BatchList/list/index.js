@@ -12,13 +12,13 @@ import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import { Button, Card, CardBody, Col, Input, Row } from "reactstrap";
 import {
-  getAllData,
-  getRouteOptions,
-  getStationOptions,
-  getStatusOptions,
-  getStoreOptions,
-  setParams,
-  setSearchParams,
+    getAllData,
+    getRouteOptions,
+    getStationOptions,
+    getStatusOptions,
+    getStoreOptions,
+    setParams,
+    setSearchParams,
 } from "../store";
 import { columns } from "./columns";
 
@@ -228,6 +228,7 @@ const index = () => {
         <Card className="overflow-hidden">
           <div className="react-dataTable">
             <DataTable
+striped
               noHeader
               subHeader
               sortServer

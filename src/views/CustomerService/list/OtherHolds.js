@@ -101,6 +101,7 @@ const OtherHolds = ({ data }) => {
     <Card className="overflow-hidden">
       <div className="react-dataTable">
         <DataTable
+striped
           responsive
           columns={columns}
           className="react-dataTable"

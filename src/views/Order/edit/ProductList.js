@@ -140,7 +140,7 @@ const ProductList = (
             <Col sm="1">
               <ItemComponent
                 item={item}
-                setShowTracking
+                setShowTracking={setShowTracking}
                 setItemTracking={setItemTracking}
                 carrier={data?.carrier}
               />

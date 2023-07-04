@@ -1,22 +1,22 @@
+import "@styles/react/libs/tables/react-dataTable-component.scss";
 import { Fragment, useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import { PlusCircle } from "react-feather";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  Button,
-  Card,
-  Col,
-  Form,
-  Input,
-  Label,
-  Modal,
-  ModalBody,
-  ModalHeader,
-  Row,
+    Button,
+    Card,
+    Col,
+    Form,
+    Input,
+    Label,
+    Modal,
+    ModalBody,
+    ModalHeader,
+    Row,
 } from "reactstrap";
-import { columns } from "./columns";
 import { AddTemplate, getAllData } from "../store";
-import "@styles/react/libs/tables/react-dataTable-component.scss";
+import { columns } from "./columns";
 
 const index = () => {
   const dispatch = useDispatch();
@@ -81,6 +81,7 @@ const index = () => {
         <Card className="overflow-hidden">
           <div className="react-dataTable">
             <DataTable
+striped
               subHeader
               responsive
               columns={columns}

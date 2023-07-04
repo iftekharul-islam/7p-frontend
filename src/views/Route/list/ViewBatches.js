@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
-import { ChevronDown, PlusCircle, UserPlus } from "react-feather";
+import { PlusCircle } from "react-feather";
+import ReactPaginate from "react-paginate";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button, Col, Row } from "reactstrap";
 import { getAllData } from "../store";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import ReactPaginate from "react-paginate";
 
 import "@styles/react/libs/react-select/_react-select.scss";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
@@ -104,6 +104,7 @@ const ViewBatches = () => {
   return (
     <div className="react-dataTable">
       <DataTable
+striped
         noHeader
         subHeader
         pagination

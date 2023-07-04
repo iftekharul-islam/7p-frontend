@@ -1,12 +1,12 @@
 import { Fragment, useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
-import { ChevronDown, PlusCircle, UserPlus } from "react-feather";
-import { useDispatch, useSelector } from "react-redux";
-import { Button, Card, Col, Input, Row } from "reactstrap";
-import { columns } from "./columns";
-import { getAllData } from "./../store/index";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { ChevronDown, PlusCircle } from "react-feather";
 import ReactPaginate from "react-paginate";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { Button, Card, Col, Row } from "reactstrap";
+import { getAllData } from "./../store/index";
+import { columns } from "./columns";
 
 import "@styles/react/libs/react-select/_react-select.scss";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
@@ -114,6 +114,7 @@ const index = () => {
         <Card className="overflow-hidden">
           <div className="react-dataTable">
             <DataTable
+striped
               noHeader
               subHeader
               sortServer

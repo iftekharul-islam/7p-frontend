@@ -1,14 +1,12 @@
 import { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
-import { ChevronDown, PlusCircle, UserPlus } from "react-feather";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Card, Col, Input, Label, Row } from "reactstrap";
-import {
-  getAdjustInventoryData,
-  updateAdjustInventoryData,
-} from "../store/index";
 import { useSearchParams } from "react-router-dom";
-import ReactPaginate from "react-paginate";
+import { Button, Card, Col, Input, Row } from "reactstrap";
+import {
+    getAdjustInventoryData,
+    updateAdjustInventoryData,
+} from "../store/index";
 
 import "@styles/react/libs/react-select/_react-select.scss";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
@@ -209,6 +207,7 @@ const AdjustInventory = () => {
           </Card>
           <hr />
           <DataTable
+striped
             subHeader
             responsive
             columns={adjustInventorycolumns}

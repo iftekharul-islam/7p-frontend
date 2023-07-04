@@ -1,25 +1,24 @@
+import "@styles/react/libs/react-select/_react-select.scss";
+import "@styles/react/libs/tables/react-dataTable-component.scss";
 import { Fragment, useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import { ChevronDown, PlusCircle } from "react-feather";
+import ReactPaginate from "react-paginate";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  Button,
-  Card,
-  Col,
-  Form,
-  Input,
-  Label,
-  Modal,
-  ModalBody,
-  ModalHeader,
-  Row,
+    Button,
+    Card,
+    Col,
+    Form,
+    Input,
+    Label,
+    Modal,
+    ModalBody,
+    ModalHeader,
+    Row,
 } from "reactstrap";
-import { columns } from "./columns";
 import { AddReason, getAllData } from "../store";
-import ReactPaginate from "react-paginate";
-import "@styles/react/libs/react-select/_react-select.scss";
-import "@styles/react/libs/tables/react-dataTable-component.scss";
-import { DebounceInput } from "react-debounce-input";
+import { columns } from "./columns";
 
 const index = () => {
   const dispatch = useDispatch();
@@ -128,6 +127,7 @@ const index = () => {
         <Card className="overflow-hidden">
           <div className="react-dataTable">
             <DataTable
+striped
               noHeader
               subHeader
               sortServer
