@@ -4,15 +4,18 @@ import Api from "@src/http";
 
 export const getAllData = createAsyncThunk(
   "moveBatches/getAllData",
-  async (_, { getState }) => {
+  async (bodyParams, { getState, dispatch }) => {
     const { params, searchParams } = getState()?.moveBatches;
     const response = await Api.get("move-batches", {
-      params: { ...params, ...searchParams },
+      params: { ...params, ...searchParams, ...bodyParams },
     });
-    return response.data;
+    if (response?.status == 201) {
+      dispatch(getAllData({}));
+    } else if (response?.status == 200) {
+      return response.data;
+    }
   }
 );
-
 
 export const getStationOptions = createAsyncThunk(
   "batchList/getStationOptions",
@@ -46,6 +49,9 @@ export const moveBatchesSlice = createSlice({
       order_end_date: null,
     },
 
+    moveParams: [],
+    allChecked: false,
+
     allData: [],
 
     next_in_routeOptions: [],
@@ -54,11 +60,13 @@ export const moveBatchesSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getAllData.fulfilled, (state, action) => {
-        state.data = action.payload
+        state.data = action.payload;
+        state.routes_in_stationOptions = action.payload?.routes_in_station;
+        state.stations_in_routeOptions = action.payload?.stations_in_route;
       })
       .addCase(getStationOptions.fulfilled, (state, action) => {
         state.stationOptions = action.payload;
-      })
+      });
   },
   reducers: {
     setParams: (state, action) => {
@@ -67,8 +75,25 @@ export const moveBatchesSlice = createSlice({
     setSearchParams: (state, action) => {
       state.searchParams = { ...state.searchParams, ...action.payload };
     },
+    setMoveParams: (state, action) => {
+      let data = [];
+      let toggle = state?.allChecked;
+      if (action.payload === "all") {
+        data = toggle
+          ? []
+          : state?.data?.batches.map((item) => item?.batch_number);
+        toggle = !toggle;
+      } else {
+        data = state.moveParams?.includes(action.payload)
+          ? state.moveParams?.filter((item) => item !== action.payload)
+          : [...state.moveParams, action.payload];
+      }
+      state.moveParams = data;
+      state.allChecked = toggle;
+    },
   },
 });
 
-export const { setParams, setSearchParams } = moveBatchesSlice.actions;
+export const { setParams, setSearchParams, setMoveParams } =
+  moveBatchesSlice.actions;
 export default moveBatchesSlice.reducer;

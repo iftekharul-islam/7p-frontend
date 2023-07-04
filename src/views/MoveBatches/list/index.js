@@ -17,7 +17,8 @@ import {
 import {
   getAllData,
   getStationOptions,
-  setSearchParams
+  setMoveParams,
+  setSearchParams,
 } from "../store";
 
 const index = () => {
@@ -30,14 +31,29 @@ const index = () => {
     dispatch(getStationOptions());
   }, []);
 
-  const onSearch = async () => {
+  const onSearch = async (params) => {
     setLoading(true);
-    await dispatch(getAllData());
+    await dispatch(getAllData(params));
     setLoading(false);
   };
 
   const onChange = (data) => {
     dispatch(setSearchParams(data));
+  };
+
+  const selectChange = (e) => {
+    dispatch(setMoveParams(e?.target?.value));
+  };
+  const selectAllChange = () => {
+    dispatch(setMoveParams("all"));
+  };
+
+  const moveToNextStation = () => {
+    onSearch({ task: "next", batch_number: store?.moveParams, route: null });
+  };
+
+  const moveToStation = () => {
+    onSearch({task: "move", batch_number: store?.moveParams, station: null});
   };
 
   return (
@@ -77,7 +93,11 @@ const index = () => {
                 />
               </Col>
               <Col sm="2" className="d-flex align-items-start flex-column">
-                <Button color="primary" onClick={onSearch} disabled={loading}>
+                <Button
+                  color="primary"
+                  onClick={() => onSearch({})}
+                  disabled={loading}
+                >
                   {loading ? "Please Wait" : "Search"}
                 </Button>
               </Col>
@@ -101,36 +121,75 @@ const index = () => {
           <span>
             <Card>
               <CardBody>
-                <Row>
-                  <Col sm="3"></Col>
-                  <Col sm="4">
-                    <Select
-                      className="react-select"
-                      classNamePrefix="select"
-                      options={store?.next_in_routeOptions}
-                      placeholder="Select Route (To move to other stations)"
-                      value={store?.next_in_routeOptions?.find(
-                        (item) => item?.value == params?.route
-                      )}
-                      onChange={(e) => onChange({ route: e?.value })}
-                    />
-                  </Col>
-                  <Col sm="2" className="d-flex align-items-start flex-column">
-                    <Button
-                      color="primary"
-                      onClick={onSearch}
-                      disabled={loading}
+                {((store?.data?.route && store?.data?.route != "all") ||
+                  store?.data?.batches?.length == 1) &&
+                store?.data?.stations_in_route?.length > 0 ? (
+                  <Row>
+                    <Col sm="3"></Col>
+                    <Col sm="4">
+                      <Select
+                        className="react-select"
+                        classNamePrefix="select"
+                        options={store?.stations_in_routeOptions}
+                        placeholder="Select Route (To move to other stations)"
+                        value={store?.stations_in_routeOptions?.find(
+                          (item) => item?.value == params?.route
+                        )}
+                        onChange={(e) => onChange({ station_change: e?.value })}
+                      />
+                    </Col>
+                    <Col
+                      sm="2"
+                      className="d-flex align-items-start flex-column"
                     >
-                      {loading ? "Please Wait" : "Filter"}
-                    </Button>
-                  </Col>
-                </Row>
+                      <Button
+                        color="primary"
+                        onClick={moveToStation}
+                        disabled={loading}
+                      >
+                        {loading ? "Please Wait" : "Move to Station"}
+                      </Button>
+                    </Col>
+                  </Row>
+                ) : (
+                  <Row>
+                    <Col sm="3"></Col>
+                    <Col sm="4">
+                      <Select
+                        className="react-select"
+                        classNamePrefix="select"
+                        options={store?.routes_in_stationOptions}
+                        placeholder="Select Route (To move to other stations)"
+                        value={store?.routes_in_stationOptions?.find(
+                          (item) => item?.value == params?.route
+                        )}
+                        onChange={(e) => onChange({ route: e?.value })}
+                      />
+                    </Col>
+                    <Col
+                      sm="2"
+                      className="d-flex align-items-start flex-column"
+                    >
+                      <Button
+                        color="primary"
+                        onClick={()=>onSearch({})}
+                        disabled={loading}
+                      >
+                        {loading ? "Please Wait" : "Filter"}
+                      </Button>
+                    </Col>
+                  </Row>
+                )}
               </CardBody>
             </Card>
             <Card>
               <CardHeader>
-                <Button color="primary" onClick={onSearch} disabled={loading}>
-                  {loading ? "Please Wait" : "Filter"}
+                <Button
+                  color="primary"
+                  onClick={moveToNextStation}
+                  disabled={loading}
+                >
+                  {loading ? "Please Wait" : "Move to Next Station"}
                 </Button>
               </CardHeader>
               <CardBody>
@@ -138,15 +197,13 @@ const index = () => {
                   <Col sm="1">
                     <Input
                       type="checkbox"
-                      checked={params?.filter_status == "1"}
-                      onChange={(e) =>
-                        onChange({
-                          filter_status: e?.target?.checked ? "1" : "0",
-                        })
-                      }
+                      checked={store?.allChecked}
+                      onChange={selectAllChange}
                     />
                   </Col>
-                  <Col sm="1">Select All</Col>
+                  <Col sm="1">
+                    {store?.allChecked ? "UnCheck All" : "Check All"}
+                  </Col>
                   <Col sm="1">Batch Date</Col>
                   <Col sm="2">Min. Order Date</Col>
                   <Col sm="2">Station</Col>
@@ -160,16 +217,15 @@ const index = () => {
                     <Col sm="1">
                       <Input
                         type="checkbox"
-                        checked={params?.filter_status == "1"}
-                        onChange={(e) =>
-                          onChange({
-                            filter_status: e?.target?.checked ? "1" : "0",
-                          })
-                        }
+                        value={batch?.batch_number}
+                        checked={store?.moveParams?.includes(
+                          batch?.batch_number
+                        )}
+                        onChange={selectChange}
                       />
                     </Col>
                     <Col sm="1">
-                      <a href="{{ url(sprintf('batches/details/%s',$batch->batch_number )) }}">
+                      <a href={`/batch-list/${batch?.batch_number}`}>
                         {batch?.batch_number}
                       </a>
                       <br />
@@ -186,10 +242,14 @@ const index = () => {
                       {batch?.station?.station_name} -{" "}
                       {batch?.station?.station_description}
                     </Col>
-                    {/* TODO update next_in_route after getting data */}
-                    <Col sm="1">{next_in_route[batch?.batch_route_id]}</Col>
+                    <Col sm="1">
+                      {store?.data?.next_in_route[batch?.batch_route_id]}
+                    </Col>
                     <Col sm="1">{batch?.route?.batch_code}</Col>
-                    <Col sm="1">{batch?.itemsCount[0]?.count}</Col>
+                    <Col sm="1">
+                      {batch?.items_count?.length > 0 &&
+                        batch?.items_count[0]?.count}
+                    </Col>
                     <Col sm="2">
                       <img
                         src={batch?.first_item?.item_thumbnail}
