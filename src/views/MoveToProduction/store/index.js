@@ -19,7 +19,7 @@ export const getShowData = createAsyncThunk(
     const response = await Api.get("move-show", {
       params: { ...searchParams },
     });
-    if (response?.status == 201 || response?.status == 201) {
+    if (response?.status == 200 || response?.status == 201) {
       return { status: true, data: response?.data };
     }
     else {

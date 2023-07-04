@@ -62,7 +62,7 @@ const index = () => {
           <Row className="mb-1">
             <Col md="3">
               <Input
-                placeholder="Search for Second"
+                placeholder="Enter Batch"
                 value={searchParams?.scan_batches}
                 onChange={(e) => onChange({ scan_batches: e?.target?.value })}
               />
