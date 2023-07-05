@@ -11,12 +11,12 @@ const themeConfig = {
   },
   layout: {
     isRTL: false,
-    skin: "light", // light, dark, bordered, semi-dark
+    skin: "semi-dark", // light, dark, bordered, semi-dark
     type: "vertical", // vertical, horizontal
     contentWidth: "full", // full, boxed
     menu: {
       isHidden: false,
-      isCollapsed: false,
+      isCollapsed: true,
     },
     navbar: {
       // ? For horizontal menu, navbar type will work for navMenu type
@@ -24,7 +24,7 @@ const themeConfig = {
       backgroundColor: "white", // BS color options [primary, success, etc]
     },
     footer: {
-      type: "static", // static, sticky, hidden
+      type: "sticky", // static, sticky, hidden
     },
     customizer: false,
     scrollTop: true, // Enable scroll to top button
