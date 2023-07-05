@@ -53,7 +53,7 @@ const index = () => {
   };
 
   const moveToStation = () => {
-    onSearch({task: "move", batch_number: store?.moveParams, station: null});
+    onSearch({ task: "move", batch_number: store?.moveParams, station: null });
   };
 
   return (
@@ -172,7 +172,7 @@ const index = () => {
                     >
                       <Button
                         color="primary"
-                        onClick={()=>onSearch({})}
+                        onClick={() => onSearch({})}
                         disabled={loading}
                       >
                         {loading ? "Please Wait" : "Filter"}
@@ -211,6 +211,7 @@ const index = () => {
                   <Col sm="1">Route</Col>
                   <Col sm="1">Line</Col>
                   <Col sm="2">Image</Col>
+                  <hr />
                 </Row>
                 {store?.data?.batches?.map((batch, index) => (
                   <Row>
@@ -256,8 +257,11 @@ const index = () => {
                         width="70"
                         height="70"
                       />
-                      {batch?.first_item?.item_thumb}
+                      <a href={batch?.first_item?.item_thumb} target="_blank">
+                        {batch.first_item?.item_thumb}
+                      </a>
                     </Col>
+                    <hr />
                   </Row>
                 ))}
               </CardBody>
