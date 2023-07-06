@@ -1,6 +1,7 @@
 import "@styles/react/libs/react-select/_react-select.scss";
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import {
   Button,
@@ -18,7 +19,6 @@ import {
   getStoreOptions,
   setSearchParams
 } from "../store";
-import { useNavigate } from "react-router-dom";
 
 const index = () => {
   const dispatch = useDispatch();
@@ -36,9 +36,6 @@ const index = () => {
   const ShowBatch = async () => {
     setLoading(true);
     const res = await dispatch(getShowData());
-    if (res?.payload?.status) {
-      navigate("/move-to-qc/show");
-    }
     setLoading(false);
   }
 
@@ -56,7 +53,7 @@ const index = () => {
     <Fragment>
       <Card>
         <CardHeader>
-          <h4 className="card-title">Move to Production</h4>
+          <h4 className="card-title">Move to QC</h4>
         </CardHeader>
         <CardBody>
           <Row className="mb-1">

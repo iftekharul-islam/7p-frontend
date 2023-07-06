@@ -253,7 +253,7 @@ const index = () => {
                     </Col>
                     <Col sm="2">
                       <img
-                        src={batch?.first_item?.item_thumbnail}
+                        src={batch?.first_item?.item_thumb}
                         width="70"
                         height="70"
                       />

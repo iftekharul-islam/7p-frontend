@@ -55,13 +55,13 @@ export const moveToProductionsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getAllData.fulfilled, (state, action) => {
-        state.data = action.payload;
+        state.data = state.data;
       })
       .addCase(getStoreOptions.fulfilled, (state, action) => {
         state.storeOptions = action.payload;
       })
       .addCase(getShowData.fulfilled, (state, action) => {
-        state.showData = action.payload?.data;
+        state.showData = {...state.showData, ...action.payload?.data};
       });
   },
   reducers: {

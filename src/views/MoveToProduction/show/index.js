@@ -24,6 +24,38 @@ const index = () => {
     dispatch(setSearchParams(data));
   };
 
+  const formatString = (json, separator = "\n", bold = 0) => {
+    let pre = "";
+    let post = "";
+
+    if (bold === 1) {
+      pre = '<strong style="font-size: 110%;">';
+      post = "</strong>";
+    }
+
+    let formattedString = "";
+    const jsonArray = JSON.parse(json);
+
+    if (jsonArray) {
+      for (const key in jsonArray) {
+        const value = jsonArray[key];
+
+        if (key !== "Confirmation_of_Order_Details" && key !== "couponcode") {
+          if (value.includes("$") && bold === 1) {
+            value = `<span style="font-size: 120%;">${value}</span>`;
+          }
+          formattedString += `${key.replaceAll(
+            "_",
+            " "
+          )} = ${pre}${value}${post}${separator}`;
+        }
+        console.log(formattedString);
+      }
+    }
+
+    return formattedString;
+  };
+
   return (
     <Fragment>
       <Card>
@@ -55,7 +87,7 @@ const index = () => {
                   </h3>
                 </Col>
                 <Col md="3">
-                  {showData?.to_move?.summary_date ? (
+                  {!showData?.to_move?.summary_date ? (
                     <div>
                       <Button
                         color="primary"
@@ -81,7 +113,7 @@ const index = () => {
               {showData?.to_move?.items?.map((item, index) => {
                 return (
                   <>
-                    <Col md="1">
+                    <Col md="3">
                       <span>
                         <img src={item?.item_thumb} width="90" height="90" />
                         <br />
@@ -100,7 +132,7 @@ const index = () => {
                       <Button color="primary">Reject Item</Button>
                     </Col>
                     <Col md="3">
-                      <Input type="textarea" row="4" />
+                      <Input type="textarea" value={formatString(item?.item_option)} disabled/>
                     </Col>
                   </>
                 );
