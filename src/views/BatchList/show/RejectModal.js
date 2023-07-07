@@ -1,24 +1,40 @@
-import React, { useState } from "react";
-import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import Select from "react-select";
+import {
+  Button,
+  Input,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+} from "reactstrap";
+import { getRejectOptions, rejectBatch } from "../store";
 
-const RejectionModal = ({
-  isOpen,
-  toggle,
-  handleUpload,
-  rejectData,
-  setRejectData,
-}) => {
-  const [rejectQty, setRejectQty] = useState(1);
-  const [reasonToReject, setReasonToReject] = useState("");
-  const [messageToReject, setMessageToReject] = useState("");
-
-  const handleReject = () => {
-    handleUpload();
-  };
+const RejectionModal = ({ isOpen, toggle, data }) => {
+  const dispatch = useDispatch();
+  const { rejectOptions } = useSelector((state) => state.batchList);
+  const [rejectData, setRejectData] = useState(null);
 
   const handleChange = (name, value) => {
     setRejectData({ ...rejectData, [name]: value });
   };
+  const onRadioChange = (e) => {
+    handleChange(e.target.name, e.target.value);
+  };
+
+  const handleReject = async () => {
+    const res = dispatch(rejectBatch(rejectData));
+    if (res?.payload == 201) {
+      setRejectShow(!rejectShow);
+      getBatchData();
+    }
+  };
+
+  useEffect(() => {
+    dispatch(getRejectOptions());
+    setRejectData({ id:data?.id, item_id: data?.item_id, origin: "BD", title: "Batch view" });
+  }, [data]);
 
   return (
     <Modal isOpen={isOpen} toggle={toggle} className="modal-lg">
@@ -28,11 +44,23 @@ const RejectionModal = ({
         <div className="btn-group" data-toggle="buttons">
           <label className="btn btn-default btn-lg" style={{ width: "280px" }}>
             <span className="glyphicon glyphicon-trash" />
-            <input type="radio" name="scrap" /> Defective Item Produced
+            <Input
+              type="radio"
+              name="scrap"
+              value="1"
+              onChange={onRadioChange}
+            />{" "}
+            Defective Item Produced
           </label>
 
           <label className="btn btn-default btn-lg" style={{ width: "280px" }}>
-            <input type="radio" name="scrap" /> Nothing Produced
+            <Input
+              type="radio"
+              name="scrap"
+              value="0"
+              onChange={onRadioChange}
+            />{" "}
+            Nothing Produced
           </label>
         </div>
 
@@ -42,17 +70,35 @@ const RejectionModal = ({
           <h5>Graphic</h5>
           <label className="btn btn-default btn-lg" style={{ width: "180px" }}>
             <span className="glyphicon glyphicon-print" />
-            <input type="radio" name="graphic_status" /> Print Again
+            <Input
+              type="radio"
+              name="graphic_status"
+              value="1"
+              onChange={onRadioChange}
+            />{" "}
+            Print Again
           </label>
 
           <label className="btn btn-default btn-lg" style={{ width: "180px" }}>
             <span className="glyphicon glyphicon-pencil" />
-            <input type="radio" name="graphic_status" /> Edit Graphic
+            <Input
+              type="radio"
+              name="graphic_status"
+              value="2"
+              onChange={onRadioChange}
+            />{" "}
+            Edit Graphic
           </label>
 
           <label className="btn btn-default btn-lg" style={{ width: "205px" }}>
             <span className="glyphicon glyphicon-envelope" />
-            <input type="radio" name="graphic_status" /> Contact Customer
+            <Input
+              type="radio"
+              name="graphic_status"
+              value="4"
+              onChange={onRadioChange}
+            />{" "}
+            Contact Customer
           </label>
         </div>
 
@@ -60,35 +106,42 @@ const RejectionModal = ({
 
         <div className="form-group" id="qty_group">
           Quantity to Reject:{" "}
-          <input
+          <Input
             type="number"
             id="reject_qty"
-            value={rejectQty}
+            name="reject_qty"
+            value={rejectData?.reject_qty}
             min="1"
-            onChange={(e) => setRejectQty(e.target.value)}
+            onChange={onRadioChange}
           />
         </div>
 
         <div className="form-group">
-          <select
-            id="reason-to-reject"
-            className="form-control"
-            value={reasonToReject}
-            onChange={(e) => setReasonToReject(e.target.value)}
+          <Select
+            className="select"
+            classNamePrefix="react-select"
+            name="rejection_reason"
+            options={rejectOptions}
+            value={rejectOptions?.find(
+              (item) => item.value === rejectData?.reasonToReject
+            )}
+            onChange={(e) => handleChange("rejection_reason", e.value)}
           >
             <option value="">Select a reason to reject</option>
             {/* Add your options here */}
-          </select>
+          </Select>
         </div>
 
         <div className="form-group">
-          <textarea
-            id="message-to-reject"
+          <Input
+            type="textarea"
+            id="rejection_message"
             rows={2}
             className="form-control"
             placeholder="More Information"
-            value={messageToReject}
-            onChange={(e) => setMessageToReject(e.target.value)}
+            name="rejection_message"
+            value={rejectData?.rejection_message}
+            onChange={onRadioChange}
           />
         </div>
       </ModalBody>

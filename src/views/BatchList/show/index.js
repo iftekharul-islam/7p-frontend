@@ -2,7 +2,7 @@ import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { Card, CardHeader } from "reactstrap";
-import { getData, rejectBatch } from "../store";
+import { getData } from "../store";
 import RejectModal from "./RejectModal";
 import UploadModal from "./UploadModal";
 import Details from "./details";
@@ -36,14 +36,7 @@ const index = () => {
 
   const [rejectShow, setRejectShow] = useState(false);
   const handleRejectClose = () => setRejectShow(!rejectShow);
-  const [rejectData, setRejectData] = useState(null);
-  const handleReject = async () => {
-    const res = dispatch(rejectBatch(rejectData));
-    if (res?.payload == 201) {
-      setRejectShow(!rejectShow);
-      getBatchData();
-    }
-  };
+  const [rejectData, setRejectData] = useState(null);  
 
   return (
     <Fragment>
@@ -76,9 +69,7 @@ const index = () => {
       <RejectModal
         isOpen={rejectShow}
         toggle={handleRejectClose}
-        handleUpload={handleReject}
-        rejectData={rejectData}
-        setRejectData={setRejectData}
+        data={rejectData}
       />
     </Fragment>
   );

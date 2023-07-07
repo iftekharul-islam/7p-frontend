@@ -53,11 +53,19 @@ export const getStoreOptions = createAsyncThunk(
   }
 );
 
+export const getRejectOptions = createAsyncThunk(
+  "batchList/getRejectOptions",
+  async () => {
+    const response = await Api.get("reason-options");
+    return response.data;
+  }
+);
+
 export const rejectBatch = createAsyncThunk(
   "batchList/rejectBatch",
   async (data, {dispatch}) => {
     const response = await Api.get("reject_item", { params: data });
-    dispatch(getData(data))
+    dispatch(getData({id:data?.id}))
     return response.data;
   }
 );
@@ -93,6 +101,7 @@ export const batchListSlice = createSlice({
     stationOptions: [],
     statusOptions: [],
     storeOptions: [],
+    rejectOptions: [],
   },
   extraReducers: (builder) => {
     builder
@@ -115,6 +124,9 @@ export const batchListSlice = createSlice({
       })
       .addCase(getStoreOptions.fulfilled, (state, action) => {
         state.storeOptions = action.payload;
+      })
+      .addCase(getRejectOptions.fulfilled, (state, action) => {
+        state.rejectOptions = action.payload;
       });
   },
   reducers: {
