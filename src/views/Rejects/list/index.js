@@ -3,6 +3,7 @@ import "@styles/react/libs/react-select/_react-select.scss";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import Select from "react-select";
 import {
   Button,
@@ -45,6 +46,17 @@ const index = () => {
 
   const onChange = (data) => {
     dispatch(setSearchParams(data));
+  };
+
+  const updateOnClick = async (e, line) => {
+    e.preventDefault();
+    await dispatch(
+      setSearchParams({
+        graphic_status: line?.graphic_status,
+        reason: line?.rejection_reason,
+      })
+    );
+    onSearch();
   };
 
   return (
@@ -145,7 +157,11 @@ const index = () => {
                         )?.label
                       }
                     </Col>
-                    <Col sm="1">{line?.count}</Col>
+                    <Col sm="1">
+                      <Link onClick={(e) => updateOnClick(e, line)}>
+                        {line?.count}
+                      </Link>
+                    </Col>
                   </Row>
                 ))}
                 <Row className="mb-1">
@@ -165,16 +181,27 @@ const index = () => {
           <Card>
             <CardHeader>
               <h4>
-                {store?.data?.total_items} found in{" "}
-                {store?.data?.batch_array?.length} Batch/es
+                {store?.data?.total_items} found in {store?.data?.batch_array?.length}{" "}
+                Batch/es
               </h4>
             </CardHeader>
             {/* TODO need to update with data format */}
             <CardBody>
-              {store?.data?.batch_array?.map((line, index) => (
-                <Row key={index}>
-                  Test
-                </Row>
+              {store?.data?.batch_array?.map((batch, index) => (
+                <span>
+                  <Row>
+                    <Col sm="12"></Col>
+                  </Row>
+                  {batch?.items?.length > 0 && batch?.items?.map((item, index) => (
+                    <Row key={index} className="mb-1">
+                      <Col sm="2">Test
+                        <Link to={`/customer-order-edit/${item?.order?.id}`}>
+                          {item?.order?.short_order}
+                        </Link>
+                        </Col>
+                    </Row>
+                  ))}
+                </span>
               ))}
             </CardBody>
           </Card>
