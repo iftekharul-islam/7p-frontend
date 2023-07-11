@@ -20,6 +20,7 @@ import {
   getAllData,
   getPrinterOptions,
   getStationsOptions,
+  printAllSublimation,
   setSearchParams,
 } from "../store";
 
@@ -33,7 +34,6 @@ const index = () => {
     stationsOptions,
     storeOptions,
   } = useSelector((state) => state.printSublimations);
-    console.log("🚀 ~ file: index.js:36 ~ index ~ data:", data?.batches[0])
   const [loading, setLoading] = useState(false);
 
   const onChange = (data) => {
@@ -46,12 +46,16 @@ const index = () => {
     setLoading(false);
   };
 
-  const printAll = () => {
-    console.log("print all");
+  const printAll = () => {    
+    dispatch(printAllSublimation())
+  };
+
+  const batchesClicked = async(production_station_id) => {
+    await dispatch(setSearchParams({ production_station_id: [production_station_id] }));
   };
 
   useEffect(() => {
-    // getData();
+    getData();
     dispatch(getPrinterOptions());
     dispatch(getStationsOptions());
   }, []);
@@ -73,7 +77,7 @@ const index = () => {
                 (obj) => obj.value === searchParams?.printer
               )}
               onChange={(e) => {
-                onChange({ ...searchParams, printer: e?.value });
+                onChange({printer: e?.value });
               }}
             />
           </Col>
@@ -105,7 +109,7 @@ const index = () => {
                   (obj) => obj.value === searchParams?.type
                 )}
                 onChange={(e) => {
-                  onChange({ ...searchParams, type: e?.value });
+                  onChange({ type: e?.value });
                 }}
               />
             </Col>
@@ -117,12 +121,12 @@ const index = () => {
                 isMulti
                 options={stationsOptions}
                 value={stationsOptions.filter((obj) =>
-                  searchParams?.section?.includes(obj.value)
+                  searchParams?.production_station_id?.includes(obj.value)
                 )}
                 onChange={(e) => {
                   onChange({
                     ...searchParams,
-                    section: e?.map((obj) => obj.value),
+                    production_station_id: e?.map((obj) => obj.value),
                   });
                 }}
               />
@@ -177,7 +181,7 @@ const index = () => {
                   (obj) => obj.value === searchParams?.set_printer
                 )}
                 onChange={(e) => {
-                  onChange({ ...searchParams, set_printer: e?.value });
+                  onChange({ set_printer: e?.value });
                 }}
               />
             </Col>
@@ -214,7 +218,12 @@ const index = () => {
                     {data?.batches?.map((batch, index) => (
                       <Row key={index} className={batch?.to_printer_date !=null && "bg-info"}>
                         <Col sm="2">
-                          
+                          <Link to={`/batch-list/${batch?.batch_number}`}><strong>{batch?.batch_number}</strong></Link>
+                          {batch?.items?.length > 1 && (
+                            <span>
+                              {batch?.items?.length} Items
+                              </span>)}
+                              <strong style="color: red;">{data?.stores?.find(item => item?.value == batch?.store_id) ?? null }</strong>
                         </Col>
                         </Row>
                     ))}
@@ -243,7 +252,7 @@ const index = () => {
                             {moment(row?.date).format("YYYY-MM-DD")}
                           </Col>
                           <Col md="3" className="d-flex justify-content-end">
-                            <Link to="/print-sublimation">{row?.count}</Link>
+                            <Link onClick={()=>batchesClicked(row?.production_station_id)}>{row?.count}</Link>
                           </Col>
                         </Row>
                       </span>
