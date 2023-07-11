@@ -8,11 +8,11 @@ const CustomerService = (data) => {
         <Col sm="4" className="d-flex justify-content-end">
           {parseFloat(
             ((data?.CS_rejects?.reduce(
-              (partialSum, item) => partialSum + item?.items_count,
+              (partialSum, item) => partialSum + parseInt(item?.items_count),
               0
             ) +
               data?.CS?.reduce(
-                (partialSum, item) => partialSum + item?.items_count,
+                (partialSum, item) => partialSum + parseInt(item?.items_count),
                 0
               )) /
               data?.total) *
@@ -84,101 +84,101 @@ const CustomerService = (data) => {
         <Col sm="1" className="border d-flex justify-content-center">
           {parseInt(
             data?.CS?.reduce(
-              (partialSum, item) => partialSum + item?.lines_count,
+              (partialSum, item) => partialSum + parseInt(item?.lines_count),
               0
             )
           ) +
             parseInt(
               data?.CS_rejects?.reduce(
-                (partialSum, item) => partialSum + item?.lines_count,
+                (partialSum, item) => partialSum + parseInt(item?.lines_count),
                 0
               )
-            ) +
-            parseInt(
-              data?.items?.reduce(
-                (partialSum, item) => partialSum + item?.lines_count,
-                0
-              )
+            // ) +
+            // parseInt(
+            //   data?.items?.reduce(
+            //     (partialSum, item) => partialSum + parseInt(item?.lines_count),
+            //     0
+            //   )
             )}
         </Col>
         <Col sm="1" className="border d-flex justify-content-center">
           {parseInt(
             data?.CS?.reduce(
-              (partialSum, item) => partialSum + item?.items_count,
+              (partialSum, item) => partialSum + parseInt(item?.items_count),
               0
             )
           ) +
             parseInt(
               data?.CS_rejects?.reduce(
-                (partialSum, item) => partialSum + item?.items_count,
+                (partialSum, item) => partialSum + parseInt(item?.items_count),
                 0
               )
-            ) +
-            parseInt(
-              data?.items?.reduce(
-                (partialSum, item) => partialSum + item?.items_count,
-                0
-              )
+            // ) +
+            // parseInt(
+            //   data?.items?.reduce(
+            //     (partialSum, item) => partialSum + parseInt(item?.items_count),
+            //     0
+            //   )
             )}
         </Col>
         <Col sm="1" className="border d-flex justify-content-center">
           {parseInt(
             data?.CS?.reduce(
-              (partialSum, item) => partialSum + item?.order_1,
+              (partialSum, item) => partialSum + parseInt(item?.order_1),
               0
             )
           ) +
             parseInt(
               data?.CS_rejects?.reduce(
-                (partialSum, item) => partialSum + item?.order_1,
+                (partialSum, item) => partialSum + parseInt(item?.order_1),
                 0
               )
-            ) +
-            parseInt(
-              data?.items?.reduce(
-                (partialSum, item) => partialSum + item?.order_1,
-                0
-              )
+            // ) +
+            // parseInt(
+            //   data?.items?.reduce(
+            //     (partialSum, item) => partialSum + parseInt(item?.order_1),
+            //     0
+            //   )
             )}
         </Col>
         <Col sm="1" className="border d-flex justify-content-center">
           {parseInt(
             data?.CS?.reduce(
-              (partialSum, item) => partialSum + item?.order_2,
+              (partialSum, item) => partialSum + parseInt(item?.order_2),
               0
             )
           ) +
             parseInt(
               data?.CS_rejects?.reduce(
-                (partialSum, item) => partialSum + item?.order_2,
+                (partialSum, item) => partialSum + parseInt(item?.order_2),
                 0
               )
-            ) +
-            parseInt(
-              data?.items?.reduce(
-                (partialSum, item) => partialSum + item?.order_2,
-                0
-              )
+            // ) +
+            // parseInt(
+            //   data?.items?.reduce(
+            //     (partialSum, item) => partialSum + parseInt(item?.order_2),
+            //     0
+            //   )
             )}
         </Col>
         <Col sm="1" className="border d-flex justify-content-center">
           {parseInt(
             data?.CS?.reduce(
-              (partialSum, item) => partialSum + item?.order_3,
+              (partialSum, item) => partialSum + parseInt(item?.order_3),
               0
             )
           ) +
             parseInt(
               data?.CS_rejects?.reduce(
-                (partialSum, item) => partialSum + item?.order_3,
+                (partialSum, item) => partialSum + parseInt(item?.order_3),
                 0
               )
-            ) +
-            parseInt(
-              data?.items?.reduce(
-                (partialSum, item) => partialSum + item?.order_3,
-                0
-              )
+            // ) +
+            // parseInt(
+            //   data?.items?.reduce(
+            //     (partialSum, item) => partialSum + parseInt(item?.order_3),
+            //     0
+            //   )
             )}
         </Col>
         <Col sm="3" className="border"></Col>

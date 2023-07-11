@@ -13,6 +13,14 @@ export const getAllData = createAsyncThunk(
   }
 );
 
+export const getAllQueues = createAsyncThunk(
+  "printSublimations/getAllQueues",
+  async () => {
+    const response = await Api.get("print-sublimation-queues");
+    return response.data;
+  }
+);
+
 export const printAllSublimation = createAsyncThunk(
   "printSublimations/printAllSublimation",
   async (_, { getState }) => {
@@ -47,6 +55,7 @@ export const printSublimationsSlice = createSlice({
   name: "printSublimations",
   initialState: {
     data: {},
+    queues: null,
 
     params: {},
     searchParams: {},
@@ -71,6 +80,9 @@ export const printSublimationsSlice = createSlice({
       })
       .addCase(getStationsOptions.fulfilled, (state, action) => {
         state.stationsOptions = action.payload;
+      })
+      .addCase(getAllQueues.fulfilled, (state, action) => {
+        state.queues = action.payload;
       });
   },
   reducers: {
