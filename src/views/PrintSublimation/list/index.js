@@ -18,8 +18,10 @@ import {
 } from "reactstrap";
 import {
   getAllData,
+  getAllQueues,
   getPrinterOptions,
   getStationsOptions,
+  printAllSublimation,
   setSearchParams,
 } from "../store";
 
@@ -27,13 +29,13 @@ const index = () => {
   const dispatch = useDispatch();
   const {
     data,
+    queues,
     searchParams,
     printerOptions,
     typeOption,
     stationsOptions,
     storeOptions,
   } = useSelector((state) => state.printSublimations);
-    console.log("🚀 ~ file: index.js:36 ~ index ~ data:", data?.batches[0])
   const [loading, setLoading] = useState(false);
 
   const onChange = (data) => {
@@ -46,14 +48,26 @@ const index = () => {
     setLoading(false);
   };
 
+  const getQueueData = async () => {
+    await dispatch(getAllQueues());
+  };
+
   const printAll = () => {
-    console.log("print all");
+    dispatch(printAllSublimation());
+  };
+
+  const batchesClicked = async (production_station_id) => {
+    await dispatch(
+      setSearchParams({ production_station_id: [production_station_id] })
+    );
+    getData();
   };
 
   useEffect(() => {
-    // getData();
+    getData();
     dispatch(getPrinterOptions());
     dispatch(getStationsOptions());
+    getQueueData();
   }, []);
 
   return (
@@ -73,7 +87,7 @@ const index = () => {
                 (obj) => obj.value === searchParams?.printer
               )}
               onChange={(e) => {
-                onChange({ ...searchParams, printer: e?.value });
+                onChange({ printer: e?.value });
               }}
             />
           </Col>
@@ -105,7 +119,7 @@ const index = () => {
                   (obj) => obj.value === searchParams?.type
                 )}
                 onChange={(e) => {
-                  onChange({ ...searchParams, type: e?.value });
+                  onChange({ type: e?.value });
                 }}
               />
             </Col>
@@ -117,12 +131,12 @@ const index = () => {
                 isMulti
                 options={stationsOptions}
                 value={stationsOptions.filter((obj) =>
-                  searchParams?.section?.includes(obj.value)
+                  searchParams?.production_station_id?.includes(obj.value)
                 )}
                 onChange={(e) => {
                   onChange({
                     ...searchParams,
-                    section: e?.map((obj) => obj.value),
+                    production_station_id: e?.map((obj) => obj.value),
                   });
                 }}
               />
@@ -148,7 +162,6 @@ const index = () => {
             <Col md="2">
               <Flatpickr
                 className="form-control"
-                id="date"
                 placeholder="From"
                 value={searchParams?.from_date ?? null}
                 options={{ dateFormat: "d-m-Y" }}
@@ -158,7 +171,6 @@ const index = () => {
             <Col md="2">
               <Flatpickr
                 className="form-control"
-                id="date"
                 placeholder="To"
                 value={searchParams?.to_date ?? null}
                 options={{ dateFormat: "d-m-Y" }}
@@ -167,7 +179,7 @@ const index = () => {
             </Col>
           </Row>
           <Row className="m-1 mt-0">
-            <Col md="11">
+            <Col md="10">
               <Select
                 className="react-select"
                 classNamePrefix="select"
@@ -177,11 +189,11 @@ const index = () => {
                   (obj) => obj.value === searchParams?.set_printer
                 )}
                 onChange={(e) => {
-                  onChange({ ...searchParams, set_printer: e?.value });
+                  onChange({ set_printer: e?.value });
                 }}
               />
             </Col>
-            <Col md="1">
+            <Col md="2">
               <Button color="primary" onClick={getData} disabled={loading}>
                 {loading ? (
                   <span className="d-flex justify-content-center">
@@ -205,18 +217,132 @@ const index = () => {
             </span>
           ) : (
             <Row>
-              <Col md="7">
+              <Col md="10">
                 {data?.batches?.length > 0 ? (
                   <span>
                     <Row>
                       <h5>{data?.batches?.length} batches found</h5>
+                      <hr />
                     </Row>
                     {data?.batches?.map((batch, index) => (
-                      <Row key={index} className={batch?.to_printer_date !=null && "bg-info"}>
-                        <Col sm="2">
-                          
-                        </Col>
+                      <span>
+                        <Row
+                          key={index}
+                          className={
+                            batch?.to_printer_date != null && "bg-info"
+                          }
+                        >
+                          <Col sm="2">
+                            <Link to={`/batch-list/${batch?.batch_number}`}>
+                              <strong>{batch?.batch_number}-</strong>
+                            </Link>
+                            {batch?.items?.length > 1 && (
+                              <span>{batch?.items?.length} Items-</span>
+                            )}
+                            {batch?.store_id && (
+                              <strong className="text-danger">
+                                {data?.stores?.find(
+                                  (item) => item?.value == batch?.store_id
+                                )?.label ?? null}
+                              </strong>
+                            )}
+                          </Col>
+                          <Col sm="1"></Col>
+                          <Col sm="1">
+                            <a href={`/batch-list/${batch?.batch_number}`}>
+                              <img
+                                src={batch?.items[0]?.item_thumb}
+                                alt="print"
+                                width="50px"
+                                height="50px"
+                              />
+                            </a>
+                          </Col>
+                          <Col sm="3">
+                            {batch?.type === "P" && (
+                              <div>
+                                <strong style={{ color: "red" }}>
+                                  IN PRODUCTION:
+                                </strong>
+                              </div>
+                            )}
+                            {batch?.type === "Q" && (
+                              <div>
+                                <strong style={{ color: "red" }}>IN QC:</strong>
+                              </div>
+                            )}
+                            {batch?.production_station ? (
+                              <div>
+                                Give to:{" "}
+                                {batch?.production_station?.station_description}
+                              </div>
+                            ) : (
+                              <div>
+                                PRODUCTION STATION NOT FOUND:{" "}
+                                {batch?.production_station_id}
+                              </div>
+                            )}
+                            {batch?.status !== "active" && (
+                              <div>
+                                Batch Status:{" "}
+                                <strong style={{ color: "red" }}>
+                                  {batch?.status}
+                                </strong>
+                              </div>
+                            )}
+                            <br />
+                            First Order Date:{" "}
+                            {moment(batch?.min_order_date).format("DD-MM-YYYY")}
+                          </Col>
+                          <Col sm="1">
+                            Graphic
+                            <br />
+                            QTY: {batch?.items[0]?.item_quantity}
+                          </Col>
+                          <Col sm="1">
+                            {(batch?.graphic_found == "Found" ||
+                              batch?.graphic_found == "Unknown") && (
+                              <a
+                                href="batches/view_graphic?batch_number=%s"
+                                target="_blank"
+                              >
+                                View Graphics
+                              </a>
+                            )}
+                          </Col>
+                          <Col sm="2">
+                            <div className="d-flex align-items-center">
+                              <span>Scale: </span>
+                              <Input  value="100%"/>
+                            </div>
+                            <div>
+                              pdf <Input type="checkbox" />
+                            </div>
+                          </Col>
+                          <Col sm="1">Rejects</Col>
+                          <hr />
                         </Row>
+                        {batch?.items?.map((item, index) => {
+                          item?.rejections &&
+                            item?.rejections?.map((reject, index) => {
+                              return (
+                                <Row key={index}>
+                                  <Col sm="3"></Col>
+                                  <Col sm="9">
+                                    Item {item?.id} Rejected{" "}
+                                    {reject?.created_at}
+                                    by {reject?.user?.username}
+                                    {reject?.rejection_reason_info &&
+                                      "-" +
+                                        reject?.rejection_reason_info
+                                          ?.rejection_message}
+                                    - {reject?.rejection_message}
+                                  </Col>
+                                </Row>
+                              );
+                            });
+                        })}
+                      </span>
                     ))}
                   </span>
                 ) : data?.summary?.length > 0 ? (
@@ -243,7 +369,14 @@ const index = () => {
                             {moment(row?.date).format("YYYY-MM-DD")}
                           </Col>
                           <Col md="3" className="d-flex justify-content-end">
-                            <Link to="/print-sublimation">{row?.count}</Link>
+                            <Link
+                              onClick={(e) => {
+                                e.preventDefault();
+                                batchesClicked(row?.production_station_id);
+                              }}
+                            >
+                              {row?.count}
+                            </Link>
                           </Col>
                         </Row>
                       </span>
@@ -257,7 +390,8 @@ const index = () => {
                       <Col md="3" className="d-flex justify-content-end">
                         <b>
                           {data?.summary?.reduce(
-                            (accumulator, row) => accumulator + row?.count,
+                            (accumulator, row) =>
+                              accumulator + parseInt(row?.count),
                             0
                           )}
                         </b>
@@ -270,73 +404,79 @@ const index = () => {
                   </span>
                 )}
               </Col>
-              <Col md="1"></Col>
-              <Col md="4">
-                {!Array.isArray(data?.queues) ? (
-                  <h5>{data?.queues}</h5>
-                ) : (
-                  data?.queues?.map((queue, unit) => (
-                    <Card key={index} className="mb-1">
-                      <CardHeader>
-                        <h5>{unit.replace("_", " ") + " " + queue?.TOTAL}</h5>
-                      </CardHeader>
-                      <CardBody>
-                        <b>STAGED XML</b>
-                        {queue?.STAGED_XML?.length > 0 ? (
-                          queue?.STAGED_XML?.map((row, index) => (
-                            <div key={index}>
-                              {row} <br />
+              <Col md="2">
+                {queues ? (
+                  !Array.isArray(queues) ? (
+                    <h5>{queues}</h5>
+                  ) : (
+                    queues?.map((queue, unit) => (
+                      <Card key={index} className="mb-1">
+                        <CardHeader>
+                          <h5>{unit.replace("_", " ") + " " + queue?.TOTAL}</h5>
+                        </CardHeader>
+                        <CardBody>
+                          <b>STAGED XML</b>
+                          {queue?.STAGED_XML?.length > 0 ? (
+                            queue?.STAGED_XML?.map((row, index) => (
+                              <div key={index}>
+                                {row} <br />
+                              </div>
+                            ))
+                          ) : (
+                            <div>
+                              Nothing
+                              <br />
                             </div>
-                          ))
-                        ) : (
-                          <div>
-                            Nothing
-                            <br />
-                          </div>
-                        )}
+                          )}
 
-                        <b>HOT FOLDER</b>
-                        {queue?.HOT_FOLDER?.length > 0 ? (
-                          queue?.HOT_FOLDER?.map((row, index) => (
-                            <div key={index}>
-                              {row} <br />
+                          <b>HOT FOLDER</b>
+                          {queue?.HOT_FOLDER?.length > 0 ? (
+                            queue?.HOT_FOLDER?.map((row, index) => (
+                              <div key={index}>
+                                {row} <br />
+                              </div>
+                            ))
+                          ) : (
+                            <div>
+                              Nothing
+                              <br />
                             </div>
-                          ))
-                        ) : (
-                          <div>
-                            Nothing
-                            <br />
-                          </div>
-                        )}
-                        <b>RIP_QUEUE</b>
-                        {queue?.RIP_QUEUE?.length > 0 ? (
-                          queue?.RIP_QUEUE?.map((row, index) => (
-                            <div key={index}>
-                              {row} <br />
+                          )}
+                          <b>RIP_QUEUE</b>
+                          {queue?.RIP_QUEUE?.length > 0 ? (
+                            queue?.RIP_QUEUE?.map((row, index) => (
+                              <div key={index}>
+                                {row} <br />
+                              </div>
+                            ))
+                          ) : (
+                            <div>
+                              Nothing
+                              <br />
                             </div>
-                          ))
-                        ) : (
-                          <div>
-                            Nothing
-                            <br />
-                          </div>
-                        )}
-                        <b>PRINT_QUEUE</b>
-                        {queue?.PRINT_QUEUE?.length > 0 ? (
-                          queue?.PRINT_QUEUE?.map((row, index) => (
-                            <div key={index}>
-                              {row} <br />
+                          )}
+                          <b>PRINT_QUEUE</b>
+                          {queue?.PRINT_QUEUE?.length > 0 ? (
+                            queue?.PRINT_QUEUE?.map((row, index) => (
+                              <div key={index}>
+                                {row} <br />
+                              </div>
+                            ))
+                          ) : (
+                            <div>
+                              Nothing
+                              <br />
                             </div>
-                          ))
-                        ) : (
-                          <div>
-                            Nothing
-                            <br />
-                          </div>
-                        )}
-                      </CardBody>
-                    </Card>
-                  ))
+                          )}
+                        </CardBody>
+                      </Card>
+                    ))
+                  )
+                ) : (
+                  <span className="d-flex justify-content-center align-items-center">
+                    <Spinner size="sm" className="mx-1" />
+                    QUEUE is loading...
+                  </span>
                 )}
               </Col>
             </Row>
