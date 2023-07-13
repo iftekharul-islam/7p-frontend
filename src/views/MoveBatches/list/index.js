@@ -4,6 +4,7 @@ import "@styles/react/libs/tables/react-dataTable-component.scss";
 import moment from "moment";
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useSearchParams } from "react-router-dom";
 import Select from "react-select";
 import {
   Button,
@@ -23,9 +24,16 @@ import {
 
 const index = () => {
   const dispatch = useDispatch();
+  let [searchParam, setSearchParam] = useSearchParams();
+  const station = searchParam.get("station");
   const store = useSelector((state) => state.moveBatches);
   const [loading, setLoading] = useState(false);
   const params = store?.searchParams;
+
+  useEffect(() => {
+    onChange({ station: station })
+    onSearch({ station: station });
+  }, [station]);
 
   useEffect(() => {
     dispatch(getStationOptions());
@@ -88,7 +96,9 @@ const index = () => {
                   value={store?.stationOptions?.find(
                     (item) => item?.value == params?.station
                   )}
-                  onChange={(e) => onChange({ station: e?.value })}
+                  onChange={(e) => {
+                    onChange({ station: e?.value });
+                  }}
                   isClearable={true}
                 />
               </Col>

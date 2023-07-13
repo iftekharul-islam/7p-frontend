@@ -1,1 +1,0 @@
-import{j as r,f as e,Q as d,S as s,T as i,V as l,W as a}from"./index.73b35bb3.js";const t=()=>r("div",{children:e(d,{children:[r(s,{children:r(i,{children:"This is Dashboard"})}),e(l,{children:[r(a,{children:"All the best for your new project."}),r(a,{})]})]})});export{t as default};

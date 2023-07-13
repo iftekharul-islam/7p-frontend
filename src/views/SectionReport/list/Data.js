@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Col, Row } from "reactstrap";
 const Data = ({
   CS,
@@ -110,7 +111,14 @@ const Data = ({
                     {summary?.station_name}
                   </Col>
                   <Col sm="1" className="border d-flex justify-content-center">
-                    {summary?.lines_count}
+                    <Link
+                      to={`/move-batches?station=${summary?.station_id}`}
+                      target="_blank"
+                      style={{ color: "#0066FF"  }}
+                    >
+
+                      {summary?.lines_count}
+                    </Link>
                   </Col>
                   <Col sm="1" className="border d-flex justify-content-center">
                     {summary?.items_count}
@@ -619,7 +627,7 @@ const Data = ({
                   </Row>
                 </span>
               )}
-              {["S-Wait_for_Pic", "S-GGR-INDIA"].includes(
+              {!["S-Wait_for_Pic", "S-GGR-INDIA"].includes(
                 summary?.station_name
               ) && (
                 <Row
@@ -633,7 +641,13 @@ const Data = ({
                     {summary?.station_description}
                   </Col>
                   <Col sm="1" className="border d-flex justify-content-center">
-                    {summary?.lines_count}
+                    <Link
+                      to={`/move-batches?station=${summary?.station_id}`}
+                      target="_blank"
+                      style={{ color: "#0066FF"  }}
+                    >
+                      {summary?.lines_count}
+                    </Link>
                   </Col>
                   <Col sm="1" className="border d-flex justify-content-center">
                     {summary?.items_count}
@@ -1261,8 +1275,12 @@ const Data = ({
                 className="border d-flex justify-content-center"
               ></Col>
               <div hidden>
-                {(avg_sum = avg_sum + parseInt(ship?.avgdays) * parseInt(ship?.count))}
+                {
+                  (avg_sum =
+                    avg_sum + parseInt(ship?.avgdays) * parseInt(ship?.count))
+                }
               </div>
+              <div>{avg_sum} Afnan</div>
             </Row>
           ))}
         </span>
@@ -1279,13 +1297,16 @@ const Data = ({
           )}
         </Col>
         <Col sm="2" className="border d-flex justify-content-center">
-          {parseFloat(
-            avg_sum /
-              parseInt(shipped_today?.reduce(
-                (partialSum, item) => partialSum + parseInt(item?.count),
-                0
-              ))
-          ).toFixed(2)}
+          {avg_sum > 0 &&
+            parseFloat(
+              avg_sum /
+                parseInt(
+                  shipped_today?.reduce(
+                    (partialSum, item) => partialSum + parseInt(item?.count),
+                    0
+                  )
+                )
+            ).toFixed(2)}
         </Col>
         <Col sm="4" className="border d-flex justify-content-center"></Col>
       </Row>
