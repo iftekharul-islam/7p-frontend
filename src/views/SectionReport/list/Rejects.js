@@ -81,22 +81,40 @@ const Rejects = (pageData) => {
           )}
         </Col>
         <Col sm="1" className="border d-flex justify-content-center">
-          {data?.reduce((partialSum, item) => partialSum + parseInt(item?.order_1), 0)}
+          {data?.reduce(
+            (partialSum, item) => partialSum + parseInt(item?.order_1),
+            0
+          )}
         </Col>
         <Col sm="1" className="border d-flex justify-content-center">
-          {data?.reduce((partialSum, item) => partialSum + parseInt(item?.order_2), 0)}
+          {data?.reduce(
+            (partialSum, item) => partialSum + parseInt(item?.order_2),
+            0
+          )}
         </Col>
         <Col sm="1" className="border d-flex justify-content-center">
-          {data?.reduce((partialSum, item) => partialSum + parseInt(item?.order_3), 0)}
+          {data?.reduce(
+            (partialSum, item) => partialSum + parseInt(item?.order_3),
+            0
+          )}
         </Col>
         <Col sm="1" className="border d-flex justify-content-center">
-          {data?.reduce((partialSum, item) => partialSum + parseInt(item?.scan_1), 0)}
+          {data?.reduce(
+            (partialSum, item) => partialSum + parseInt(item?.scan_1),
+            0
+          )}
         </Col>
         <Col sm="1" className="border d-flex justify-content-center">
-          {data?.reduce((partialSum, item) => partialSum + parseInt(item?.scan_2), 0)}
+          {data?.reduce(
+            (partialSum, item) => partialSum + parseInt(item?.scan_2),
+            0
+          )}
         </Col>
         <Col sm="1" className="border d-flex justify-content-center">
-          {data?.reduce((partialSum, item) => partialSum + parseInt(item?.scan_3), 0)}
+          {data?.reduce(
+            (partialSum, item) => partialSum + parseInt(item?.scan_3),
+            0
+          )}
         </Col>
       </Row>
     </>
