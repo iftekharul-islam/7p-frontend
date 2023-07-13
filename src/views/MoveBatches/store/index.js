@@ -37,16 +37,6 @@ export const moveBatchesSlice = createSlice({
     },
 
     searchParams: {
-      route: null,
-      station: null,
-      start_date: null,
-      end_date: null,
-      filter_username: null,
-      batch: null,
-      status: null,
-      store: [],
-      order_start_date: null,
-      order_end_date: null,
     },
 
     moveParams: [],
