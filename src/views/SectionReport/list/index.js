@@ -13,11 +13,8 @@ import {
   getStoreOptions,
   setSearchParams,
 } from "../store";
-import BackOrders from "./BackOrders";
-import CustomerService from "./CustomerService";
+import Data from "./Data";
 import Header from "./Header";
-import Rejects from "./Rejects";
-import Rest from "./Rest";
 
 const index = () => {
   const dispatch = useDispatch();
@@ -102,10 +99,11 @@ const index = () => {
         </Card>
         <Card className="p-2">
           {Header(store?.data)}
-          {CustomerService(store?.data)}
+          {/* {CustomerService(store?.data)}
           {BackOrders(store?.data)}
           {Rejects(store?.data)}
-          {Rest(store?.data)}
+          {Rest(store?.data)} */}
+          {Data(store?.data)}
         </Card>
       </Fragment>
     </div>
