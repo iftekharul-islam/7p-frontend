@@ -66,7 +66,7 @@ export const printSublimationsSlice = createSlice({
     queues: null,
 
     params: {},
-    searchParams: { production_station_id: [250] },
+    searchParams: {},
 
     printerOptions: [],
     typeOption: [
