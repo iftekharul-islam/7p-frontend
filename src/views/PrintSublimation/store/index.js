@@ -13,6 +13,14 @@ export const getAllData = createAsyncThunk(
   }
 );
 
+export const printSublimation = createAsyncThunk(
+  "printSublimations/printSublimation",
+  async (data) => {
+    const response = await Api.post("sublimation-print", data);
+    console.log("🚀 ~ file: index.js:20 ~ response:", response)
+  }
+);
+
 export const getAllQueues = createAsyncThunk(
   "printSublimations/getAllQueues",
   async () => {
@@ -58,7 +66,7 @@ export const printSublimationsSlice = createSlice({
     queues: null,
 
     params: {},
-    searchParams: {},
+    searchParams: { production_station_id: [250] },
 
     printerOptions: [],
     typeOption: [
