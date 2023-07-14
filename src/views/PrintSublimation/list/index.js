@@ -14,7 +14,7 @@ import {
   Col,
   Input,
   Row,
-  Spinner,
+  Spinner
 } from "reactstrap";
 import {
   getAllData,
@@ -24,6 +24,7 @@ import {
   printAllSublimation,
   setSearchParams,
 } from "../store";
+import ViewComponent from "./ViewComponent";
 
 const index = () => {
   const dispatch = useDispatch();
@@ -219,132 +220,7 @@ const index = () => {
             <Row>
               <Col md="10">
                 {data?.batches?.length > 0 ? (
-                  <span>
-                    <Row>
-                      <h5>{data?.batches?.length} batches found</h5>
-                      <hr />
-                    </Row>
-                    {data?.batches?.map((batch, index) => (
-                      <span>
-                        <Row
-                          key={index}
-                          className={
-                            batch?.to_printer_date != null && "bg-info"
-                          }
-                        >
-                          <Col sm="2">
-                            <Link to={`/batch-list/${batch?.batch_number}`}>
-                              <strong>{batch?.batch_number}-</strong>
-                            </Link>
-                            {batch?.items?.length > 1 && (
-                              <span>{batch?.items?.length} Items-</span>
-                            )}
-                            {batch?.store_id && (
-                              <strong className="text-danger">
-                                {data?.stores?.find(
-                                  (item) => item?.value == batch?.store_id
-                                )?.label ?? null}
-                              </strong>
-                            )}
-                          </Col>
-                          <Col sm="1"></Col>
-                          <Col sm="1">
-                            <a href={`/batch-list/${batch?.batch_number}`}>
-                              <img
-                                src={batch?.items[0]?.item_thumb}
-                                alt="print"
-                                width="50px"
-                                height="50px"
-                              />
-                            </a>
-                          </Col>
-                          <Col sm="3">
-                            {batch?.type === "P" && (
-                              <div>
-                                <strong style={{ color: "red" }}>
-                                  IN PRODUCTION:
-                                </strong>
-                              </div>
-                            )}
-                            {batch?.type === "Q" && (
-                              <div>
-                                <strong style={{ color: "red" }}>IN QC:</strong>
-                              </div>
-                            )}
-                            {batch?.production_station ? (
-                              <div>
-                                Give to:{" "}
-                                {batch?.production_station?.station_description}
-                              </div>
-                            ) : (
-                              <div>
-                                PRODUCTION STATION NOT FOUND:{" "}
-                                {batch?.production_station_id}
-                              </div>
-                            )}
-                            {batch?.status !== "active" && (
-                              <div>
-                                Batch Status:{" "}
-                                <strong style={{ color: "red" }}>
-                                  {batch?.status}
-                                </strong>
-                              </div>
-                            )}
-                            <br />
-                            First Order Date:{" "}
-                            {moment(batch?.min_order_date).format("DD-MM-YYYY")}
-                          </Col>
-                          <Col sm="1">
-                            Graphic
-                            <br />
-                            QTY: {batch?.items[0]?.item_quantity}
-                          </Col>
-                          <Col sm="1">
-                            {(batch?.graphic_found == "Found" ||
-                              batch?.graphic_found == "Unknown") && (
-                              <a
-                                href="batches/view_graphic?batch_number=%s"
-                                target="_blank"
-                              >
-                                View Graphics
-                              </a>
-                            )}
-                          </Col>
-                          <Col sm="2">
-                            <div className="d-flex align-items-center">
-                              <span>Scale: </span>
-                              <Input  value="100%"/>
-                            </div>
-                            <div>
-                              pdf <Input type="checkbox" />
-                            </div>
-                          </Col>
-                          <Col sm="1">Rejects</Col>
-                          <hr />
-                        </Row>
-                        {batch?.items?.map((item, index) => {
-                          item?.rejections &&
-                            item?.rejections?.map((reject, index) => {
-                              return (
-                                <Row key={index}>
-                                  <Col sm="3"></Col>
-                                  <Col sm="9">
-                                    Item {item?.id} Rejected{" "}
-                                    {reject?.created_at}
-                                    by {reject?.user?.username}
-                                    {reject?.rejection_reason_info &&
-                                      "-" +
-                                        reject?.rejection_reason_info
-                                          ?.rejection_message}
-                                    - {reject?.rejection_message}
-                                  </Col>
-                                </Row>
-                              );
-                            });
-                        })}
-                      </span>
-                    ))}
-                  </span>
+                  <ViewComponent loading={loading} setLoading={setLoading}/>                   
                 ) : data?.summary?.length > 0 ? (
                   <span>
                     <Row>
