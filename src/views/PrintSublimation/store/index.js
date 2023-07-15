@@ -15,9 +15,19 @@ export const getAllData = createAsyncThunk(
 
 export const printSublimation = createAsyncThunk(
   "printSublimations/printSublimation",
-  async (data) => {
+  async (data, { dispatch }) => {
     const response = await Api.post("sublimation-print", data);
-    console.log("🚀 ~ file: index.js:20 ~ response:", response)
+    if (response.data?.status == 201 || response.data?.status == 200) {
+      const blob = new Blob([response?.data?.data]);
+      const fileDownloadUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = fileDownloadUrl;
+      link.download = "test.xml";
+      link.click();
+      URL.revokeObjectURL(fileDownloadUrl);
+    } else if (response.data?.status == 203 && response.data?.reload) {
+      dispatch(getAllData());
+    }
   }
 );
 

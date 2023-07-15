@@ -30,13 +30,15 @@ const ViewComponent = (loading, setLoading) => {
     setPrintData([...restData, { ...targetData, [name]: value }]);
   };
 
-  const handleMove = (batch_number) => {
+  const handleMove = async (batch_number) => {
+    onChange(batch_number, "loader", true);
     const data = printData?.find((item) => item?.batch_number == batch_number);
     if (data) {
-      dispatch(printSublimation(data));
+      await dispatch(printSublimation(data));
     } else {
       alert("Please select Printer");
     }
+    onChange(batch_number, "loader", false);
   };
   return (
     <span>
@@ -232,7 +234,11 @@ const ViewComponent = (loading, setLoading) => {
                         color="primary"
                         onClick={() => handleMove(batch.batch_number)}
                       >
-                        Send
+                        {printData?.find(
+                          (item) => item?.batch_number == batch?.batch_number
+                        )?.loader
+                          ? "Loading"
+                          : "Send"}
                       </Button>
                     </Col>
                   </div>
@@ -306,9 +312,9 @@ const ViewComponent = (loading, setLoading) => {
                 pdf{" "}
                 <Input
                   type="checkbox"
-                //   checked={["5060", "3040"]?.includes(
-                //     batch?.items[0]?.child_sku?.substr(-4)
-                //   )}
+                  //   checked={["5060", "3040"]?.includes(
+                  //     batch?.items[0]?.child_sku?.substr(-4)
+                  //   )}
                   onChange={(e) =>
                     onChange(batch?.batch_number, "pdf", e?.target?.checked)
                   }
