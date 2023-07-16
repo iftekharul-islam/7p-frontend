@@ -29,7 +29,7 @@ const Table = ({ handleClose, setRejectData, handleRejectClose }) => {
 
     if (jsonArray) {
       for (const key in jsonArray) {
-        const value = jsonArray[key];
+        let value = jsonArray[key];
 
         if (key !== "Confirmation_of_Order_Details" && key !== "couponcode") {
           if (value.includes("$") && bold === 1) {

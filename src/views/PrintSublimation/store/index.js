@@ -15,9 +15,15 @@ export const getAllData = createAsyncThunk(
 
 export const printSublimation = createAsyncThunk(
   "printSublimations/printSublimation",
-  async (data) => {
+  async (data, { dispatch }) => {
+    // const response = await Api.post("sublimation-print", data);
     const response = await Api.post("sublimation-print", data);
-    console.log("🚀 ~ file: index.js:20 ~ response:", response)
+    if (response.data?.status == 201 || response.data?.status == 200) {
+      dispatch(getAllData());
+      return response.data?.data;
+    } else if (response.data?.status == 203 && response.data?.reload) {
+      dispatch(getAllData());
+    }
   }
 );
 

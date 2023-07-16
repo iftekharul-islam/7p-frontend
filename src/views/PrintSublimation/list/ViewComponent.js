@@ -1,18 +1,37 @@
+import Api from "@src/http";
 import "@styles/react/libs/flatpickr/flatpickr.scss";
 import "@styles/react/libs/react-select/_react-select.scss";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Select from "react-select";
 import { Button, Col, Form, Input, Row } from "reactstrap";
 import { printSublimation } from "../store";
+
 const ViewComponent = (loading, setLoading) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { data, printerOptions } = useSelector(
     (state) => state.printSublimations
   );
   const [printData, setPrintData] = useState([]);
+  const [xmlUrl, setXmlUrl] = useState(null);
+  const [xmlData, setXmlData] = useState(null);
+
+  const fetchXML = async () => {
+    try {
+      const response = await Api.get(xmlUrl);
+      setXmlData(response.data);
+    } catch (error) {
+      console.error("Error fetching XML:", error);
+    }
+  };
+  useEffect(() => {
+    if (xmlUrl) {
+      fetchXML();
+    }
+  }, [xmlUrl]);
 
   useEffect(() => {
     if (data?.batches?.length > 0) {
@@ -30,17 +49,37 @@ const ViewComponent = (loading, setLoading) => {
     setPrintData([...restData, { ...targetData, [name]: value }]);
   };
 
-  const handleMove = (batch_number) => {
+  const handleMove = async (batch_number) => {
+    onChange(batch_number, "loader", true);
     const data = printData?.find((item) => item?.batch_number == batch_number);
     if (data) {
-      dispatch(printSublimation(data));
+      const res = await dispatch(printSublimation(data));
+      if (res?.payload) {
+        window.open(res?.payload, "_blank");
+      }
     } else {
       alert("Please select Printer");
     }
+    onChange(batch_number, "loader", false);
   };
+
   return (
     <span>
       <Row>
+        <div>
+          {xmlData ? (
+            <a
+              href={`data:text/xml;charset=utf-8,${encodeURIComponent(
+                xmlData
+              )}`}
+              download="data.xml"
+            >
+              Download XML
+            </a>
+          ) : (
+            <p>Loading XML...</p>
+          )}
+        </div>
         <h5>{data?.batches?.length} batches found</h5>
         <hr />
       </Row>
@@ -232,7 +271,11 @@ const ViewComponent = (loading, setLoading) => {
                         color="primary"
                         onClick={() => handleMove(batch.batch_number)}
                       >
-                        Send
+                        {printData?.find(
+                          (item) => item?.batch_number == batch?.batch_number
+                        )?.loader
+                          ? "Loading"
+                          : "Send"}
                       </Button>
                     </Col>
                   </div>
@@ -306,9 +349,9 @@ const ViewComponent = (loading, setLoading) => {
                 pdf{" "}
                 <Input
                   type="checkbox"
-                //   checked={["5060", "3040"]?.includes(
-                //     batch?.items[0]?.child_sku?.substr(-4)
-                //   )}
+                  //   checked={["5060", "3040"]?.includes(
+                  //     batch?.items[0]?.child_sku?.substr(-4)
+                  //   )}
                   onChange={(e) =>
                     onChange(batch?.batch_number, "pdf", e?.target?.checked)
                   }
