@@ -16,15 +16,11 @@ export const getAllData = createAsyncThunk(
 export const printSublimation = createAsyncThunk(
   "printSublimations/printSublimation",
   async (data, { dispatch }) => {
+    // const response = await Api.post("sublimation-print", data);
     const response = await Api.post("sublimation-print", data);
     if (response.data?.status == 201 || response.data?.status == 200) {
-      const blob = new Blob([response?.data?.data]);
-      const fileDownloadUrl = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = fileDownloadUrl;
-      link.download = "test.xml";
-      link.click();
-      URL.revokeObjectURL(fileDownloadUrl);
+      dispatch(getAllData());
+      return response.data?.data;
     } else if (response.data?.status == 203 && response.data?.reload) {
       dispatch(getAllData());
     }
