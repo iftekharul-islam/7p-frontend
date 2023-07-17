@@ -1,4 +1,3 @@
-import Api from "@src/http";
 import "@styles/react/libs/flatpickr/flatpickr.scss";
 import "@styles/react/libs/react-select/_react-select.scss";
 import moment from "moment";
@@ -12,26 +11,20 @@ import { printSublimation } from "../store";
 const ViewComponent = (loading, setLoading) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { data, printerOptions } = useSelector(
+  const { data, printerOptions, searchParams } = useSelector(
     (state) => state.printSublimations
   );
-  const [printData, setPrintData] = useState([]);
-  const [xmlUrl, setXmlUrl] = useState(null);
-  const [xmlData, setXmlData] = useState(null);
 
-  const fetchXML = async () => {
-    try {
-      const response = await Api.get(xmlUrl);
-      setXmlData(response.data);
-    } catch (error) {
-      console.error("Error fetching XML:", error);
-    }
-  };
   useEffect(() => {
-    if (xmlUrl) {
-      fetchXML();
+    if (searchParams?.set_printer) {
+      const restData = printData?.map((item) => {
+        return { ...item, printer: searchParams?.set_printer };
+      });
+      setPrintData(restData);
     }
-  }, [xmlUrl]);
+  }, [searchParams?.set_printer]);
+
+  const [printData, setPrintData] = useState([]);
 
   useEffect(() => {
     if (data?.batches?.length > 0) {
@@ -66,20 +59,6 @@ const ViewComponent = (loading, setLoading) => {
   return (
     <span>
       <Row>
-        <div>
-          {xmlData ? (
-            <a
-              href={`data:text/xml;charset=utf-8,${encodeURIComponent(
-                xmlData
-              )}`}
-              download="data.xml"
-            >
-              Download XML
-            </a>
-          ) : (
-            <p>Loading XML...</p>
-          )}
-        </div>
         <h5>{data?.batches?.length} batches found</h5>
         <hr />
       </Row>
@@ -262,6 +241,14 @@ const ViewComponent = (loading, setLoading) => {
                         className="react-select"
                         classNamePrefix="select"
                         options={printerOptions}
+                        value={printerOptions?.find(
+                          (item) =>
+                            item?.value ==
+                            printData?.find(
+                              (item) =>
+                                item?.batch_number == batch?.batch_number
+                            )?.printer
+                        )}
                         onChange={(e) => {
                           onChange(batch?.batch_number, "printer", e?.value);
                         }}
