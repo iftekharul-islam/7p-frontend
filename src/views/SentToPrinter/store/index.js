@@ -4,10 +4,18 @@ import Api from "@src/http";
 
 export const getAllData = createAsyncThunk(
   "sentToPrinter/getAllData",
-  async (data, {dispatch}) => {
+  async (data, { dispatch }) => {
     dispatch(setLoading(true));
     const response = await Api.get("sent-to-printer", { params: data });
     dispatch(setLoading(false));
+    return response.data;
+  }
+);
+
+export const reprintGraphic = createAsyncThunk(
+  "sentToPrinter/reprintGraphic",
+  async (data) => {
+    const response = await Api.post("reprint_graphic", data);
     return response.data;
   }
 );
@@ -46,7 +54,7 @@ export const sentToPrinterSlice = createSlice({
   reducers: {
     setLoading: (state, action) => {
       state.loading = action.payload;
-    }
+    },
   },
 });
 

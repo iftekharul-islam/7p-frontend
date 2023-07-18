@@ -10,10 +10,9 @@ import {
   CardBody,
   CardHeader,
   Col,
-  Row,
-  Spinner,
+  Row
 } from "reactstrap";
-import { getAllData, getPrinterOptions } from "../store";
+import { getAllData, getPrinterOptions, reprintGraphic } from "../store";
 
 const index = () => {
   const dispatch = useDispatch();
@@ -22,16 +21,32 @@ const index = () => {
   );
 
   const [printer, setPrinter] = useState();
+  const [date, setDate] = useState();
+  const [loader, setLoader] = useState([]);
+
+  const getData = () => {
+    dispatch(getAllData({ printer: printer, date: date }));
+  };
 
   useEffect(() => {
-    dispatch(getAllData());
+    getData();
+  }, [printer, date]);
+
+  useEffect(() => {
     dispatch(getPrinterOptions());
   }, []);
 
-  const update = (e, itm, date) => {
+  const onReprint = async (batch_number) => {
+    setLoader([...loader, batch_number]);
+    await dispatch(reprintGraphic({ name: batch_number }));
+    getData();
+    setLoader(loader.filter((itm) => itm !== batch_number));
+  };
+
+  const update = (e, printer, date) => {
     e.preventDefault();
-    setPrinter(itm?.to_printer);
-    dispatch(getAllData({ printer: itm?.to_printer, date: date }));
+    setPrinter(printer);
+    setDate(date);
   };
 
   return (
@@ -54,7 +69,7 @@ const index = () => {
                 }}
               />
             </Col>
-            <Col sm="2">
+            {/* <Col sm="2">
               <Button
                 color="primary"
                 onClick={() => {
@@ -71,7 +86,7 @@ const index = () => {
                   "Filter"
                 )}
               </Button>
-            </Col>
+            </Col> */}
           </Row>
           {data?.summary?.length > 0 ? (
             <span>
@@ -108,7 +123,7 @@ const index = () => {
                 return (
                   <Row key={idx}>
                     <Col sm="2" className="border py-1">
-                      <Link onClick={(e) => update(e, itm, null)}>
+                      <Link onClick={(e) => update(e, itm?.to_printer, null)}>
                         {itm?.to_printer}
                       </Link>
                     </Col>
@@ -116,7 +131,7 @@ const index = () => {
                       sm="1"
                       className="border py-1 d-flex justify-content-center"
                     >
-                      <Link onClick={(e) => update(e, itm, 1)}>
+                      <Link onClick={(e) => update(e, itm?.to_printer, 1)}>
                         {itm?.group_1}
                       </Link>
                     </Col>
@@ -124,7 +139,7 @@ const index = () => {
                       sm="1"
                       className="border py-1 d-flex justify-content-center"
                     >
-                      <Link onClick={(e) => update(e, itm, 2)}>
+                      <Link onClick={(e) => update(e, itm?.to_printer, 2)}>
                         {itm?.group_2}
                       </Link>
                     </Col>
@@ -132,7 +147,7 @@ const index = () => {
                       sm="1"
                       className="border py-1 d-flex justify-content-center"
                     >
-                      <Link onClick={(e) => update(e, itm, 3)}>
+                      <Link onClick={(e) => update(e, itm?.to_printer, 3)}>
                         {itm?.group_3}
                       </Link>
                     </Col>
@@ -140,7 +155,7 @@ const index = () => {
                       sm="1"
                       className="border py-1 d-flex justify-content-center"
                     >
-                      <Link onClick={(e) => update(e, itm, null)}>
+                      <Link onClick={(e) => update(e, itm?.to_printer, null)}>
                         {itm?.batch_count}
                       </Link>
                     </Col>
@@ -323,11 +338,15 @@ const index = () => {
                     <Col sm="1">
                       <Button
                         color="primary"
-                        onClick={() => {
-                          console.log("clicked");
+                        onClick={(e) => {
+                          e.preventDefault();
+                          onReprint(batch?.batch_number);
                         }}
+                        disabled={loader?.includes(batch?.batch_number)}
                       >
-                        Reprint {batch?.batch_number}
+                        {loader?.includes(batch?.batch_number)
+                          ? "Please Wait"
+                          : `Reprint ${batch?.batch_number}`}
                       </Button>
                     </Col>
                   </Row>
