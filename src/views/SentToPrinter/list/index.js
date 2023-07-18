@@ -2,35 +2,35 @@ import "@styles/react/libs/react-select/_react-select.scss";
 import moment from "moment";
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Select from "react-select";
-import {
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  Col,
-  Row
-} from "reactstrap";
+import { Button, Card, CardBody, CardHeader, Col, Row } from "reactstrap";
 import { getAllData, getPrinterOptions, reprintGraphic } from "../store";
 
 const index = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { data, printerOptions, loading } = useSelector(
     (state) => state?.sentToPrinter
   );
 
-  const [printer, setPrinter] = useState();
-  const [date, setDate] = useState();
+  const [params, setParams] = useState({ printer: null, date: null });
+
   const [loader, setLoader] = useState([]);
 
   const getData = () => {
-    dispatch(getAllData({ printer: printer, date: date }));
+    dispatch(
+      getAllData(
+        params?.printer
+          ? { printer: params?.printer, date: params?.date }
+          : null
+      )
+    );
   };
 
   useEffect(() => {
     getData();
-  }, [printer, date]);
+  }, [params]);
 
   useEffect(() => {
     dispatch(getPrinterOptions());
@@ -38,15 +38,17 @@ const index = () => {
 
   const onReprint = async (batch_number) => {
     setLoader([...loader, batch_number]);
-    await dispatch(reprintGraphic({ name: batch_number }));
-    getData();
+    const res = await dispatch(reprintGraphic({ name: batch_number }));
+    if(res?.payload?.status == 206){
+      navigate(`/print-sublimation?select_batch=${res?.payload?.select_batch}`)
+    }else{
+    getData();}
     setLoader(loader.filter((itm) => itm !== batch_number));
   };
 
   const update = (e, printer, date) => {
     e.preventDefault();
-    setPrinter(printer);
-    setDate(date);
+    setParams({ printer: printer, date: date });
   };
 
   return (
@@ -63,9 +65,9 @@ const index = () => {
                 classNamePrefix="react-select"
                 options={printerOptions}
                 isClearable
-                value={printerOptions?.find((itm) => itm?.value === printer)}
+                value={printerOptions?.find((itm) => itm?.value === params?.printer)}
                 onChange={(e) => {
-                  setPrinter(e?.value);
+                  setParams({ printer: e?.value, date: null });
                 }}
               />
             </Col>

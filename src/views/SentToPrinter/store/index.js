@@ -16,7 +16,9 @@ export const reprintGraphic = createAsyncThunk(
   "sentToPrinter/reprintGraphic",
   async (data) => {
     const response = await Api.post("reprint_graphic", data);
-    return response.data;
+    if(response?.data?.status == 206 ){
+      return response?.data;
+    }
   }
 );
 

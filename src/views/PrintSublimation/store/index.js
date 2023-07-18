@@ -4,10 +4,10 @@ import Api from "@src/http";
 
 export const getAllData = createAsyncThunk(
   "printSublimations/getAllData",
-  async (_, { getState }) => {
+  async (data, { getState }) => {
     const { searchParams } = getState()?.printSublimations;
     const response = await Api.get("print-sublimation", {
-      params: searchParams,
+      params: {...searchParams, ...data},
     });
     return response.data;
   }

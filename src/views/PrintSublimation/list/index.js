@@ -4,7 +4,7 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import Flatpickr from "react-flatpickr";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import Select from "react-select";
 import {
   Button,
@@ -14,7 +14,7 @@ import {
   Col,
   Input,
   Row,
-  Spinner
+  Spinner,
 } from "reactstrap";
 import {
   getAllData,
@@ -37,15 +37,24 @@ const index = () => {
     stationsOptions,
     storeOptions,
   } = useSelector((state) => state.printSublimations);
+  const [params, setParams] = useSearchParams();
+  const selectBatch = params.get("select_batch");
+
   const [loading, setLoading] = useState(false);
 
   const onChange = (data) => {
     dispatch(setSearchParams(data));
   };
 
+  useEffect(async () => {
+    getData();
+    await dispatch(setSearchParams({ select_batch: selectBatch }));
+  }, [selectBatch]);
+
   const getData = async () => {
     setLoading(true);
-    await dispatch(getAllData());
+
+    await dispatch(getAllData({ select_batch: selectBatch ?? null }));
     setLoading(false);
   };
 
@@ -220,7 +229,7 @@ const index = () => {
             <Row>
               <Col md="10">
                 {data?.batches?.length > 0 ? (
-                  <ViewComponent loading={loading} setLoading={setLoading}/>                   
+                  <ViewComponent loading={loading} setLoading={setLoading} />
                 ) : data?.summary?.length > 0 ? (
                   <span>
                     <Row>
