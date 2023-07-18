@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import Select from "react-select";
 import { Button, Card, CardBody, CardHeader, Col, Row } from "reactstrap";
-import { getAllData, getPrinterOptions, reprintGraphic } from "../store";
+import { exportBatchbulk, getAllData, getPrinterOptions, reprintBulk, reprintGraphic } from "../store";
 
 const index = () => {
   const dispatch = useDispatch();
@@ -14,7 +14,11 @@ const index = () => {
     (state) => state?.sentToPrinter
   );
 
-  const [params, setParams] = useState({ printer: null, date: null });
+  const [params, setParams] = useState({
+    printer: null,
+    date: null,
+    batch_number: [],
+  });
 
   const [loader, setLoader] = useState([]);
 
@@ -39,16 +43,55 @@ const index = () => {
   const onReprint = async (batch_number) => {
     setLoader([...loader, batch_number]);
     const res = await dispatch(reprintGraphic({ name: batch_number }));
-    if(res?.payload?.status == 206){
-      navigate(`/print-sublimation?select_batch=${res?.payload?.select_batch}`)
-    }else{
-    getData();}
+    if (res?.payload?.status == 206) {
+      navigate(`/print-sublimation?select_batch=${res?.payload?.select_batch}`);
+    } else if (res?.payload?.status == 201) {
+      getData();
+    }
     setLoader(loader.filter((itm) => itm !== batch_number));
+  };
+
+  const onSelectedReprint = async (e) => {
+    e.preventDefault();
+    await dispatch(reprintBulk({ ...params, directory: "sublimation", force: "0" }));
+    getData();
+  };
+
+  const onSelectedExport = async (e) => {
+    e.preventDefault();
+    await dispatch(exportBatchbulk({ ...params, directory: "sublimation", force: "0" }));
+    getData();
   };
 
   const update = (e, printer, date) => {
     e.preventDefault();
     setParams({ printer: printer, date: date });
+  };
+
+  const selectAll = (e) => {
+    e.preventDefault();
+    if (e?.target?.checked) {
+      setParams({
+        ...params,
+        batch_number: data?.to_printer?.map((itm) => itm?.batch_number),
+      });
+    } else {
+      setParams({ ...params, batch_number: [] });
+    }
+  };
+
+  const onChecked = (e, batch_number) => {
+    e.preventDefault();
+    let prev_batch = params?.batch_number ?? [];
+    if (e?.target?.checked) {
+      prev_batch = [...prev_batch, batch_number];
+    } else {
+      prev_batch = prev_batch.filter((itm) => itm !== batch_number);
+    }
+    setParams({
+      ...params,
+      batch_number: prev_batch,
+    });
   };
 
   return (
@@ -65,7 +108,9 @@ const index = () => {
                 classNamePrefix="react-select"
                 options={printerOptions}
                 isClearable
-                value={printerOptions?.find((itm) => itm?.value === params?.printer)}
+                value={printerOptions?.find(
+                  (itm) => itm?.value === params?.printer
+                )}
                 onChange={(e) => {
                   setParams({ printer: e?.value, date: null });
                 }}
@@ -207,21 +252,14 @@ const index = () => {
               <hr />
               <Row className="mt-1">
                 <Col sm="3">
-                  <Button
-                    color="primary"
-                    onClick={() => {
-                      console.log("clicked");
-                    }}
-                  >
+                  <Button color="primary" onClick={onSelectedReprint}>
                     Reprint Selected Batches
                   </Button>
                 </Col>
                 <Col sm="3">
                   <Button
                     color="primary"
-                    onClick={() => {
-                      console.log("clicked");
-                    }}
+                    onClick={onSelectedExport}
                   >
                     Export Selected Batches Again
                   </Button>
@@ -237,7 +275,13 @@ const index = () => {
               <hr />
               <Row className="mt-1">
                 <Col sm="2">
-                  <input type="checkbox" />
+                  <input
+                    type="checkbox"
+                    checked={
+                      params?.batch_number?.length === data?.to_printer?.length
+                    }
+                    onClick={selectAll}
+                  />
                   <b className="mx-1">Select All</b>
                 </Col>
                 <Col sm="1">
@@ -262,9 +306,15 @@ const index = () => {
               {data?.to_printer?.map((batch, idx) => (
                 <span>
                   <hr />
-                  <Row className="mt-1">
+                  <Row className="mt-1" key={idx}>
                     <Col sm="2">
-                      <input type="checkbox" />
+                      <input
+                        type="checkbox"
+                        checked={params?.batch_number?.includes(
+                          batch?.batch_number
+                        )}
+                        onClick={(e) => onChecked(e, batch?.batch_number)}
+                      />
                       <span className="mx-1">
                         <a
                           href={`/batch-list/${batch?.batch_number}`}

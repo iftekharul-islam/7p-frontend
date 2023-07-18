@@ -22,6 +22,20 @@ export const reprintGraphic = createAsyncThunk(
   }
 );
 
+export const reprintBulk = createAsyncThunk(
+  "sentToPrinter/reprintBulk",
+  async (params) => {
+    const response = await Api.get("reprint_bulk", {params});
+  }
+);
+
+export const exportBatchbulk = createAsyncThunk(
+  "sentToPrinter/reprintBulk",
+  async (params) => {
+    const response = await Api.get("export_batchbulk", {params});
+  }
+);
+
 export const getPrinterOptions = createAsyncThunk(
   "sentToPrinter/getPrinterOptions",
   async () => {
