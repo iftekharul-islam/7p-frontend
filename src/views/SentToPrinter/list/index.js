@@ -45,7 +45,7 @@ const index = () => {
     const res = await dispatch(reprintGraphic({ name: batch_number }));
     if (res?.payload?.status == 206) {
       navigate(`/print-sublimation?select_batch=${res?.payload?.select_batch}`);
-    } else if (res?.payload?.status == 201) {
+    } else {
       getData();
     }
     setLoader(loader.filter((itm) => itm !== batch_number));
