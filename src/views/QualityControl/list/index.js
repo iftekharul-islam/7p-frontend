@@ -12,18 +12,17 @@ import {
   Row,
   Spinner,
 } from "reactstrap";
-import { getAllData, setSearchParams } from "../store";
+import { getAllData, getOrderData, setSearchParams } from "../store";
 
 const index = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const { data, searchParams, storeOptions, statusOptions } = useSelector(
-    (state) => state.qualityControls
-  );
+  const { data, searchParams } = useSelector((state) => state.qualityControls);
 
-  const handleSearch = async () => {
-    console.log("A");
+  const handleSearch = async () => {    
+    const res = await dispatch(getOrderData());
+    console.log("🚀 ~ file: index.js:39 ~ handleSearch ~ res:", res)
   };
 
   useEffect(() => {
@@ -33,9 +32,8 @@ const index = () => {
   }, []);
 
   const listNavigate = async (e, section) => {
-    await dispatch(setSearchParams({ station_id: section?.station_id }));
     e.preventDefault();
-    navigate("/quality-control/list");
+    navigate("/quality-control/list/" + section?.station_id);
   };
 
   return (
@@ -58,8 +56,7 @@ const index = () => {
             </Col>
             <Col md="2">
               <Input
-                type="password"
-                placeholder="Enter Batch"
+                type="text"
                 value={searchParams?.user_barcode}
                 onChange={(e) =>
                   dispatch(setSearchParams({ user_barcode: e.target.value }))

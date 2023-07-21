@@ -1,33 +1,24 @@
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import {
-    Button,
-    Card,
-    CardBody,
-    Col,
-    Input,
-    Row
-} from "reactstrap";
-import { getListData, setSearchParams } from "../store";
+import { Button, Card, CardBody, Col, Input, Row } from "reactstrap";
+import { getOrderData, setSearchParams } from "../store";
 
 const index = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-  const { searchParams } = useSelector(
-    (state) => state?.qualityControls
-  );
+  const { searchParams } = useSelector((state) => state?.qualityControls);
 
   useEffect(async () => {
-    if (searchParams?.station_id) {
+    if (searchParams?.batch_number) {
       setLoading(true);
-      await dispatch(getListData());
+      await dispatch(getOrderData());
       setLoading(false);
     } else {
       navigate("/quality-control");
     }
-  }, [searchParams?.station_id]);
+  }, [searchParams?.batch_number]);
 
   const handleSearch = async () => {
     console.log("A");

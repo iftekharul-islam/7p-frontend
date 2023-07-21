@@ -1,39 +1,43 @@
 import moment from "moment";
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import {
-    Button,
-    Card,
-    CardBody,
-    CardHeader,
-    Col,
-    Input,
-    Row,
-    Spinner,
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Col,
+  Input,
+  Row,
+  Spinner,
 } from "reactstrap";
-import { getListData, setSearchParams } from "../store";
+import { getListData, getOrderData, setSearchParams } from "../store";
 
 const index = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { id } = useParams();
   const [loading, setLoading] = useState(true);
   const { listData, searchParams } = useSelector(
     (state) => state?.qualityControls
   );
 
   useEffect(async () => {
-    if (searchParams?.station_id) {
+    if (id) {
       setLoading(true);
-      await dispatch(getListData());
+      await dispatch(getListData(id));
       setLoading(false);
     } else {
       navigate("/quality-control");
     }
-  }, [searchParams?.station_id]);
+  }, [id]);
 
   const handleSearch = async () => {
-    console.log("A");
+      const res = await dispatch(getOrderData());
+      console.log("🚀 ~ file: index.js:39 ~ handleSearch ~ res:", res)
+      // navigate("/quality-control/order");
+
   };
 
   return (
@@ -64,8 +68,7 @@ const index = () => {
             </Col>
             <Col md="2">
               <Input
-                type="password"
-                placeholder="Enter Batch"
+                type="text"
                 value={searchParams?.user_barcode}
                 onChange={(e) =>
                   dispatch(setSearchParams({ user_barcode: e.target.value }))

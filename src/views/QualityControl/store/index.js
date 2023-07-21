@@ -15,10 +15,9 @@ export const getAllData = createAsyncThunk(
 
 export const getListData = createAsyncThunk(
   "qualityControls/getListData",
-  async (_, { getState }) => {
-    const { searchParams } = getState()?.qualityControls;
+  async (id) => {
     const response = await Api.get("quality-control-list", {
-      params: { station_id: searchParams?.station_id },
+      params: { station_id: id },
     });
     return response.data;
   }
@@ -28,8 +27,9 @@ export const getOrderData = createAsyncThunk(
   "qualityControls/getOrderData",
   async (_, { getState }) => {
     const { searchParams } = getState()?.qualityControls;
-    const response = await Api.get("quality-control-order", {
-      params: { station_id: searchParams?.station_id },
+    const response = await Api.post("quality-control-order", {
+      batch_number: searchParams?.batch_number,
+      user_barcode: searchParams?.user_barcode,
     });
     return response.data;
   }
@@ -45,8 +45,8 @@ export const qualityControlsSlice = createSlice({
     params: {},
 
     searchParams: {
-      batch_number: "",
-      user_barcode: "",
+      batch_number: null,
+      user_barcode: null,
       station_id: null,
     },
 
