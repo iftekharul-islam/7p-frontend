@@ -4,11 +4,8 @@ import Api from "@src/http";
 
 export const getAllData = createAsyncThunk(
   "qualityControls/getAllData",
-  async (_, { getState }) => {
-    const { searchParams } = getState()?.qualityControls;
-    const response = await Api.get("quality-control", {
-      params: { ...searchParams },
-    });
+  async () => {
+    const response = await Api.get("quality-control");
     return response.data;
   }
 );
@@ -18,6 +15,7 @@ export const getListData = createAsyncThunk(
   async (id) => {
     const response = await Api.get("quality-control-list", {
       params: { station_id: id },
+
     });
     return response.data;
   }
@@ -38,7 +36,7 @@ export const getOrderData = createAsyncThunk(
 export const qualityControlsSlice = createSlice({
   name: "qualityControls",
   initialState: {
-    data: [],
+    data: {},
     listData: [],
     orderData: [],
 

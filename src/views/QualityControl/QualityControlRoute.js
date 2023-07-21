@@ -13,6 +13,7 @@ const QualityControlRoute = [
   {
     element: <QCList />,
     path: "/quality-control/list/:id",
+
   },
   {
     element: <QCOrder />,

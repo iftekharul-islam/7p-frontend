@@ -1,7 +1,9 @@
 import moment from "moment";
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+
 import { Link, useNavigate, useParams } from "react-router-dom";
+
 import {
   Button,
   Card,
@@ -16,8 +18,10 @@ import { getListData, getOrderData, setSearchParams } from "../store";
 
 const index = () => {
   const dispatch = useDispatch();
+
   const navigate = useNavigate();
   const { id } = useParams();
+
   const [loading, setLoading] = useState(true);
   const { listData, searchParams } = useSelector(
     (state) => state?.qualityControls
@@ -27,9 +31,8 @@ const index = () => {
     if (id) {
       setLoading(true);
       await dispatch(getListData(id));
+
       setLoading(false);
-    } else {
-      navigate("/quality-control");
     }
   }, [id]);
 

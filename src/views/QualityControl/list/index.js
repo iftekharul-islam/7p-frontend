@@ -1,7 +1,7 @@
 import "@styles/react/libs/react-select/_react-select.scss";
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   Button,
   Card,
@@ -16,9 +16,9 @@ import { getAllData, getOrderData, setSearchParams } from "../store";
 
 const index = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const { data, searchParams } = useSelector((state) => state.qualityControls);
+
 
   const handleSearch = async () => {    
     const res = await dispatch(getOrderData());
@@ -30,7 +30,6 @@ const index = () => {
     dispatch(getAllData());
     setLoading(false);
   }, []);
-
   const listNavigate = async (e, section) => {
     e.preventDefault();
     navigate("/quality-control/list/" + section?.station_id);
@@ -69,14 +68,14 @@ const index = () => {
               </Button>
             </Col>
           </Row>
-          {data?.length > 0 ? (
+          {data?.totals?.length > 0 ? (
             <div>
-              {data?.map((section, index) => {
+              {data?.totals?.map((section, index) => {
                 return (
                   <Row>
                     <Col md="2"></Col>
                     <Col md="8">
-                      <Link onClick={(e) => listNavigate(e, section)}>
+                      <Link to={`/quality-control/list/${section?.station_id}`}>
                         <Row key={index}>
                           <Col md="3" className="p-1 border">
                             {section?.section
