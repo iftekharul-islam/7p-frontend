@@ -164,7 +164,7 @@ const index = () => {
                       item?.batch_number != "0" ? (
                       <span>
                         <a
-                          href={`/batches/details/${item?.batch_number}`}
+                          href={`/batch-list/${item?.batch_number}`}
                           target="_blank"
                         >
                           Batch {item?.batch_number}
@@ -183,7 +183,7 @@ const index = () => {
                     ) : item?.item_status == "rejected" ? (
                       <span>
                         <a
-                          href={`/batches/details/${item?.batch_number}`}
+                          href={`/batch-list/${item?.batch_number}`}
                           target="_blank"
                         >
                           Batch {item?.batch_number}
@@ -205,7 +205,7 @@ const index = () => {
                       </span>
                     ) : item?.item_status == "back order" ? (
                       <a
-                        href={`/batches/details/${item?.batch_number}`}
+                        href={`/batch-list/${item?.batch_number}`}
                         target="_blank"
                       >
                         Batch {item?.batch_number}
