@@ -13,13 +13,12 @@ export const getAllData = createAsyncThunk(
   }
 );
 
-export const getData = createAsyncThunk(
-  "batchList/getData",
-  async (data) => {
-    const response = await Api.get(`batch-list/${data?.id}`, {params: {batch_note: data?.batchNote}});
-    return response.data;
-  }
-);
+export const getData = createAsyncThunk("batchList/getData", async (data) => {
+  const response = await Api.get(`batch-list/${data?.id}`, {
+    params: { batch_note: data?.batchNote },
+  });
+  return response.data;
+});
 
 export const getRouteOptions = createAsyncThunk(
   "batchList/getRouteOptions",
@@ -63,9 +62,17 @@ export const getRejectOptions = createAsyncThunk(
 
 export const rejectBatch = createAsyncThunk(
   "batchList/rejectBatch",
-  async (data, {dispatch}) => {
+  async (data, { dispatch }) => {
     const response = await Api.get("reject_item", { params: data });
-    dispatch(getData({id:data?.id}))
+    dispatch(getData({ id: data?.id }));
+    return response.data;
+  }
+);
+
+export const FileUpload = createAsyncThunk(
+  "batchList/FileUpload",
+  async (data) => {
+    const response = await Api.post("graphics-upload-file", data);
     return response.data;
   }
 );

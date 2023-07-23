@@ -1,31 +1,65 @@
-import React from 'react';
-import { Button, Card, CardBody, CardFooter, CardHeader, CardTitle, Modal } from 'reactstrap';
+import React from "react";
+import { useDispatch } from "react-redux";
+import {
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+  Input,
+  Modal,
+} from "reactstrap";
+import { FileUpload } from "../store";
 
-const UploadModal = ({ show, handleClose, handleUpload }) => {
-  const handleSubmit = (e) => {
+const UploadModal = ({ show, handleClose, handleUpload, uploadData }) => {
+  const dispatch = useDispatch();
+
+  const handleImageChange = (e) => {
     e.preventDefault();
-    handleUpload(e.target.elements.upload_file.files[0]);
-    handleClose();
+    const reader = new FileReader();
+    const file = e.target.files[0];
+    reader.onloadend = () => {
+      handleUpload({
+        ...uploadData,
+        upload_file: file,
+      });
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!uploadData?.upload_file) {
+      alert("Please select a file to upload");
+    } else {
+      await dispatch(FileUpload(uploadData));
+      handleClose();
+    }
   };
 
   return (
     <Modal isOpen={show} toggle={handleClose} className="modal-lg">
       <Card>
-      <CardHeader closeButton>
-        <CardTitle>Upload a Graphic</CardTitle>
-      </CardHeader>
-      <CardBody>
-        <p>Upload a graphic to the Archive directory.</p>
-        <form name="track" onSubmit={handleSubmit} method="post" encType="multipart/form-data">
-          <input type="hidden" name="item_id" id="upload_item_id" />
-          <input type="hidden" name="batch_number" id="upload_batch_number" />
-          <input type="file" name="upload_file" className="form-control" />
-        </form>
-      </CardBody>
-      <CardFooter>
-        <Button className="success" onClick={handleSubmit}>Upload</Button>
-        <Button className="secondary mx-1" onClick={handleClose}>Close</Button>
-      </CardFooter>
+        <CardHeader closeButton>
+          <CardTitle>Upload a Graphic</CardTitle>
+        </CardHeader>
+        <CardBody>
+          <p>Upload a graphic to the Archive directory.</p>
+          <Input
+            type="file"
+            className="form-control"
+            onChange={handleImageChange}
+          />
+        </CardBody>
+        <CardFooter>
+          <Button className="success" onClick={handleSubmit}>
+            Upload
+          </Button>
+          <Button className="secondary mx-1" onClick={handleClose}>
+            Close
+          </Button>
+        </CardFooter>
       </Card>
     </Modal>
   );
