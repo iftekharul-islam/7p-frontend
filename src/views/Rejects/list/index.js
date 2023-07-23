@@ -79,7 +79,7 @@ const index = () => {
         let value = jsonArray[key];
 
         if (key !== "Confirmation_of_Order_Details" && key !== "couponcode") {
-          if (value.includes("$") && bold === 1) {
+          if (value?.includes("$") && bold === 1) {
             value = `<span style="font-size: 120%;">${value}</span>`;
           }
           formattedString += `${key.replaceAll(

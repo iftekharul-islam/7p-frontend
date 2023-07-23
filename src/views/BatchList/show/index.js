@@ -37,6 +37,7 @@ const index = () => {
   const [rejectShow, setRejectShow] = useState(false);
   const handleRejectClose = () => setRejectShow(!rejectShow);
   const [rejectData, setRejectData] = useState(null);  
+  const [uploadData, setUploadData] = useState(null);  
 
   return (
     <Fragment>
@@ -51,6 +52,7 @@ const index = () => {
         <Details />
         <Table
           handleClose={handleClose}
+          setUploadData={setUploadData}
           setRejectData={setRejectData}
           handleRejectClose={handleRejectClose}
         />
@@ -64,7 +66,8 @@ const index = () => {
       <UploadModal
         show={show}
         handleClose={handleClose}
-        handleUpload={handleUpload}
+        uploadData={uploadData}
+        handleUpload={setUploadData}
       />
       <RejectModal
         isOpen={rejectShow}

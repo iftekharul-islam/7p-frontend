@@ -2,11 +2,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { Button, CardBody, Col, Input, Row } from "reactstrap";
 
-const Table = ({ handleClose, setRejectData, handleRejectClose }) => {
+const Table = ({ handleClose, setRejectData, handleRejectClose, setUploadData }) => {
   const dispatch = useDispatch();
   const { showData } = useSelector((state) => state.batchList);
 
-  const handleUpload = () => {
+  const handleUpload = (e, item) => {
+    e.preventDefault();
+    setUploadData({item_id: item?.id, batch_number: item?.batch_number})
     handleClose();
   };
 
@@ -32,7 +34,7 @@ const Table = ({ handleClose, setRejectData, handleRejectClose }) => {
         let value = jsonArray[key];
 
         if (key !== "Confirmation_of_Order_Details" && key !== "couponcode") {
-          if (value.includes("$") && bold === 1) {
+          if (value?.includes("$") && bold === 1) {
             value = `<span style="font-size: 120%;">${value}</span>`;
           }
           formattedString += `${key.replaceAll(
@@ -101,7 +103,7 @@ const Table = ({ handleClose, setRejectData, handleRejectClose }) => {
                 Re Download Graphic: {item?.id}
                 <br />
                 {showData?.batch?.station?.type == "Q" && (
-                  <Button color="primary" onClick={handleUpload}>
+                  <Button color="primary" onClick={e=>handleUpload(e, item)}>
                     Upload {item?.id} Graphic
                   </Button>
                 )}
