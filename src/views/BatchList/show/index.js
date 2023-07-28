@@ -2,7 +2,7 @@ import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { Card, CardHeader } from "reactstrap";
-import { getData } from "../store";
+import { FileUpload, getData } from "../store";
 import RejectModal from "./RejectModal";
 import UploadModal from "./UploadModal";
 import Details from "./details";
@@ -30,7 +30,9 @@ const index = () => {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(!show);
 
-  const handleUpload = () => {
+  const handleUpload = async(uploadData) => {
+    await dispatch(FileUpload(uploadData));
+    getBatchData();
     setShow(!show);
   };
 
@@ -68,6 +70,7 @@ const index = () => {
         handleClose={handleClose}
         uploadData={uploadData}
         handleUpload={setUploadData}
+        FileUpload={handleUpload}
       />
       <RejectModal
         isOpen={rejectShow}

@@ -15,7 +15,7 @@ import {
   Row,
   Spinner,
 } from "reactstrap";
-import { getAllData, getShowData, setSearchParams } from "../store";
+import { getAllData, getWAPData, setSearchParams } from "../store";
 
 const index = () => {
   const dispatch = useDispatch();
@@ -29,9 +29,9 @@ const index = () => {
 
   const OpenBin = async () => {
     setLoading(true);
-    const res = await dispatch(getShowData());
-    if (res?.payload?.status) {
-      // navigate("/wap/bin");
+    const res = await dispatch(getWAPData());
+    if (res?.payload) {
+      navigate("/wap/bin");
     }
     setLoading(false);
   };

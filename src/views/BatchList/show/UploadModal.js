@@ -1,5 +1,4 @@
 import React from "react";
-import { useDispatch } from "react-redux";
 import {
   Button,
   Card,
@@ -10,10 +9,8 @@ import {
   Input,
   Modal,
 } from "reactstrap";
-import { FileUpload } from "../store";
 
-const UploadModal = ({ show, handleClose, handleUpload, uploadData }) => {
-  const dispatch = useDispatch();
+const UploadModal = ({ show, handleClose, handleUpload, uploadData, FileUpload }) => {
 
   const handleImageChange = (e) => {
     e.preventDefault();
@@ -33,7 +30,7 @@ const UploadModal = ({ show, handleClose, handleUpload, uploadData }) => {
     if (!uploadData?.upload_file) {
       alert("Please select a file to upload");
     } else {
-      await dispatch(FileUpload(uploadData));
+      await FileUpload(uploadData);
       handleClose();
     }
   };

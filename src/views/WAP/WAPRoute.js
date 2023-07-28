@@ -10,7 +10,7 @@ const WAPRoute = [
   },
   {
     element: <WAPView />,
-    path: '/wap/details/:id'
+    path: '/wap/bin'
   }
 ]
 
