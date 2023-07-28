@@ -14,14 +14,26 @@ export const getAllData = createAsyncThunk(
 );
 
 export const getShowData = createAsyncThunk("WAP/getShowData", async (id) => {
-  const response = await Api.get(`wap-detailsa/${id}`);
-  return response.data;
+  const response = await Api.get(`wap-details/${id}`);
+  if (response.data?.status == 200) {
+    return response.data;
+  } else {
+    return null;
+  }
 });
 
-export const getWAPData = createAsyncThunk("WAP/getWAPData", async (id) => {
-  const response = await Api.get(`wap-details/${id}`);
-  return response.data;
-});
+export const getWAPData = createAsyncThunk(
+  "WAP/getWAPData",
+  async (_, { getState }) => {
+    const { searchParams } = getState()?.WAP;
+    const response = await Api.get(`wap-details/${searchParams?.order_id}`);
+    if (response.data?.status == 200) {
+      return response.data;
+    } else {
+      return null;
+    }
+  }
+);
 export const WAPSlice = createSlice({
   name: "WAP",
   initialState: {

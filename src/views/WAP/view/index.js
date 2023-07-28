@@ -1,9 +1,9 @@
 import "@styles/react/libs/flatpickr/flatpickr.scss";
 import "@styles/react/libs/react-select/_react-select.scss";
 import moment from "moment";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Button,
   Card,
@@ -17,22 +17,17 @@ import {
 import { getWAPData, setSearchParams } from "../store";
 
 const index = () => {
-  const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const { WAPData, searchParams } = useSelector((state) => state.WAP);
-  useEffect(async () => {
-    setLoading(true);
-    await dispatch(getWAPData(id));
-    setLoading(false);
-  }, []);
+  const { bin, order, item_options, thumbs } = WAPData
 
   const OpenBin = async () => {
     setLoading(true);
-    const res = await dispatch(getShowData());
-    if (res?.payload?.status) {
-      // navigate("/wap/bin");
+    const res = await dispatch(getWAPData());
+    if (res?.payload) {
+      navigate("/wap/bin");
     }
     setLoading(false);
   };
@@ -40,6 +35,9 @@ const index = () => {
   const onChange = (data) => {
     dispatch(setSearchParams(data));
   };
+
+  const rejectItem = async (item_id) => {
+  }
 
   return (
     <Fragment>
@@ -65,29 +63,29 @@ const index = () => {
               </Button>
             </Col>
           </Row>
-          {WAPData?.order ? (
+          {order ? (
             <div>
               <Row>
                 <Col md="3" className="p-1">
-                  BIN <b>#{WAPData?.bin?.name}</b>
+                  BIN <b>#{bin?.name}</b>
                 </Col>
                 <Col md="7" className="p-1">
                   Order{" "}
                   <b>
                     #
-                    <Link to={`/customer-order-edit/${WAPData?.order?.id}`}>
-                      {WAPData?.order?.short_order}
+                    <Link to={`/customer-order-edit/${order?.id}`}>
+                      {order?.short_order}
                     </Link>
                   </b>
                 </Col>
                 <Col md="2" className="p-1">
                   <small>
                     Order Date:{" "}
-                    {moment(WAPData?.order?.order_date).format("YYYY-MM-DD")}
+                    {moment(order?.order_date).format("YYYY-MM-DD")}
                   </small>
                 </Col>
               </Row>
-              {WAPData?.order?.items?.map((item, index) => (
+              {order?.items?.map((item, index) => (
                 <Row key={index} className="border rounded mt-1">
                   <Col md="8" className="p-1">
                     <a href={item?.item_url}>{item?.item_description}</a>
@@ -95,7 +93,7 @@ const index = () => {
                   <Col md="2" className="p-1">
                     {item?.item_status == "wap" && (
                       <Link
-                        to={`/wap/reprint?bin_id=${WAPData?.bin?.id}&item_id=${item?.id}`}
+                        to={`/wap/reprint?bin_id=${bin?.id}&item_id=${item?.id}`}
                         className="btn btn-default btn-sm"
                       >
                         Reprint WAP Label
@@ -116,7 +114,7 @@ const index = () => {
                         color="danger"
                         size="sm"
                         onClick={() =>
-                          rejectItem(item?.id, WAPData?.bin?.id, "WP")
+                          rejectItem(item?.id, bin?.id, "WP")
                         }
                       >
                         Reject from WAP
@@ -150,15 +148,15 @@ const index = () => {
                     {item?.item_quantity > 1 && (
                       <strong>QTY: {item?.item_quantity}</strong>
                     )}
-                    <ul>{WAPData?.item_options[item?.id]}</ul>
+                    <ul>{item_options[item?.id]}</ul>
                   </Col>
                   <Col md="3" className="p-1">
                     {item?.item_status == "wap" &&
-                    WAPData?.thumbs[item?.id]?.length > 0 ? (
+                    thumbs[item?.id]?.length > 0 ? (
                       <img
-                        src={WAPData?.thumbs[item?.id][0]}
-                        width={WAPData?.thumbs[item?.id][1]}
-                        height={WAPData?.thumbs[item?.id][2]}
+                        src={thumbs[item?.id][0]}
+                        width={thumbs[item?.id][1]}
+                        height={thumbs[item?.id][2]}
                       />
                     ) : item?.item_status == "production" &&
                       item?.batch_number != "0" ? (
