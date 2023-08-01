@@ -27,9 +27,10 @@ const index = () => {
     handleSearch();
   }, []);
 
-  const OpenBin = async () => {
+  const OpenBin = async (e, id, type) => {
+    e.preventDefault();
     setLoading(true);
-    const res = await dispatch(getWAPData());
+    const res = await dispatch(getWAPData({[type]: id}));
     if (res?.payload) {
       navigate("/wap/bin");
     }
@@ -80,12 +81,12 @@ const index = () => {
                 type="text"
                 name="order_id"
                 placeholder="Scan Label"
-                value={searchParams?.store_id}
+                value={searchParams?.order_id}
                 onChange={(e) => onChange({ order_id: e?.target?.value })}
               />
             </Col>
             <Col md="2">
-              <Button color="primary" onClick={OpenBin} disabled={loading}>
+              <Button color="primary" onClick={e=>OpenBin(e, searchParams?.order_id, 'order_id')} disabled={loading}>
                 {loading ? "Please Wait..." : "Open Bin"}
               </Button>
             </Col>
@@ -130,7 +131,7 @@ const index = () => {
                   return (
                     <Row key={index}>
                       <Col md="1" className="p-1 border">
-                        <Link to={`/wap/details/${bin?.id}`}>
+                        <Link onClick={e=>OpenBin(e, bin?.id, 'bin')}>
                           {bin?.name}
                         </Link>
                       </Col>
@@ -168,7 +169,7 @@ const index = () => {
                   return (
                     <Row key={index}>
                       <Col md="1" className="p-1 border">
-                      <Link to={`/wap/details/${bin?.id}`}>
+                      <Link onClick={e=>OpenBin(e, bin?.id, 'bin')}>
                           {bin?.name}
                         </Link>
                       </Col>
@@ -230,7 +231,7 @@ const index = () => {
                   return (
                     <Row key={index}>
                       <Col md="1" className="p-1 border">
-                      <Link to={`/wap/details/${bin?.id}`}>
+                      <Link onClick={e=>OpenBin(e, bin?.id, 'bin')}>
                           {bin?.name}
                         </Link>
                       </Col>

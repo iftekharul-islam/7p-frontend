@@ -3,9 +3,10 @@ import "@styles/react/libs/react-select/_react-select.scss";
 import { selectThemeColors } from "@utils";
 import { Fragment, useEffect } from "react";
 import { useDispatch } from "react-redux";
+import { Link, useParams } from "react-router-dom";
 import AsyncSelect from "react-select/async";
 import { Col, Input, Row } from "reactstrap";
-import { getProductOptions } from "../store";
+import { DeleteItem, RestoreItem, getProductOptions } from "../store";
 import ItemComponent from "./ItemComponent";
 
 const ProductList = (
@@ -16,6 +17,7 @@ const ProductList = (
   setItemTracking
 ) => {
   const dispatch = useDispatch();
+  const { id } = useParams();
 
   const loadOptions = async (inputValue) => {
     let res = [];
@@ -68,6 +70,16 @@ const ProductList = (
     onChange({ target: { name: "items", value: filteredItems } });
   };
 
+  const deleteItem = (e, orderId, itemId) => {
+    e.preventDefault()
+    dispatch(DeleteItem({id, orderId, itemId}))    
+  }
+
+  const restoreItem = (e, orderId, itemId) => {
+    e.preventDefault()
+    dispatch(RestoreItem({id, orderId, itemId}))
+  }
+
   return (
     <Fragment>
       <Row className="rounded bg-secondary p-1 my-1 text-uppercase">
@@ -83,12 +95,38 @@ const ProductList = (
         return (
           <Row className="" key={index}>
             <Col sm="1">
-              <img
-                src={item?.item_thumb}
-                alt={item?.child_sku}
-                height="50"
-                width="50"
-              />
+              <a href={item?.item_url ? item?.item_url : "#"} target="_blank">
+                <img
+                  src={item?.item_thumb}
+                  alt={item?.child_sku}
+                  height="100"
+                  width="100"
+                />
+              </a>
+              <div>
+                {data?.store &&
+                data?.store?.change_items === "1" &&
+                item?.item_status !== "cancelled" &&
+                item?.item_status !== "shipped" ? (
+                  <Link
+                    style={{ color: "gray" }}
+                    className="delete-item"
+                    onClick={(e)=>deleteItem(e, data?.id, item?.id)}
+                  >
+                    Cancel
+                  </Link>
+                ) : data?.store &&
+                  data?.store?.change_items === "1" &&
+                  item?.item_status === "cancelled" ? (
+                  <Link
+                    style={{ color: "gray" }}
+                    className="delete-item"
+                    onClick={(e)=>restoreItem(e, data?.id, item?.id)}
+                  >
+                    Restore
+                  </Link>
+                ) : null}
+              </div>
             </Col>
             <Col sm="3">
               <div>{item?.child_sku}</div>

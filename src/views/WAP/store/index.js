@@ -22,18 +22,28 @@ export const getShowData = createAsyncThunk("WAP/getShowData", async (id) => {
   }
 });
 
-export const getWAPData = createAsyncThunk(
-  "WAP/getWAPData",
-  async (_, { getState }) => {
-    const { searchParams } = getState()?.WAP;
-    const response = await Api.get(`wap-details/${searchParams?.order_id}`);
-    if (response.data?.status == 200) {
-      return response.data;
-    } else {
-      return null;
-    }
+export const getWAPData = createAsyncThunk("WAP/getWAPData", async (params) => {
+  const response = await Api.get(`wap-details`, { params });
+  if (response.data?.status == 200) {
+    return response.data;
+  }
+});
+
+export const reprintWap = createAsyncThunk(
+  "WAP/reprintWap",
+  async (params, { dispatch }) => {
+    const response = await Api.get(`reprint-wap-label`, { params });
+    dispatch(getWAPData(response?.data));
   }
 );
+
+export const rejectWapItem = createAsyncThunk(
+  "WAP/rejectWapItem",
+  async (params, { dispatch }) => {
+    const response = await Api.get(`reject-wap-item`, { params });
+  }
+);
+
 export const WAPSlice = createSlice({
   name: "WAP",
   initialState: {
@@ -55,7 +65,9 @@ export const WAPSlice = createSlice({
         state.data = action.payload;
       })
       .addCase(getWAPData.fulfilled, (state, action) => {
+        if(action.payload?.status == 200){
         state.WAPData = action.payload;
+        }
       })
       .addCase(getShowData.fulfilled, (state, action) => {
         state.showData = action.payload;
