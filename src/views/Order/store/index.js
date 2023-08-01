@@ -130,6 +130,30 @@ export const updateTracking = createAsyncThunk(
   }
 );
 
+export const DeleteItem = createAsyncThunk(
+  "Order/DeleteItem",
+  async (data, { dispatch }) => {
+    const response = await Api.get(
+      `order-delete-item/${data?.orderId}/${data?.itemId}`
+    );
+    if (response?.data?.status == 201) {
+      dispatch(getOrder(data?.id));
+    }
+    return response.data;
+  }
+);
+
+export const RestoreItem = createAsyncThunk(
+  "Order/RestoreItem",
+  async (data, { dispatch }) => {
+    const response = await Api.get(`order-restore-item/${data?.orderId}/${data?.itemId}`);
+    if (response?.data?.status == 201) {
+      dispatch(getOrder(data?.id));
+    }
+    return response.data;
+  }
+);
+
 export const OrdersSlice = createSlice({
   name: "Orders",
   initialState: {
@@ -180,7 +204,7 @@ export const OrdersSlice = createSlice({
         };
       })
       .addCase(getOrder.fulfilled, (state, action) => {
-        state.order = { ...action.payload, ...action.payload?.customer };
+        state.order = {...action.payload?.customer, ...action.payload};
       })
       .addCase(getOperatorOptions.fulfilled, (state, action) => {
         state.operatorOptions = action.payload;
