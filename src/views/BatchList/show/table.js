@@ -2,13 +2,18 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { Button, CardBody, Col, Input, Row } from "reactstrap";
 
-const Table = ({ handleClose, setRejectData, handleRejectClose, setUploadData }) => {
+const Table = ({
+  handleClose,
+  setRejectData,
+  handleRejectClose,
+  setUploadData,
+}) => {
   const dispatch = useDispatch();
   const { showData } = useSelector((state) => state.batchList);
 
   const handleUpload = (e, item) => {
     e.preventDefault();
-    setUploadData({item_id: item?.id, batch_number: item?.batch_number})
+    setUploadData({ item_id: item?.id, batch_number: item?.batch_number });
     handleClose();
   };
 
@@ -34,7 +39,7 @@ const Table = ({ handleClose, setRejectData, handleRejectClose, setUploadData })
         let value = jsonArray[key];
 
         if (key !== "Confirmation_of_Order_Details" && key !== "couponcode") {
-          if (value?.includes("$") && bold === 1) {
+          if (typeof value === String && value?.includes("$") && bold === 1) {
             value = `<span style="font-size: 120%;">${value}</span>`;
           }
           formattedString += `${key.replaceAll(
@@ -42,7 +47,6 @@ const Table = ({ handleClose, setRejectData, handleRejectClose, setUploadData })
             " "
           )} = ${pre}${value}${post}${separator}`;
         }
-        console.log(formattedString);
       }
     }
 
@@ -102,13 +106,34 @@ const Table = ({ handleClose, setRejectData, handleRejectClose, setUploadData })
                 <br />
                 Re Download Graphic: {item?.id}
                 <br />
-                {showData?.batch?.station?.type == "Q" && (
-                  <Button color="primary" onClick={e=>handleUpload(e, item)}>
+                {showData?.batch?.station?.type == "G" && (
+                  <Button
+                    color="primary"
+                    onClick={(e) => handleUpload(e, item)}
+                  >
                     Upload {item?.id} Graphic
                   </Button>
                 )}
               </Col>
-              <Col md="2"></Col>
+              <Col md="2">
+                {item?.sure3d_thumb && (
+                    <img
+                      src={item?.sure3d_thumb[0]}
+                      //  {item?.product && onerror = item?.product?.product_thumb}
+                      width="150"
+                      height="150"
+                    />
+                )}
+
+                <a href={item?.item_url} target="_blank">
+                  <img
+                    src={item?.item_thumb}
+                    //  {item?.product && onerror = item?.product?.product_thumb}
+                    width="150"
+                    height="150"
+                  />
+                </a>
+              </Col>
               <Col md="3">
                 {item?.child_sku}
                 <br />
