@@ -1,186 +1,244 @@
-import React from 'react';
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { Button, Col, Input, Row } from "reactstrap";
+import { badAddressAPI } from "../store";
 
-const ShippingPanel = ({ order, label, show_ship, bin, batch, id, items }) => {
-  const origin = 'WAP'; // Replace with actual origin value if needed
+const ShippingPanel = ({ data }) => {
+  const dispatch = useDispatch();
+  const { bin, order, item_options, thumbs } = data;
+  const origin = "WAP";
+  const items = bin?.items;
+  const [weight, setWeight] = useState([{ pounds: 0, ounces: 0 }]);
 
-  const setLocation = (location) => {
-    try {
-      var items = document.getElementById("allItems").value;
-      document.getElementById("selected-items-json").value = items;
-    } catch (e) {}
-    document.getElementById("location").value = location;
+  let btnClass = null;
+  let url = null;
+  let btnText = null;
+  const user = JSON.parse(localStorage.getItem("userData"));
+  const shippingMethods = {
+    "": "DEFAULT SHIPPING",
+    "MN*": "MANUAL SHIPPING",
+    "US*FIRST_CLASS": "USPS FIRST_CLASS",
+    "US*PRIORITY": "USPS PRIORITY",
+    "US*EXPRESS": "USPS EXPRESS",
+    "UP*S_GROUND": "UPS GROUND",
+    "UP*S_3DAYSELECT": "UPS 3DAYSELECT",
+    "UP*S_AIR_2DAY": "UPS AIR_2DAY",
+    "UP*S_AIR_2DAYAM": "UPS AIR_2DAYAM",
+    "UP*S_AIR_1DAYSAVER": "UPS AIR_1DAYSAVER",
+    "UP*S_AIR_1DAY": "UPS AIR_1DAY",
+    "UP*S_SUREPOST": "UPS SUREPOST",
+    "FX*_SMART_POST": "FEDEX SMARTPOST",
+    "FX*_GROUND_HOME_DELIVERY": "FEDEX GROUND_HOME_DELIVERY",
+    "FX*_FEDEX_GROUND": "FEDEX GROUND",
+    "FX*_FEDEX_2_DAY": "FEDEX 2_DAY",
+    "FX*_FEDEX_EXPRESS_SAVER": "FEDEX EXPRESS_SAVER",
+    "FX*_STANDARD_OVERNIGHT": "FEDEX STANDARD_OVERNIGHT",
+    "FX*_PRIORITY_OVERNIGHT": "FEDEX PRIORITY_OVERNIGHT",
+    "DL*_SMARTMAIL_PARCEL_EXPEDITED_MAX": "DHL SMARTMAIL PARCEL EXPEDITED MAX",
+    "DL*_SMARTMAIL_PARCEL_EXPEDITED": "DHL SMARTMAIL PARCEL EXPEDITED",
+    "DL*_SMARTMAIL_PARCEL_GROUND": "DHL SMARTMAIL PARCEL GROUND",
+    "DL*_SMARTMAIL_PARCEL_PLUS_EXPEDITED":
+      "DHL SMARTMAIL PARCEL PLUS EXPEDITED",
+    "DL*_SMARTMAIL_PARCEL_PLUS_GROUND": "DHL SMARTMAIL PARCEL PLUS GROUND",
+    "DL*_PARCEL_INTERNATIONAL_DIRECT": "DHL PARCEL INTERNATIONAL DIRECT",
+    "EN*USFC": "ENDCIA USPS FIRST CLASS",
+    "EN*USPM": "ENDCIA USPS PRIORITY",
+    "EN*USCG": "ENDCIA USPS GROUND",
   };
 
-  const addPackage = () => {
-    var row = (
-      <tr>
-        <td></td>
-        <td>
-          <input
-            id="pounds[]"
-            style={{ width: '50px' }}
-            min="0"
-            name="pounds[]"
-            type="number"
-            value="0"
-          />
-        </td>
-        <td>lbs</td>
-        <td>
-          <input
-            id="ounces[]"
-            style={{ width: '50px' }}
-            min="0"
-            name="ounces[]"
-            type="number"
-            value="0"
-          />
-        </td>
-        <td>ozs</td>
-        <td></td>
-      </tr>
-    );
-    var parent = document.querySelector('table#packages');
-    parent.appendChild(row);
-  };
+  // TODO - Add logic for for access
+  // order.store && order.store.qc === '0' || (user.accesses.some((access) => access.page === 'ship_order'))
+  if (order?.store && order?.store?.qc === "0") {
+    btnClass = "success";
+    url = "/shipping/ship_items";
+    if (order?.carrier === "MN") {
+      btnText = order?.method;
+      btnClass = "info";
+      url = "/ship_order/ship_items";
+    } else if (items?.length > 1) {
+      btnText = `${items?.length} Lines Approved by ${user?.username}`;
+    } else {
+      btnText = `Approved by ${user?.username}`;
+    }
 
-  const notificationItems = [
-    'SB11306',
-    'SB11305',
-    'SB11304',
-    'SB11301',
-    'SB11253',
-    'SB11117',
-    'SB11107',
-    'SB10953',
-    'SB9051',
-  ];
-  const showPackingNotification =
-    items.length > 0 && notificationItems.includes(items[0].item_code);
+    if (order?.shippable_items?.length !== items?.length) {
+      btnText = `Partial Ship ${btnText}`;
+      btnClass = "primary";
+      url = "/ship_order/ship_items";
+    }
+  } else {
+    btnText = "Ship by Supervisor";
+    btnClass = "danger";
+    url = "";
+  }
+
+  const badAddress = (e, params) => {
+    e.preventDefault();
+    dispatch(badAddressAPI(params));
+  };
 
   return (
-    <div className="col-xs-12">
-      <div className="col-xs-1"></div>
-      <div className="col-xs-9">
-        {order.order_status === 4 || order.order_status === 11 ? (
-          <>
-            {label == null || show_ship === '1' ? (
-              <>
-                {origin === 'QC' ? (
-                  <>
-                    {/* QC Origin specific content */}
-                    {!! Form::open({
-                      url: 'shipping/add_wap',
-                      name: 'approve',
-                      method: 'post',
-                      id: 'approve',
-                    })}
-                    {!! Form::hidden('action', 'address', { id: 'action' })}
-                    {!! Form::hidden('batch_number', batch.batch_number, { id: 'batch_number' })}
-                    {!! Form::hidden('id', id, { id: 'id' })}
-                    {!! Form::hidden('order_id', order.id, { id: 'order_id' })}
-                    {!! Form::hidden('origin', 'QC', { id: 'origin' })}
-                    {!! Form::hidden('count', items.length, { id: 'count' })}
-                    <button
-                      id="address"
-                      className="btn btn-primary btn-xs"
-                      onClick={() => {
-                        document.getElementById('address').disabled = true;
-                        document.getElementById('approve').submit();
-                      }}
-                    >
-                      Bad Address
-                    </button>
-                    {!! Form::close() !!}
-                  </>
-                ) : origin === 'WAP' ? (
-                  <>
-                    {/* WAP Origin specific content */}
-                    {/* Replace with WAP-specific logic */}
-                  </>
-                ) : null}
-                {/* Common content for both QC and WAP origins */}
-                {!! Form::open({
-                  url: url,
-                  method: 'post',
-                })}
-                <table className="table table-condensed borderless" id="packages">
-                  {/* Add table rows here */}
-                </table>
-                <br />
-                <br />
-                {!! Form::hidden('batch_number', batch.batch_number, { id: 'batch_number' })}
-                {!! Form::hidden('id', id, { id: 'id' })}
-                {!! Form::hidden('order_id', order.id, { id: 'order_id' })}
-                {!! Form::hidden('selected-items-json', '', { id: 'selected-items-json' })}
-                {!! Form::hidden('origin', origin, { id: 'origin' })}
-                {!! Form::hidden('location', 'FL', { id: 'location' })}
-                {!! Form::hidden('count', items.length, { id: 'count' })}
-                <button
-                  value="fl"
-                  name="submitButton"
-                  className={`pull-right btn btn-lg btn-${btn_class}`}
-                  id="focus-btn"
-                  style={{ marginTop: '5px' }}
-                  onClick={() => {
-                    setLocation('FL');
-                    document.getElementById('focus-btn').disabled = true;
-                    document.querySelector('form').submit();
-                  }}
-                >
-                  {btn_text} (FL)
-                </button>
-                <button
-                  value="ny"
-                  name="submitButton"
-                  className="pull-right btn btn-lg btn-warning"
-                  id="focus-btn"
-                  style={{ marginTop: '5px' }}
-                  onClick={() => {
-                    setLocation('NY');
-                    document.getElementById('focus-btn').disabled = true;
-                    document.querySelector('form').submit();
-                  }}
-                >
-                  {btn_text} (NY)
-                </button>
-                {!! Form::close() !!}
-              </>
-            ) : null}
-          </>
-        ) : label != null ? (
-          <>
-            {/* Label is not null */}
-            <input
-              type="button"
-              value="Reprint Shipping Label"
-              className="btn btn-lg"
-              onClick={() => sendLabel()} // Implement sendLabel function if required
-            />
-            <br />
-            <br />
-          </>
-        ) : null}
-      </div>
-      {showPackingNotification && (
-        <div className="modal fade" id="packingNotificationForm" tabIndex="-1" role="dialog" aria-labelledby="myModalLabel">
-          <div className="modal-dialog modal-sm" role="document">
-            <div className="modal-content">
-              <div className="modal-header">
-                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-                <h4 className="modal-title" id="myModalLabel">Packing Notification</h4>
-              </div>
-              <div className="modal-body">
-                <div>Please Insert Pillow.</div>
-                <div>Inserte la almohada.</div>
-              </div>
-            </div>
-          </div>
-        </div>
+    <Row className="border rounded p-1">
+      {order?.carrier != null && order?.carrier !== "MN" && (
+        <Col sm="12" className="panel-header">
+          <h4>
+            <strong>
+              <u>
+                Ship By {shippingMethods[order?.carrier + "*" + order?.method]}
+              </u>
+            </strong>
+          </h4>
+        </Col>
       )}
-    </div>
+
+      <Row className="panel-body">
+        <Col sm="4" className="col-xs-12 col-sm-4 col-md-2">
+          {order?.carrier != null ? (
+            <>
+              {order?.carrier === "FX" && (
+                <img src="/assets/images/fedex.jpg" alt="FedEx" />
+              )}
+              {order?.carrier === "UP" &&
+                !order.method.includes("MAIL_INNOVATIONS") && (
+                  <img src="/assets/images/ups.jpg" alt="UPS" />
+                )}
+              {order?.carrier === "US" && (
+                <img src="/assets/images/usps.jpg" alt="USPS" />
+              )}
+            </>
+          ) : (
+            <strong>Ship to:</strong>
+          )}
+        </Col>
+
+        <Col sm="4" className="col-xs-12 col-sm-8 col-md-5">
+          <div>{order?.customer?.ship_full_name}</div>
+          <div>
+            {order?.customer?.ship_company_name &&
+              order?.customer?.ship_company_name}
+          </div>
+          <div>{order?.customer?.ship_address_1}</div>
+          <div>
+            {order?.customer?.ship_address_2 && order?.customer?.ship_address_2}
+          </div>
+          <div>
+            {order?.customer?.ship_city}, {order?.customer?.ship_state}{" "}
+            {order?.customer?.ship_zip}
+          </div>
+          <div>
+            {order?.customer?.ship_country.substring(0, 2) !== "US" &&
+              order?.customer?.ship_country}
+          </div>
+
+          <Button
+            color="primary"
+            size="sm"
+            className="btn-xs"
+            onClick={(e) => badAddress(e, { order_id: order?.id })}
+          >
+            Bad Address
+          </Button>
+        </Col>
+
+        <Col
+          sm="4"
+          className="col-xs-12 col-sm-12 col-md-5"
+          style={{ textAlign: "right", padding: 0 }}
+        >
+          <form action={url} method="post">
+            <table className="table table-condensed borderless" id="packages">
+              {}
+              <tr>
+                <td>
+                  {order?.carrier === "US" ? (
+                    <label style={{ color: "red" }}>*Weight:</label>
+                  ) : (
+                    <label>Weight:</label>
+                  )}
+                </td>
+                <td>
+                  <Input
+                    type="number"
+                    name="pounds"
+                    style={{ width: "100px" }}
+                    min="0"
+                    defaultValue={0}
+                  />
+                </td>
+                <td>lbs</td>
+                <td>
+                  <Input
+                    type="number"
+                    name="ounces"
+                    style={{ width: "100px" }}
+                    min="0"
+                    defaultValue={0}
+                  />
+                </td>
+                <td>ozs</td>
+                <td>
+                  {order?.carrier != null &&
+                    order?.carrier !== "US" &&
+                    order.store.multi_carton === 1 && (
+                      <button onClick={(e) => console?.log("A")}>
+                        <i className="glyphicon glyphicon-plus" />
+                      </button>
+                    )}
+                </td>
+              </tr>
+            </table>
+            <br />
+            {bin && <input type="hidden" name="bin" id="bin" value={bin?.id} />}
+            <input
+              type="hidden"
+              name="order_id"
+              id="order_id"
+              value={order?.id}
+            />
+            <input
+              type="hidden"
+              name="selected-items-json"
+              id="selected-items-json"
+              value=""
+            />
+            <input type="hidden" name="origin" id="origin" value={origin} />
+            <input type="hidden" name="location" id="location" value="FL" />
+            <input
+              type="hidden"
+              name="count"
+              id="count"
+              value={items?.length}
+            />
+            <button
+              type="submit"
+              name="submitButton"
+              value="fl"
+              className={`pull-right btn btn-lg btn-${btnClass}`}
+              style={{ marginTop: "5px" }}
+              onClick={() => {
+                console.log("A");
+                // setLocation('FL');
+              }}
+            >
+              {btnText} (FL)
+            </button>
+            <button
+              type="submit"
+              name="submitButton"
+              value="ny"
+              className="pull-right btn btn-lg btn-warning"
+              style={{ marginTop: "5px" }}
+              onClick={() => {
+                console.log("B");
+                // setLocation('NY');
+              }}
+            >
+              {btnText} (NY)
+            </button>
+          </form>
+        </Col>
+      </Row>
+    </Row>
   );
 };
 

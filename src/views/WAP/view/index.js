@@ -14,7 +14,13 @@ import {
   Row,
   Spinner,
 } from "reactstrap";
-import { getWAPData, reprintWap, setSearchParams } from "../store";
+import {
+  getWAPData,
+  rejectWapItem,
+  reprintWap,
+  setSearchParams,
+} from "../store";
+import ShippingPanel from "./ShippingPanel";
 
 const index = () => {
   const dispatch = useDispatch();
@@ -88,7 +94,13 @@ const index = () => {
             </Col>
           </Row>
           <Row>
-          {/* <ShippingPanel data={WAPData} /> */}
+            <Row>
+              <Col sm="2"></Col>
+              <Col sm="8">
+                <ShippingPanel data={WAPData} />
+              </Col>
+              <Col sm="2"></Col>
+            </Row>
           </Row>
           {order ? (
             <div>
@@ -148,6 +160,7 @@ const index = () => {
                               id="s"
                               name="s"
                               value={item?.id}
+                              defaultChecked
                             />
                           </span>
                         ) : item?.item_status == "rejected" ? (
@@ -183,7 +196,13 @@ const index = () => {
                         {item?.item_quantity > 1 && (
                           <strong>QTY: {item?.item_quantity}</strong>
                         )}
-                        <ul><div dangerouslySetInnerHTML={{ __html: item_options[item?.id] }} /></ul>
+                        <ul>
+                          <div
+                            dangerouslySetInnerHTML={{
+                              __html: item_options[item?.id],
+                            }}
+                          />
+                        </ul>
                         {/* {}</ul> */}
                       </Col>
                       <Col md="3" className="p-1">

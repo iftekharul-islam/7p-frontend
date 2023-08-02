@@ -29,6 +29,7 @@ const index = () => {
 
   const OpenBin = async (e, id, type) => {
     e.preventDefault();
+    dispatch(setSearchParams({'type': type, 'id': id}));
     setLoading(true);
     const res = await dispatch(getWAPData({[type]: id}));
     if (res?.payload) {

@@ -39,8 +39,19 @@ export const reprintWap = createAsyncThunk(
 
 export const rejectWapItem = createAsyncThunk(
   "WAP/rejectWapItem",
-  async (params, { dispatch }) => {
+  async (params) => {
     const response = await Api.get(`reject-wap-item`, { params });
+  }
+);
+
+export const badAddressAPI = createAsyncThunk(
+  "WAP/badAddressAPI",
+  async (params, { getState, dispatch }) => {
+    const { type, id } = getState()?.WAP?.searchParams;
+    const response = await Api.post(`bad-address`, params);
+    if (response?.data?.status == 201) {
+      dispatch(getWAPData({ [type]: id }));
+    }
   }
 );
 
@@ -65,8 +76,8 @@ export const WAPSlice = createSlice({
         state.data = action.payload;
       })
       .addCase(getWAPData.fulfilled, (state, action) => {
-        if(action.payload?.status == 200){
-        state.WAPData = action.payload;
+        if (action.payload?.status == 200) {
+          state.WAPData = action.payload;
         }
       })
       .addCase(getShowData.fulfilled, (state, action) => {
