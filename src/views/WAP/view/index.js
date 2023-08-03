@@ -39,9 +39,6 @@ const index = () => {
     e.preventDefault();
     setLoading(true);
     const res = await dispatch(getWAPData({ [type]: id }));
-    if (res?.payload) {
-      navigate("/wap/bin");
-    }
     setLoading(false);
   };
 

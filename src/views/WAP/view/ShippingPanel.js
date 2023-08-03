@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { Button, Col, Input, Row } from "reactstrap";
+import { Button, Col, Input, Label, Row } from "reactstrap";
 import { badAddressAPI } from "../store";
 
 const ShippingPanel = ({ data }) => {
@@ -9,6 +9,9 @@ const ShippingPanel = ({ data }) => {
   const origin = "WAP";
   const items = bin?.items;
   const [weight, setWeight] = useState([{ pounds: 0, ounces: 0 }]);
+  const addWeight = () => {
+    setWeight([...weight, { pounds: 0, ounces: 0 }]);
+  };
 
   let btnClass = null;
   let url = null;
@@ -75,6 +78,13 @@ const ShippingPanel = ({ data }) => {
   const badAddress = (e, params) => {
     e.preventDefault();
     dispatch(badAddressAPI(params));
+  };
+
+  const changeWeght = (e, index) => {
+    const { name, value } = e.target;
+    const list = [...weight];
+    list[index][name] = value;
+    setWeight(list);
   };
 
   return (
@@ -146,47 +156,43 @@ const ShippingPanel = ({ data }) => {
           style={{ textAlign: "right", padding: 0 }}
         >
           <form action={url} method="post">
-            <table className="table table-condensed borderless" id="packages">
-              {}
-              <tr>
-                <td>
-                  {order?.carrier === "US" ? (
-                    <label style={{ color: "red" }}>*Weight:</label>
-                  ) : (
-                    <label>Weight:</label>
-                  )}
-                </td>
-                <td>
+            {weight?.map((itm, index) => (
+              <Row>
+                <Col sm="4">
+                  {index == 0 &&
+                    (order?.carrier === "US" ? (
+                      <label style={{ color: "red" }}>*Weight:</label>
+                    ) : (
+                      <label>Weight:</label>
+                    ))}
+                </Col>
+                <Col sm="4">
+                  {index == 0 && <Label>lbs</Label>}
                   <Input
                     type="number"
                     name="pounds"
                     style={{ width: "100px" }}
                     min="0"
                     defaultValue={0}
+                    value={itm.pounds}
+                    onChange={(e) => changeWeght(e, index)}
                   />
-                </td>
-                <td>lbs</td>
-                <td>
+                </Col>
+                <Col sm="4">
+                  {index == 0 && <Label>oz</Label>}
                   <Input
                     type="number"
                     name="ounces"
                     style={{ width: "100px" }}
                     min="0"
                     defaultValue={0}
+                    value={itm.ounces}
+                    onChange={(e) => changeWeght(e, index)}
                   />
-                </td>
-                <td>ozs</td>
-                <td>
-                  {order?.carrier != null &&
-                    order?.carrier !== "US" &&
-                    order.store.multi_carton === 1 && (
-                      <button onClick={(e) => console?.log("A")}>
-                        <i className="glyphicon glyphicon-plus" />
-                      </button>
-                    )}
-                </td>
-              </tr>
-            </table>
+                </Col>
+              </Row>
+            ))}
+            <Button onClick={addWeight}>Add Weight</Button>
             <br />
             {bin && <input type="hidden" name="bin" id="bin" value={bin?.id} />}
             <input
