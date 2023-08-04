@@ -55,6 +55,17 @@ export const badAddressAPI = createAsyncThunk(
   }
 );
 
+export const ShipItem = createAsyncThunk(
+  "WAP/ShipItem",
+  async (params, { getState, dispatch }) => {
+    const { type, id } = getState()?.WAP?.searchParams;
+    const response = await Api.post(`ship-item`, params);
+    if (response?.data?.status == 201) {
+      dispatch(getWAPData({ [type]: id }));
+    }
+  }
+);
+
 export const WAPSlice = createSlice({
   name: "WAP",
   initialState: {

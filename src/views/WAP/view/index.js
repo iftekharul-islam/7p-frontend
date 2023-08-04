@@ -28,6 +28,20 @@ const index = () => {
   const [loading, setLoading] = useState(false);
   const { WAPData, searchParams } = useSelector((state) => state.WAP);
   const { bin, order, item_options, thumbs } = WAPData;
+  const [selected, setSelected] = useState([]);
+  const onCheckedChange = (e, id) => {
+    if (e.target.checked) {
+      setSelected([...selected, id]);
+    } else {
+      setSelected(selected.filter((item) => item !== id));
+    }
+  };
+  useEffect(() => {
+    const list = order?.items
+      ?.filter((item) => item?.item_status == "wap" && item?.batch)
+      ?.map((item) => item?.id);
+    setSelected(list);
+  }, [order]);
 
   useEffect(() => {
     if (!WAPData?.order) {
@@ -94,7 +108,7 @@ const index = () => {
             <Row>
               <Col sm="2"></Col>
               <Col sm="8">
-                <ShippingPanel data={WAPData} />
+                <ShippingPanel data={WAPData} selected={selected}/>
               </Col>
               <Col sm="2"></Col>
             </Row>
@@ -154,10 +168,10 @@ const index = () => {
                             </Button>
                             <Input
                               type="checkbox"
-                              id="s"
                               name="s"
-                              value={item?.id}
+                              checked={selected.includes(item?.id)}
                               defaultChecked
+                              onChange={(e) => onCheckedChange(e, item?.id)}
                             />
                           </span>
                         ) : item?.item_status == "rejected" ? (
