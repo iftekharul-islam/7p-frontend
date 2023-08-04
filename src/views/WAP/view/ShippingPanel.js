@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Button, Col, Input, Label, Row } from "reactstrap";
-import { badAddressAPI } from "../store";
+import { ShipItem, badAddressAPI } from "../store";
 
-const ShippingPanel = ({ data }) => {
+const ShippingPanel = ({ data, selected }) => {
   const dispatch = useDispatch();
   const { bin, order, item_options, thumbs } = data;
   const origin = "WAP";
@@ -87,6 +87,13 @@ const ShippingPanel = ({ data }) => {
     setWeight(list);
   };
 
+  const submitFL = async(e, bin, order_id, origin, location, count, selected_items_json) => {
+    e.preventDefault();
+    const pounds = weight?.map((w) => w.pounds);
+    const ounces = weight?.map((w) => w.ounces);
+    await dispatch(ShipItem({ bin, order_id, origin, location, count, 'selected-items-json': selected_items_json, pounds, ounces }));
+  }
+
   return (
     <Row className="border rounded p-1">
       {order?.carrier != null && order?.carrier !== "MN" && (
@@ -155,7 +162,6 @@ const ShippingPanel = ({ data }) => {
           className="col-xs-12 col-sm-12 col-md-5"
           style={{ textAlign: "right", padding: 0 }}
         >
-          <form action={url} method="post">
             {weight?.map((itm, index) => (
               <Row>
                 <Col sm="4">
@@ -193,55 +199,26 @@ const ShippingPanel = ({ data }) => {
               </Row>
             ))}
             <Button onClick={addWeight}>Add Weight</Button>
-            <br />
-            {bin && <input type="hidden" name="bin" id="bin" value={bin?.id} />}
-            <input
-              type="hidden"
-              name="order_id"
-              id="order_id"
-              value={order?.id}
-            />
-            <input
-              type="hidden"
-              name="selected-items-json"
-              id="selected-items-json"
-              value=""
-            />
-            <input type="hidden" name="origin" id="origin" value={origin} />
-            <input type="hidden" name="location" id="location" value="FL" />
-            <input
-              type="hidden"
-              name="count"
-              id="count"
-              value={items?.length}
-            />
-            <button
+            <Button
               type="submit"
               name="submitButton"
               value="fl"
               className={`pull-right btn btn-lg btn-${btnClass}`}
               style={{ marginTop: "5px" }}
-              onClick={() => {
-                console.log("A");
-                // setLocation('FL');
-              }}
+              onClick={(e) => submitFL(e, bin?.id, order?.id, origin, 'FL', items?.length, selected)}
             >
               {btnText} (FL)
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
               name="submitButton"
               value="ny"
               className="pull-right btn btn-lg btn-warning"
               style={{ marginTop: "5px" }}
-              onClick={() => {
-                console.log("B");
-                // setLocation('NY');
-              }}
+              onClick={(e) => submitFL(e, bin?.id, order?.id, origin, 'NY', items?.length, selected)}
             >
               {btnText} (NY)
-            </button>
-          </form>
+            </Button>
         </Col>
       </Row>
     </Row>
