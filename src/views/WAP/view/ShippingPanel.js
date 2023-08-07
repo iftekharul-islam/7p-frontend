@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { Button, Col, Input, Label, Row } from "reactstrap";
 import { ShipItem, badAddressAPI } from "../store";
 
 const ShippingPanel = ({ data, selected }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { bin, order, item_options, thumbs } = data;
   const origin = "WAP";
   const items = bin?.items;
@@ -91,7 +93,10 @@ const ShippingPanel = ({ data, selected }) => {
     e.preventDefault();
     const pounds = weight?.map((w) => w.pounds);
     const ounces = weight?.map((w) => w.ounces);
-    await dispatch(ShipItem({ bin, order_id, origin, location, count, 'selected-items-json': selected_items_json, pounds, ounces }));
+    const shipItem = await dispatch(ShipItem({ bin, order_id, origin, location, count, 'selected-items-json': selected_items_json, pounds, ounces }));
+    if(shipItem){
+      navigate('/wap');
+    }
   }
 
   return (
