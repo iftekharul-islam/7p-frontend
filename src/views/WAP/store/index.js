@@ -57,10 +57,13 @@ export const badAddressAPI = createAsyncThunk(
 
 export const ShipItem = createAsyncThunk(
   "WAP/ShipItem",
-  async (params) => {
+  async (params, {dispatch}) => {
     const response = await Api.post(`ship-item`, params);
+    console.log("🚀 ~ file: index.js:63 ~ response:", response)
+    console.log("🚀 ~ file: index.js:63 ~ response:", response?.data?.status)
+    console.log("🚀 ~ file: index.js:63 ~ response:", response?.data?.params)
     if (response?.data?.status == 201) {
-      return true;
+      dispatch(getWAPData(response?.data?.params));
     }
   }
 );

@@ -94,9 +94,6 @@ const ShippingPanel = ({ data, selected }) => {
     const pounds = weight?.map((w) => w.pounds);
     const ounces = weight?.map((w) => w.ounces);
     const shipItem = await dispatch(ShipItem({ bin, order_id, origin, location, count, 'selected-items-json': selected_items_json, pounds, ounces }));
-    if(shipItem){
-      navigate('/wap');
-    }
   }
 
   return (
