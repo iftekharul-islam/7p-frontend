@@ -15,7 +15,6 @@ export const getListData = createAsyncThunk(
   async (id) => {
     const response = await Api.get("quality-control-list", {
       params: { station_id: id },
-
     });
     return response.data;
   }
@@ -29,6 +28,34 @@ export const getOrderData = createAsyncThunk(
       batch_number: searchParams?.batch_number,
       user_barcode: searchParams?.user_barcode,
     });
+    if (response.data?.status === 200) {
+      return response.data?.params;
+    }
+  }
+);
+
+export const getOrder = createAsyncThunk(
+  "qualityControls/getOrder",
+  async (_, { getState }) => {
+    const { searchParams } = getState()?.qualityControls;
+    const response = await Api.post("quality-control-order-data", searchParams);
+    return response.data;
+  }
+);
+
+export const getShowOrder= createAsyncThunk(
+  "qualityControls/getShowOrder",
+  async (_, { getState }) => {
+    const { searchParams } = getState()?.qualityControls;
+    const response = await Api.post("quality-control-show-order", searchParams);
+    return response.data;
+  }
+);
+
+export const rejectQCItem= createAsyncThunk(
+  "qualityControls/rejectQCItem",
+  async (params) => {
+    const response = await Api.get("reject-wap-item", {params});
     return response.data;
   }
 );
@@ -38,15 +65,12 @@ export const qualityControlsSlice = createSlice({
   initialState: {
     data: {},
     listData: [],
-    orderData: [],
+    orderData: null,
+    batchData: null,
 
     params: {},
 
-    searchParams: {
-      batch_number: null,
-      user_barcode: null,
-      station_id: null,
-    },
+    searchParams: null,
 
     allData: [],
   },
@@ -59,7 +83,21 @@ export const qualityControlsSlice = createSlice({
         state.listData = action.payload;
       })
       .addCase(getOrderData.fulfilled, (state, action) => {
-        state.orderData = action.payload;
+        state.searchParams = { ...state.searchParams, ...action?.payload };
+      })
+      .addCase(getOrder.fulfilled, (state, action) => {
+        if (action?.payload?.status === 206) {
+          state.searchParams = action?.payload?.params;
+        } else {
+          state.batchData = action.payload;
+        }
+      })
+      .addCase(getShowOrder.fulfilled, (state, action) => {
+        if (action?.payload?.status === 206) {
+          state.searchParams = action?.payload?.params
+        } else {
+          state.orderData = action.payload;
+        }
       });
   },
   reducers: {

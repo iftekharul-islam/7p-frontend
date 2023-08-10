@@ -4,12 +4,17 @@ import { useNavigate } from "react-router-dom";
 import { Button, Col, Input, Label, Row } from "reactstrap";
 import { ShipItem, badAddressAPI } from "../store";
 
-const ShippingPanel = ({ data, selected }) => {
+const ShippingPanel = ({
+  data,
+  selected = [],
+  origin = "WAP",
+  items = null,
+}) => {
+  console.log("🚀 ~ file: ShippingPanel.js:13 ~ origin:", origin)
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { bin, order, item_options, thumbs } = data;
-  const origin = "WAP";
-  const items = bin?.items;
+  if (!items) items = bin?.items;
   const [weight, setWeight] = useState([{ pounds: 0, ounces: 0 }]);
   const addWeight = () => {
     setWeight([...weight, { pounds: 0, ounces: 0 }]);
@@ -21,6 +26,7 @@ const ShippingPanel = ({ data, selected }) => {
   const user = JSON.parse(localStorage.getItem("userData"));
   const shippingMethods = {
     "": "DEFAULT SHIPPING",
+    "*": "DEFAULT SHIPPING",
     "MN*": "MANUAL SHIPPING",
     "US*FIRST_CLASS": "USPS FIRST_CLASS",
     "US*PRIORITY": "USPS PRIORITY",
@@ -89,12 +95,31 @@ const ShippingPanel = ({ data, selected }) => {
     setWeight(list);
   };
 
-  const submitFL = async(e, bin, order_id, origin, location, count, selected_items_json) => {
+  const submitFL = async (
+    e,
+    bin,
+    order_id,
+    origin,
+    location,
+    count,
+    selected_items_json
+  ) => {
     e.preventDefault();
     const pounds = weight?.map((w) => w.pounds);
     const ounces = weight?.map((w) => w.ounces);
-    const shipItem = await dispatch(ShipItem({ bin, order_id, origin, location, count, 'selected-items-json': selected_items_json, pounds, ounces }));
-  }
+    const shipItem = await dispatch(
+      ShipItem({
+        bin,
+        order_id,
+        origin,
+        location,
+        count,
+        "selected-items-json": selected_items_json,
+        pounds,
+        ounces,
+      })
+    );
+  };
 
   return (
     <Row className="border rounded p-1">
@@ -164,63 +189,83 @@ const ShippingPanel = ({ data, selected }) => {
           className="col-xs-12 col-sm-12 col-md-5"
           style={{ textAlign: "right", padding: 0 }}
         >
-            {weight?.map((itm, index) => (
-              <Row>
-                <Col sm="4">
-                  {index == 0 &&
-                    (order?.carrier === "US" ? (
-                      <label style={{ color: "red" }}>*Weight:</label>
-                    ) : (
-                      <label>Weight:</label>
-                    ))}
-                </Col>
-                <Col sm="4">
-                  {index == 0 && <Label>lbs</Label>}
-                  <Input
-                    type="number"
-                    name="pounds"
-                    style={{ width: "100px" }}
-                    min="0"
-                    defaultValue={0}
-                    value={itm.pounds}
-                    onChange={(e) => changeWeght(e, index)}
-                  />
-                </Col>
-                <Col sm="4">
-                  {index == 0 && <Label>oz</Label>}
-                  <Input
-                    type="number"
-                    name="ounces"
-                    style={{ width: "100px" }}
-                    min="0"
-                    defaultValue={0}
-                    value={itm.ounces}
-                    onChange={(e) => changeWeght(e, index)}
-                  />
-                </Col>
-              </Row>
-            ))}
-            <Button onClick={addWeight}>Add Weight</Button>
-            <Button
-              type="submit"
-              name="submitButton"
-              value="fl"
-              className={`pull-right btn btn-lg btn-${btnClass}`}
-              style={{ marginTop: "5px" }}
-              onClick={(e) => submitFL(e, bin?.id, order?.id, origin, 'FL', items?.length, selected)}
-            >
-              {btnText} (FL)
-            </Button>
-            <Button
-              type="submit"
-              name="submitButton"
-              value="ny"
-              className="pull-right btn btn-lg btn-warning"
-              style={{ marginTop: "5px" }}
-              onClick={(e) => submitFL(e, bin?.id, order?.id, origin, 'NY', items?.length, selected)}
-            >
-              {btnText} (NY)
-            </Button>
+          {weight?.map((itm, index) => (
+            <Row>
+              <Col sm="4">
+                {index == 0 &&
+                  (order?.carrier === "US" ? (
+                    <label style={{ color: "red" }}>*Weight:</label>
+                  ) : (
+                    <label>Weight:</label>
+                  ))}
+              </Col>
+              <Col sm="4">
+                {index == 0 && <Label>lbs</Label>}
+                <Input
+                  type="number"
+                  name="pounds"
+                  style={{ width: "100px" }}
+                  min="0"
+                  defaultValue={0}
+                  value={itm.pounds}
+                  onChange={(e) => changeWeght(e, index)}
+                />
+              </Col>
+              <Col sm="4">
+                {index == 0 && <Label>oz</Label>}
+                <Input
+                  type="number"
+                  name="ounces"
+                  style={{ width: "100px" }}
+                  min="0"
+                  defaultValue={0}
+                  value={itm.ounces}
+                  onChange={(e) => changeWeght(e, index)}
+                />
+              </Col>
+            </Row>
+          ))}
+          <Button onClick={addWeight}>Add Weight</Button>
+          <Button
+            type="submit"
+            name="submitButton"
+            value="fl"
+            className={`pull-right btn btn-lg btn-${btnClass}`}
+            style={{ marginTop: "5px" }}
+            onClick={(e) =>
+              submitFL(
+                e,
+                bin?.id,
+                order?.id,
+                origin,
+                "FL",
+                items?.length,
+                selected
+              )
+            }
+          >
+            {btnText} (FL)
+          </Button>
+          <Button
+            type="submit"
+            name="submitButton"
+            value="ny"
+            className="pull-right btn btn-lg btn-warning"
+            style={{ marginTop: "5px" }}
+            onClick={(e) =>
+              submitFL(
+                e,
+                bin?.id,
+                order?.id,
+                origin,
+                "NY",
+                items?.length,
+                selected
+              )
+            }
+          >
+            {btnText} (NY)
+          </Button>
         </Col>
       </Row>
     </Row>

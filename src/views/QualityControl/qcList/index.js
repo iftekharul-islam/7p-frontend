@@ -27,20 +27,23 @@ const index = () => {
     (state) => state?.qualityControls
   );
 
-  useEffect(async () => {
+  const getDataList = async () => {
     if (id) {
       setLoading(true);
       await dispatch(getListData(id));
-
       setLoading(false);
     }
+  };
+
+  useEffect(() => {
+    getDataList();
   }, [id]);
 
   const handleSearch = async () => {
-      const res = await dispatch(getOrderData());
-      console.log("🚀 ~ file: index.js:39 ~ handleSearch ~ res:", res)
-      // navigate("/quality-control/order");
-
+    const res = await dispatch(getOrderData());
+    if (res?.payload) {
+      navigate("/quality-control/order");
+    }
   };
 
   return (

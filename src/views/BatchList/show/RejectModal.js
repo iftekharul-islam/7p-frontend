@@ -33,7 +33,7 @@ const RejectionModal = ({ isOpen, toggle, data }) => {
 
   useEffect(() => {
     dispatch(getRejectOptions());
-    setRejectData({ id:data?.id, item_id: data?.item_id, origin: "BD", title: "Batch view" });
+    setRejectData(data);
   }, [data]);
 
   return (
