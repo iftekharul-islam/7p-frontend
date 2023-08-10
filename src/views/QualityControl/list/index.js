@@ -32,11 +32,6 @@ const index = () => {
     setLoading(false);
   }, []);
 
-  const listNavigate = async (e, section) => {
-    e.preventDefault();
-    navigate("/quality-control/list/" + section?.station_id);
-  };
-
   return (
     <Fragment>
       <Card>

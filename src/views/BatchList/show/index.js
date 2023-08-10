@@ -30,7 +30,7 @@ const index = () => {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(!show);
 
-  const handleUpload = async(uploadData) => {
+  const handleUpload = async (uploadData) => {
     await dispatch(FileUpload(uploadData));
     getBatchData();
     setShow(!show);
@@ -38,8 +38,15 @@ const index = () => {
 
   const [rejectShow, setRejectShow] = useState(false);
   const handleRejectClose = () => setRejectShow(!rejectShow);
-  const [rejectData, setRejectData] = useState(null);  
-  const [uploadData, setUploadData] = useState(null);  
+  const [rejectData, setRejectData] = useState({
+    origin: "BD",
+    title: "Batch view",
+  });
+  const [uploadData, setUploadData] = useState(null);
+
+  const handleRejectData = (data) => {
+    setRejectData({ ...rejectData, ...data });
+  };
 
   return (
     <Fragment>
@@ -55,7 +62,7 @@ const index = () => {
         <Table
           handleClose={handleClose}
           setUploadData={setUploadData}
-          setRejectData={setRejectData}
+          setRejectData={handleRejectData}
           handleRejectClose={handleRejectClose}
         />
         <Note
