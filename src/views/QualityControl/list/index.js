@@ -19,10 +19,11 @@ const index = () => {
   const [loading, setLoading] = useState(false);
   const { data, searchParams } = useSelector((state) => state.qualityControls);
 
-
-  const handleSearch = async () => {    
+  const handleSearch = async () => {
     const res = await dispatch(getOrderData());
-    console.log("🚀 ~ file: index.js:39 ~ handleSearch ~ res:", res)
+    if (res?.payload) {
+      navigate("/quality-control/order");
+    }
   };
 
   useEffect(() => {
@@ -30,6 +31,7 @@ const index = () => {
     dispatch(getAllData());
     setLoading(false);
   }, []);
+
   const listNavigate = async (e, section) => {
     e.preventDefault();
     navigate("/quality-control/list/" + section?.station_id);

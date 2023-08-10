@@ -2,7 +2,7 @@ import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Button, Card, CardBody, Col, Input, Row } from "reactstrap";
-import { getOrderData, setSearchParams } from "../store";
+import { setSearchParams } from "../store";
 
 const index = () => {
   const dispatch = useDispatch();
@@ -10,15 +10,19 @@ const index = () => {
   const [loading, setLoading] = useState(true);
   const { searchParams } = useSelector((state) => state?.qualityControls);
 
-  useEffect(async () => {
-    if (searchParams?.batch_number) {
-      setLoading(true);
-      await dispatch(getOrderData());
-      setLoading(false);
+  const getOrderData = async () => {
+    setLoading(true);
+    if (searchParams) {
+      // const res = await dispatch(getOrder());
     } else {
       navigate("/quality-control");
     }
-  }, [searchParams?.batch_number]);
+
+    setLoading(false);
+  };
+  useEffect(() => {
+    getOrderData();
+  }, [searchParams]);
 
   const handleSearch = async () => {
     console.log("A");
@@ -41,7 +45,7 @@ const index = () => {
             </Col>
             <Col md="2">
               <Input
-                type="password"
+                type="text"
                 placeholder="Enter Batch"
                 value={searchParams?.user_barcode}
                 onChange={(e) =>

@@ -31,16 +31,15 @@ const index = () => {
     if (id) {
       setLoading(true);
       await dispatch(getListData(id));
-
       setLoading(false);
     }
   }, [id]);
 
   const handleSearch = async () => {
       const res = await dispatch(getOrderData());
-      console.log("🚀 ~ file: index.js:39 ~ handleSearch ~ res:", res)
-      // navigate("/quality-control/order");
-
+      if (res?.payload) {
+        navigate("/quality-control/order");
+      }
   };
 
   return (
