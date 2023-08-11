@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { PlusCircle } from "react-feather";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Button, Col, Input, Label, Row } from "reactstrap";
@@ -10,7 +11,7 @@ const ShippingPanel = ({
   origin = "WAP",
   items = null,
 }) => {
-  console.log("🚀 ~ file: ShippingPanel.js:13 ~ origin:", origin)
+  console.log("🚀 ~ file: ShippingPanel.js:13 ~ origin:", origin);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { bin, order, item_options, thumbs } = data;
@@ -225,47 +226,55 @@ const ShippingPanel = ({
               </Col>
             </Row>
           ))}
-          <Button onClick={addWeight}>Add Weight</Button>
-          <Button
-            type="submit"
-            name="submitButton"
-            value="fl"
-            className={`pull-right btn btn-lg btn-${btnClass}`}
-            style={{ marginTop: "5px" }}
-            onClick={(e) =>
-              submitFL(
-                e,
-                bin?.id,
-                order?.id,
-                origin,
-                "FL",
-                items?.length,
-                selected
-              )
-            }
-          >
-            {btnText} (FL)
-          </Button>
-          <Button
-            type="submit"
-            name="submitButton"
-            value="ny"
-            className="pull-right btn btn-lg btn-warning"
-            style={{ marginTop: "5px" }}
-            onClick={(e) =>
-              submitFL(
-                e,
-                bin?.id,
-                order?.id,
-                origin,
-                "NY",
-                items?.length,
-                selected
-              )
-            }
-          >
-            {btnText} (NY)
-          </Button>
+          <Row>
+            <Col sm="6"></Col>
+            <Col sm="6" className="mt-1">
+            <Button onClick={addWeight}><PlusCircle /> Weight</Button></Col>
+          </Row>
+          <Row>
+            <Button
+              type="submit"
+              name="submitButton"
+              value="fl"
+              className={`pull-right btn btn-lg btn-${btnClass}`}
+              style={{ marginTop: "5px" }}
+              onClick={(e) =>
+                submitFL(
+                  e,
+                  bin?.id,
+                  order?.id,
+                  origin,
+                  "FL",
+                  items?.length,
+                  selected
+                )
+              }
+            >
+              {btnText} (FL)
+            </Button>
+          </Row>
+          <Row>
+            <Button
+              type="submit"
+              name="submitButton"
+              value="ny"
+              className="pull-right btn btn-lg btn-warning"
+              style={{ marginTop: "5px" }}
+              onClick={(e) =>
+                submitFL(
+                  e,
+                  bin?.id,
+                  order?.id,
+                  origin,
+                  "NY",
+                  items?.length,
+                  selected
+                )
+              }
+            >
+              {btnText} (NY)
+            </Button>
+          </Row>
         </Col>
       </Row>
     </Row>
