@@ -43,7 +43,7 @@ export const getOrder = createAsyncThunk(
   }
 );
 
-export const getShowOrder= createAsyncThunk(
+export const getShowOrder = createAsyncThunk(
   "qualityControls/getShowOrder",
   async (_, { getState }) => {
     const { searchParams } = getState()?.qualityControls;
@@ -52,10 +52,28 @@ export const getShowOrder= createAsyncThunk(
   }
 );
 
-export const rejectQCItem= createAsyncThunk(
+export const rejectQCItem = createAsyncThunk(
   "qualityControls/rejectQCItem",
   async (params) => {
-    const response = await Api.get("reject-wap-item", {params});
+    const response = await Api.get("reject-wap-item", { params });
+    return response.data;
+  }
+);
+
+export const approvedItemApi = createAsyncThunk(
+  "qualityControls/approvedItemApi",
+  async (params) => {
+    const response = await Api.post("shipping-add-wap", params);
+    if (response?.data?.status === 201) {
+      return response?.data?.params;
+    }
+  }
+);
+
+export const QCOrder = createAsyncThunk(
+  "qualityControls/QCOrder",
+  async (params) => {
+    const response = await Api.post("shipping-qc-order", params);
     return response.data;
   }
 );
@@ -94,10 +112,13 @@ export const qualityControlsSlice = createSlice({
       })
       .addCase(getShowOrder.fulfilled, (state, action) => {
         if (action?.payload?.status === 206) {
-          state.searchParams = action?.payload?.params
+          state.searchParams = action?.payload?.params;
         } else {
           state.orderData = action.payload;
         }
+      })
+      .addCase(approvedItemApi.fulfilled, (state, action) => {
+        state.searchParams = action?.payload;
       });
   },
   reducers: {

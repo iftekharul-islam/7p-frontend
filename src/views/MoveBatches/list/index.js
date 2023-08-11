@@ -31,8 +31,10 @@ const index = () => {
   const params = store?.searchParams;
 
   useEffect(() => {
-    onChange({ station: station })
-    onSearch({ station: station });
+    if (station) {
+      onChange({ station: station });
+      onSearch({ station: station });
+    }
   }, [station]);
 
   useEffect(() => {

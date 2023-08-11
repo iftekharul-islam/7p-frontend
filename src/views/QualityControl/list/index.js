@@ -1,7 +1,7 @@
 import "@styles/react/libs/react-select/_react-select.scss";
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Button,
   Card,
@@ -16,6 +16,7 @@ import { getAllData, getOrderData, setSearchParams } from "../store";
 
 const index = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const { data, searchParams } = useSelector((state) => state.qualityControls);
 
@@ -36,7 +37,7 @@ const index = () => {
     <Fragment>
       <Card>
         <CardHeader>
-          <h4 className="card-title">Must Ship Report</h4>
+          <h4 className="card-title">Quality Control</h4>
         </CardHeader>
         <CardBody>
           <Row className="mb-1">
