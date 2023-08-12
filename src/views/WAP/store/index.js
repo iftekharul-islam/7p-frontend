@@ -44,27 +44,31 @@ export const rejectWapItem = createAsyncThunk(
   }
 );
 
-export const badAddressAPI = createAsyncThunk(
-  "WAP/badAddressAPI",
-  async (params, { getState, dispatch }) => {
-    const { type, id } = getState()?.WAP?.searchParams;
+export const badAddressWAP = createAsyncThunk(
+  "WAP/badAddressWAP",
+  async (params) => {
     const response = await Api.post(`bad-address`, params);
-    if (response?.data?.status == 201) {
-      dispatch(getWAPData({ [type]: id }));
-    }
+    return response?.data;
+  }
+);
+
+export const badAddressQC = createAsyncThunk(
+  "WAP/badAddressQC",
+  async (params) => {
+    const response = await Api.post(`shipping-add-wap`, params);
+    return response?.data;
   }
 );
 
 export const ShipItem = createAsyncThunk(
   "WAP/ShipItem",
-  async (params, {dispatch}) => {
+  async (params) => {
+    console.log("🚀 ~ file: index.js:66 ~ params:", params)
     const response = await Api.post(`ship-item`, params);
-    console.log("🚀 ~ file: index.js:63 ~ response:", response)
-    console.log("🚀 ~ file: index.js:63 ~ response:", response?.data?.status)
-    console.log("🚀 ~ file: index.js:63 ~ response:", response?.data?.params)
-    if (response?.data?.status == 201) {
-      dispatch(getWAPData(response?.data?.params));
-    }
+    return response?.data;
+    // if (response?.data?.status == 201) {
+    //   dispatch(getWAPData(response?.data?.params));
+    // }
   }
 );
 

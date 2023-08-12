@@ -4,7 +4,7 @@ import moment from "moment";
 import { Fragment, useEffect, useState } from "react";
 import Flatpickr from "react-flatpickr";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Button,
   Card,
@@ -23,20 +23,35 @@ const index = () => {
   const [loading, setLoading] = useState(false);
   const { data, searchParams } = useSelector((state) => state.WAP);
 
-  useEffect(() => {
-    handleSearch();
-  }, []);
+  const { state } = useLocation();
 
   const OpenBin = async (e, id, type) => {
     e.preventDefault();
-    dispatch(setSearchParams({'type': type, 'id': id}));
+    dispatch(setSearchParams({ type: type, id: id }));
     setLoading(true);
-    const res = await dispatch(getWAPData({[type]: id}));
+    const res = await dispatch(getWAPData({ [type]: id }));
     if (res?.payload) {
       navigate("/wap/bin");
     }
     setLoading(false);
   };
+
+  const OpenBinDirectly = async () => {
+    setLoading(true);
+    const res = await dispatch(getWAPData(state));
+    if (res?.payload) {
+      navigate("/wap/bin");
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    if (state) {
+      OpenBinDirectly();
+    } else {
+      handleSearch();
+    }
+  }, [state]);
 
   const handleSearch = async () => {
     setLoading(true);
@@ -87,7 +102,11 @@ const index = () => {
               />
             </Col>
             <Col md="2">
-              <Button color="primary" onClick={e=>OpenBin(e, searchParams?.order_id, 'order_id')} disabled={loading}>
+              <Button
+                color="primary"
+                onClick={(e) => OpenBin(e, searchParams?.order_id, "order_id")}
+                disabled={loading}
+              >
                 {loading ? "Please Wait..." : "Open Bin"}
               </Button>
             </Col>
@@ -132,7 +151,7 @@ const index = () => {
                   return (
                     <Row key={index}>
                       <Col md="1" className="p-1 border">
-                        <Link onClick={e=>OpenBin(e, bin?.id, 'bin')}>
+                        <Link onClick={(e) => OpenBin(e, bin?.id, "bin")}>
                           {bin?.name}
                         </Link>
                       </Col>
@@ -143,7 +162,9 @@ const index = () => {
                         {bin?.last}
                       </Col>
                       <Col md="2" className="p-1 border">
-                      <Link to={`/customer-order-edit/${bin?.order_id}`}>{bin?.order?.short_order}</Link>
+                        <Link to={`/customer-order-edit/${bin?.order_id}`}>
+                          {bin?.order?.short_order}
+                        </Link>
                         {bin?.order?.store_id != "52053152" && (
                           <div>{bin?.order?.store_name}</div>
                         )}
@@ -170,7 +191,7 @@ const index = () => {
                   return (
                     <Row key={index}>
                       <Col md="1" className="p-1 border">
-                      <Link onClick={e=>OpenBin(e, bin?.id, 'bin')}>
+                        <Link onClick={(e) => OpenBin(e, bin?.id, "bin")}>
                           {bin?.name}
                         </Link>
                       </Col>
@@ -186,7 +207,9 @@ const index = () => {
                         {bin?.last}
                       </Col>
                       <Col md="2" className="p-1 border">
-                      <Link to={`/customer-order-edit/${bin?.order_id}`}>{bin?.order?.short_order}</Link>
+                        <Link to={`/customer-order-edit/${bin?.order_id}`}>
+                          {bin?.order?.short_order}
+                        </Link>
                         {bin?.order?.store_id != "52053152" && (
                           <div>{bin?.order?.store_name}</div>
                         )}
@@ -232,7 +255,7 @@ const index = () => {
                   return (
                     <Row key={index}>
                       <Col md="1" className="p-1 border">
-                      <Link onClick={e=>OpenBin(e, bin?.id, 'bin')}>
+                        <Link onClick={(e) => OpenBin(e, bin?.id, "bin")}>
                           {bin?.name}
                         </Link>
                       </Col>
@@ -241,7 +264,9 @@ const index = () => {
                       </Col>
                       <Col md="2" className="p-1 border"></Col>
                       <Col md="2" className="p-1 border">
-                      <Link to={`/customer-order-edit/${bin?.order_id}`}>{bin?.order_id}</Link>
+                        <Link to={`/customer-order-edit/${bin?.order_id}`}>
+                          {bin?.order_id}
+                        </Link>
                         {bin?.order?.store_id != "52053152" && (
                           <div>{bin?.order?.store_name}</div>
                         )}

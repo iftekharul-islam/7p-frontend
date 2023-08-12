@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import {
   Button,
@@ -13,6 +14,7 @@ import { getRejectOptions, rejectBatch } from "../store";
 
 const RejectionModal = ({ isOpen, toggle, data }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { rejectOptions } = useSelector((state) => state.batchList);
   const [rejectData, setRejectData] = useState(null);
 
@@ -24,10 +26,9 @@ const RejectionModal = ({ isOpen, toggle, data }) => {
   };
 
   const handleReject = async () => {
-    const res = dispatch(rejectBatch(rejectData));
-    if (res?.payload == 201) {
-      setRejectShow(!rejectShow);
-      getBatchData();
+    const res = await dispatch(rejectBatch(rejectData));
+    if (res?.payload) {
+      navigate(res?.payload?.isRedirect, { state: res?.payload?.params });
     }
   };
 

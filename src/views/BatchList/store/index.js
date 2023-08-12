@@ -62,10 +62,9 @@ export const getRejectOptions = createAsyncThunk(
 
 export const rejectBatch = createAsyncThunk(
   "batchList/rejectBatch",
-  async (data, { dispatch }) => {
+  async (data) => {
     const response = await Api.get("reject_item", { params: data });
-    dispatch(getData({ id: data?.id }));
-    return response.data;
+    if (response.data?.status === 201) return response.data;
   }
 );
 

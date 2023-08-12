@@ -3,18 +3,12 @@ import { PlusCircle } from "react-feather";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Button, Col, Input, Label, Row } from "reactstrap";
-import { ShipItem, badAddressAPI } from "../store";
+import { ShipItem, badAddressQC, badAddressWAP } from "../store";
 
-const ShippingPanel = ({
-  data,
-  selected = [],
-  origin = "WAP",
-  items = null,
-}) => {
-  console.log("🚀 ~ file: ShippingPanel.js:13 ~ origin:", origin);
+const ShippingPanel = ({ data, selected = [], origin, items = null }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { bin, order, item_options, thumbs } = data;
+  const { bin, order, item_options, thumbs, batch, id } = data ?? {};
   if (!items) items = bin?.items;
   const [weight, setWeight] = useState([{ pounds: 0, ounces: 0 }]);
   const addWeight = () => {
@@ -84,9 +78,22 @@ const ShippingPanel = ({
     url = "";
   }
 
-  const badAddress = (e, params) => {
+  const badAddress = async (e) => {
     e.preventDefault();
-    dispatch(badAddressAPI(params));
+    if (origin == "QC") {
+      const res = await dispatch(
+        badAddressQC({
+          action: "address",
+          batch_number: batch?.batch_number,
+          id,
+          order_id: order?.id,
+          origin: "QC",
+          count: items?.length,
+        })
+      );
+    } else {
+      const res = await dispatch(badAddressWAP({ order_id: order?.id }));
+    }
   };
 
   const changeWeght = (e, index) => {
@@ -96,26 +103,20 @@ const ShippingPanel = ({
     setWeight(list);
   };
 
-  const submitFL = async (
-    e,
-    bin,
-    order_id,
-    origin,
-    location,
-    count,
-    selected_items_json
-  ) => {
+  const submitFL = async (e, location) => {
     e.preventDefault();
     const pounds = weight?.map((w) => w.pounds);
     const ounces = weight?.map((w) => w.ounces);
     const shipItem = await dispatch(
       ShipItem({
-        bin,
-        order_id,
-        origin,
+        batch_number: batch?.batch_number,
+        id: id ?? null,
+        bin: bin?.id,
+        order_id: order?.id,
+        origin: origin ?? null,
         location,
-        count,
-        "selected-items-json": selected_items_json,
+        count: items?.length,
+        "selected-items-json": JSON?.stringify(selected),
         pounds,
         ounces,
       })
@@ -179,7 +180,7 @@ const ShippingPanel = ({
             color="primary"
             size="sm"
             className="btn-xs"
-            onClick={(e) => badAddress(e, { order_id: order?.id })}
+            onClick={badAddress}
           >
             Bad Address
           </Button>
@@ -229,7 +230,10 @@ const ShippingPanel = ({
           <Row>
             <Col sm="6"></Col>
             <Col sm="6" className="mt-1">
-            <Button onClick={addWeight}><PlusCircle /> Weight</Button></Col>
+              <Button onClick={addWeight}>
+                <PlusCircle /> Weight
+              </Button>
+            </Col>
           </Row>
           <Row>
             <Button
@@ -238,17 +242,7 @@ const ShippingPanel = ({
               value="fl"
               className={`pull-right btn btn-lg btn-${btnClass}`}
               style={{ marginTop: "5px" }}
-              onClick={(e) =>
-                submitFL(
-                  e,
-                  bin?.id,
-                  order?.id,
-                  origin,
-                  "FL",
-                  items?.length,
-                  selected
-                )
-              }
+              onClick={(e) => submitFL(e, "FL")}
             >
               {btnText} (FL)
             </Button>
@@ -260,17 +254,7 @@ const ShippingPanel = ({
               value="ny"
               className="pull-right btn btn-lg btn-warning"
               style={{ marginTop: "5px" }}
-              onClick={(e) =>
-                submitFL(
-                  e,
-                  bin?.id,
-                  order?.id,
-                  origin,
-                  "NY",
-                  items?.length,
-                  selected
-                )
-              }
+              onClick={(e) => submitFL(e, "NY")}
             >
               {btnText} (NY)
             </Button>
