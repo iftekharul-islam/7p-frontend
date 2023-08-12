@@ -36,9 +36,9 @@ export const getOrderData = createAsyncThunk(
 
 export const getOrder = createAsyncThunk(
   "qualityControls/getOrder",
-  async (_, { getState }) => {
+  async (params, { getState }) => {
     const { searchParams } = getState()?.qualityControls;
-    const response = await Api.post("quality-control-order-data", searchParams);
+    const response = await Api.post("quality-control-order-data", params ?? searchParams);
     return response.data;
   }
 );

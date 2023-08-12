@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Button, Card, CardBody, Col, Input, Row } from "reactstrap";
 import RejectionModal from "../../BatchList/show/RejectModal";
 import ShippingPanel from "../../WAP/view/ShippingPanel";
@@ -48,10 +48,12 @@ const index = () => {
   const [open, setOpen] = useState(false);
   const toggle = () => setOpen(!open);
 
+  const { state } = useLocation(); 
+
   const getOrderDataList = async () => {
     setLoading(true);
     if (searchParams) {
-      const res = await dispatch(getOrder());
+      const res = await dispatch(getOrder(state ?? null));
       if (res?.payload?.status == 206) {
         getShowOrderList();
       }
@@ -382,7 +384,7 @@ const index = () => {
                 <Row>
                   <Col sm="1"></Col>
                   <Col sm="8">
-                    <ShippingPanel data={orderData} origin="QC" />
+                    <ShippingPanel data={orderData} origin="QC" items={orderData?.items} />
                   </Col>
                 </Row>
               ) : (

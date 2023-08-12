@@ -4,7 +4,7 @@ import "@styles/react/libs/tables/react-dataTable-component.scss";
 import moment from "moment";
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useSearchParams } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 import Select from "react-select";
 import {
   Button,
@@ -25,6 +25,7 @@ import {
 const index = () => {
   const dispatch = useDispatch();
   let [searchParam, setSearchParam] = useSearchParams();
+  const {state} = useLocation();
   const station = searchParam.get("station");
   const store = useSelector((state) => state.moveBatches);
   const [loading, setLoading] = useState(false);
@@ -36,6 +37,13 @@ const index = () => {
       onSearch({ station: station });
     }
   }, [station]);
+  
+  useEffect(() => {
+    if (state?.scan_batches) {
+      onChange({ scan_batches: state?.scan_batches });
+      onSearch({ scan_batches: state?.scan_batches });
+    }
+  }, [state?.scan_batches]);
 
   useEffect(() => {
     dispatch(getStationOptions());

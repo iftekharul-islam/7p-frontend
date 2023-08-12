@@ -14,11 +14,11 @@ import {
   Row,
   Spinner,
 } from "reactstrap";
+import RejectionModal from "../../BatchList/show/RejectModal";
 import {
   getWAPData,
-  rejectWapItem,
   reprintWap,
-  setSearchParams,
+  setSearchParams
 } from "../store";
 import ShippingPanel from "./ShippingPanel";
 
@@ -29,6 +29,9 @@ const index = () => {
   const { WAPData, searchParams } = useSelector((state) => state.WAP);
   const { bin, order, item_options, thumbs } = WAPData;
   const [selected, setSelected] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const [rejectData, setRejectData] = useState(null);
+  const toggle = () => setIsOpen(!isOpen);
   const onCheckedChange = (e, id) => {
     if (e.target.checked) {
       setSelected([...selected, id]);
@@ -60,15 +63,9 @@ const index = () => {
     dispatch(setSearchParams(data));
   };
 
-  const rejectItem = async (item_id, bin_id, origin) => {
-    await dispatch(
-      rejectWapItem({
-        item_id,
-        bin_id,
-        origin,
-        s: document.getElementById("s")?.checked,
-      })
-    );
+  const rejectItem = (item_id, bin_id, origin) => {
+    toggle();
+    setRejectData({ item_id, bin_id, origin, s: document.getElementById("s")?.checked });
   };
 
   const reprintWapLabel = (e, item_id, bin_id) => {
@@ -108,7 +105,7 @@ const index = () => {
             <Row>
               <Col sm="2"></Col>
               <Col sm="8">
-                <ShippingPanel data={WAPData} selected={selected}/>
+                <ShippingPanel data={WAPData} selected={selected} origin="WAP"/>
               </Col>
               <Col sm="2"></Col>
             </Row>
@@ -314,6 +311,7 @@ const index = () => {
           )}
         </CardBody>
       </Card>
+      <RejectionModal isOpen={isOpen} toggle={toggle} data={rejectData}/>
     </Fragment>
   );
 };
