@@ -4,7 +4,7 @@ import "@styles/react/libs/tables/react-dataTable-component.scss";
 import moment from "moment";
 import { Fragment, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Button,
   Card,
@@ -18,11 +18,24 @@ import { getAllData } from "../store";
 
 const index = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const store = useSelector((state) => state.unbatchableItems);
 
   useEffect(() => {
     dispatch(getAllData());
   }, []);
+
+  const addChildSKU = async (e, item) => {
+    e.preventDefault();
+
+    const params = {
+      id_catalog: item?.item_id,
+      parent_sku: item?.item_code,
+      child_sku: item?.child_sku,
+    };
+    const u = new URLSearchParams(params).toString();
+    navigate("/add-child-sku?" + u, { replace: true });
+  };
 
   return (
     <div className="app-user-list">
@@ -36,18 +49,19 @@ const index = () => {
               <div>
                 <h6>{store?.data?.length} Items found</h6>
                 {store?.data?.map((item, index) => {
-                  console.log(
-                    "🚀 ~ file: index.js:31 ~ {store?.data?.map ~ item:",
-                    item
-                  );
                   return (
                     <Row key={index}>
                       <Col sm="2" className="border">
                         <div>{item?.hold}</div>
                         {item?.parameter_option && (
                           <span>
-                            <div>Child SKU doen not exist in 5P</div>
-                            <Button color="primary">Add Child SKU</Button>
+                            <div>Child SKU does not exist in 5P</div>
+                            <Button
+                              color="primary"
+                              onClick={(e) => addChildSKU(e, item?.item)}
+                            >
+                              Add Child SKU
+                            </Button>
                           </span>
                         )}
                         {item?.route && <div>Needs Route</div>}
@@ -81,11 +95,17 @@ const index = () => {
                           </div>
                         )}
                         <div>
-                          {moment(item?.item?.order?.order_date).format("MM/DD/YYYY")}
+                          {moment(item?.item?.order?.order_date).format(
+                            "MM/DD/YYYY"
+                          )}
                         </div>
                       </Col>
                       <Col sm="1" className="border">
-                        <img src={item?.item?.item_thumb} width={70} height={70} />
+                        <img
+                          src={item?.item?.item_thumb}
+                          width={70}
+                          height={70}
+                        />
                       </Col>
                       <Col sm="2" className="border">
                         <div>{item?.item?.item_description}</div>
@@ -93,6 +113,11 @@ const index = () => {
                         <div>QTY: {item?.item?.item_quantity}</div>
                       </Col>
                       <Col sm="3" className="border">
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: item?.item_option,
+                          }}
+                        />
                         {item?.item_option}
                       </Col>
                       <Col sm="2" className="border">

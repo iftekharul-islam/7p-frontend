@@ -313,13 +313,6 @@ export default [
         isAccess: check(["user"]),
         navLink: "/shipment-list",
       },
-      {
-        id: 'dhl_driver_manifest',
-        title: "DHL Driver Manifest",
-        icon: <Codesandbox size={20} />,
-        isAccess: check(["user"]),
-        navLink: "/dhl-driver-manifest",
-      },
     ],
   },
   {
