@@ -5,7 +5,7 @@ import Api from "@src/http";
 export const getAllData = createAsyncThunk(
   "ConfigChildSKU/getAllData",
   async (_, { getState }) => {
-    const { params, searchParams } = getState()?.inventories;
+    const { params, searchParams } = getState()?.configchildskus;
     const response = await Api.get("config-child-sku", { params:{...params, ...searchParams} });
     return response.data;
   }
@@ -140,16 +140,16 @@ export const ConfigChildSKUSlice = createSlice({
 
     searchParams: {
       search_for_first: null,
-      contains_first: null,
+      contains_first: 'in',
       search_in_first: null,
       search_for_second: null,
-      ocontains_second: null,
+      contains_second: 'in',
       search_in_second: null,
       search_for_third: null,
-      contains_third: null,
+      contains_third: 'in',
       search_in_third: null,
       search_for_fourth: null,
-      contains_fourth: null,
+      contains_fourth: 'in',
       search_in_fourth: null,
 
       active: null,
