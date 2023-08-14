@@ -6,15 +6,15 @@ import DataTable from "react-data-table-component";
 import { ChevronDown, PlusCircle } from "react-feather";
 import ReactPaginate from "react-paginate";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Select from "react-select";
 import { Button, Card, CardBody, Col, Input, Row } from "reactstrap";
 import {
-    getAllData,
-    getBatchRouteOptions,
-    getStockWithImageOptions,
-    setParams,
-    setSearchParams,
+  getAllData,
+  getBatchRouteOptions,
+  getStockWithImageOptions,
+  setParams,
+  setSearchParams,
 } from "../store";
 import { columns } from "./columns";
 
@@ -24,8 +24,21 @@ const index = () => {
   const [loading, setLoading] = useState(false);
   const params = store?.searchParams;
 
+  const [URLParams, setURLParams] = useSearchParams();
   useEffect(() => {
-    if (store?.params) dispatch(getAllData());
+    if (URLParams) {
+      let params = {};
+      URLParams?.forEach((value, key) => {
+        if (value != "null") {
+          params = { ...params, [key]: value };
+        }
+      });
+      onChange(params);
+    }
+  }, [URLParams]);
+
+  useEffect(() => {
+    if (store?.params) onSearch();
   }, [store?.params]);
 
   useEffect(() => {
@@ -39,8 +52,8 @@ const index = () => {
     setLoading(false);
   };
 
-  const onChange = (data) => {
-    dispatch(setSearchParams(data));
+  const onChange = async (data) => {
+    await dispatch(setSearchParams(data));
   };
 
   const CustomHeader = () => {
@@ -340,7 +353,9 @@ const index = () => {
                     return (
                       <div className="d-flex">
                         <img src={image} style={{ width: 50, height: 50 }} />
-                        <div className="d-flex align-self-center px-2">{label}</div>
+                        <div className="d-flex align-self-center px-2">
+                          {label}
+                        </div>
                       </div>
                     );
                   }}
@@ -363,7 +378,7 @@ const index = () => {
         <Card className="overflow-hidden">
           <div className="react-dataTable">
             <DataTable
-striped
+              striped
               noHeader
               subHeader
               sortServer
