@@ -19,8 +19,13 @@ export const getAllData = createAsyncThunk(
 
 export const createBatch = createAsyncThunk(
   "previewBatches/createBatch",
-  async (_, { dispatch }) => {
-    const response = await Api.post("preview-batches");
+  async (_, { getState, dispatch }) => {
+    const { searchParams, active } = getState()?.previewBatches;
+    const params = {
+      backorder: active,
+      batches: searchParams?.batches,
+    };
+    const response = await Api.post("preview-batches", params);
     if (response?.data?.status == 201) {
       dispatch(getAllData());
     }

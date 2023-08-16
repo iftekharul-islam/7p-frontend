@@ -39,8 +39,8 @@ let Api = axios.create({
 
   validateStatus: function (status) {
     if (status === 401) {
-      localStorage.removeItem("user");
-      // window.location.href = "/";
+      localStorage.clear();
+      window.location.href = "/";
     }
 
     // if (response?.status == 402) {
