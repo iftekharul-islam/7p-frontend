@@ -19,6 +19,7 @@ import {
   TabPane,
 } from "reactstrap";
 import {
+  createBatch,
   getAllData,
   getSearchInOptions,
   getSectionOptions,
@@ -32,6 +33,7 @@ const index = () => {
   const store = useSelector((state) => state.previewBatches);
   const [loading, setLoading] = useState(false);
   const params = store?.searchParams;
+  console.log("🚀 ~ file: index.js:36 ~ index ~ params:", params);
 
   var count = store?.data?.count - 1;
   let serial = store?.data?.serial - 1;
@@ -52,8 +54,8 @@ const index = () => {
     setLoading(false);
   };
 
-  const onChange = (data) => {
-    dispatch(setSearchParams(data));
+  const onChange = async (data) => {
+    await dispatch(setSearchParams(data));
   };
 
   const toggle = (tab) => {
@@ -62,19 +64,192 @@ const index = () => {
     }
   };
 
-  const CustomNavItem = ({ text, total = null, tab }) => {
+  const onCreateBatches = () => {
+    dispatch(createBatch());
+  };
+
+  const singleSelect = (batches) => {
+    let data = [...(store?.searchParams?.batches ?? [])];
+    if (data?.includes(batches)) {
+      data = data?.filter((item) => item !== batches);
+    } else {
+      data = [...data, batches];
+    }
+    onChange({ batches: data });
+  };
+  const multiSelect = (count, id, items) => {
+    let data = [...(store?.searchParams?.batches ?? [])];
+    items?.forEach((item) => {
+      let batches = `${count}|${id}|${item?.item_table_id}|${item?.batch}|${item?.store_id}`;
+      if (data?.includes(batches)) {
+        data = data?.filter((item) => item !== batches);
+      } else {
+        data = [...data, batches];
+      }
+    });
+    onChange({ batches: data });
+  };
+  const allSelect = (batchRoutes) => {
+    let data = [...(store?.searchParams?.batches ?? [])];
+    let count = 0;
+    batchRoutes?.forEach((batchRoute) => {
+      count++;
+      batchRoute?.items?.forEach((item) => {
+        let batches = `${count}|${batchRoute?.id}|${item?.item_table_id}|${item?.batch}|${item?.store_id}`;
+        if (data?.includes(batches)) {
+          data = data?.filter((item) => item !== batches);
+        } else {
+          data = [...data, batches];
+        }
+      });
+    });
+    onChange({ batches: data });
+  };
+
+  const viewList = (i) => {
     return (
-      <NavItem>
-        <NavLink
-          active={store?.active === tab}
-          onClick={() => {
-            toggle(tab);
-          }}
-        >
-          {text}
-          {total != null ? ` (${total}) ` : null}
-        </NavLink>
-      </NavItem>
+      <TabPane tabId={i}>
+        {loading ? (
+          <div className="text-center">
+            <h4>Loading...</h4>
+          </div>
+        ) : store?.data?.batch_routes?.length > 0 ? (
+          <span>
+            <Row>
+              <Col sm="2" className="p-1 border">
+                <b>Batch #</b>
+              </Col>
+              <Col sm="1" className="p-1 border">
+                <b>S.L #</b>
+              </Col>
+              <Col sm="1" className="p-1 border">
+                <b>Batch S.L #</b>
+              </Col>
+              <Col sm="2" className="border">
+                <b>
+                  Item ID <br />
+                  Order #
+                </b>
+              </Col>
+              <Col sm="3" className=" border">
+                <b>
+                  Order date
+                  <br />
+                  Store
+                </b>
+              </Col>
+              <Col sm="1" className="p-1 border">
+                <b>SKU</b>
+              </Col>
+              <Col sm="2" className="p-1 border">
+                <b>Quantity</b>
+              </Col>
+            </Row>
+            {store?.data?.batch_routes?.map((batchRoute) => {
+              var rowSerial = 0;
+              count++;
+              return (
+                <div className="p-1 border">
+                  <Row key={batchRoute.id}>
+                    <Col sm="1" className="p-1 ">
+                      {count}
+                    </Col>
+                    <Col sm="3" className="p-1 ">
+                      Route: {batchRoute.batch_code} ={" "}
+                      {batchRoute.batch_route_name}
+                    </Col>
+                    <Col sm="1" className="p-1">
+                      <Input
+                        type="checkbox"
+                        id="locked"
+                        name="locked"
+                        checked={batchRoute?.locked}
+                        onChange={(e) => {
+                          e?.preventDefault();
+                          multiSelect(count, batchRoute?.id, batchRoute?.items);
+                        }}
+                      />
+                    </Col>
+                    <Col sm="7" className="p-1 ">
+                      Next station {">>>"} {batchRoute.next_station}
+                      <hr />
+                    </Col>
+                  </Row>
+
+                  {batchRoute?.items?.map((item) => {
+                    serial++;
+                    rowSerial++;
+                    return (
+                      <Row>
+                        <Col sm="2" className="p-1">
+                          <img
+                            src={item.item_thumb}
+                            alt="Item Thumbnail"
+                            height={60}
+                          />
+                        </Col>
+                        <Col sm="1" className="p-1">
+                          {serial}
+                        </Col>
+                        <Col sm="1" className="p-1">
+                          {rowSerial}
+                        </Col>
+                        <Col sm="2" className="p-1 d-flex">
+                          <div className="d-flex align-items-center">
+                            <Input
+                              type="checkbox"
+                              id="locked"
+                              name="locked"
+                              checked={store?.searchParams?.batches?.includes(`${count}|${batchRoute?.id}|${item?.item_table_id}|${item?.batch}|${item?.store_id}`)}
+                              onChange={(e) => {
+                                e?.preventDefault();
+                                singleSelect(
+                                  `${count}|${batchRoute?.id}|${item?.item_table_id}|${item?.batch}|${item?.store_id}`
+                                );
+                              }}
+                            />
+                          </div>
+                          <div className="px-1">
+                            ***{item.item_table_id}
+                            <br />
+                            <a
+                              href={`/customer-order-edit/${item.order_5p}`}
+                              target="_blank"
+                            >
+                              {item.short_order}
+                            </a>
+                          </div>
+                        </Col>
+                        <Col sm="3" className="p-1">
+                          {item.order_date.substring(0, 10)}
+                          <br />
+                          {item.store_name}
+                        </Col>
+                        <Col sm="1" className="p-1">
+                          {item.item_code}
+                        </Col>
+                        <Col sm="2" className="p-1">
+                          {item.quantity}
+                        </Col>
+                      </Row>
+                    );
+                  })}
+                  <Row>
+                    <Col sm="10" className="p-1"></Col>
+                    <Col sm="2" className="p-1">
+                      <span>
+                        {rowSerial - 1} of {batchRoute.batch_max_units} Max
+                      </span>
+                    </Col>
+                  </Row>
+                </div>
+              );
+            })}
+          </span>
+        ) : (
+          <h4 className="text-center">No batches to create.</h4>
+        )}
+      </TabPane>
     );
   };
 
@@ -164,241 +339,57 @@ const index = () => {
         <Card>
           <CardBody>
             <Row>
-              <Nav pills className="mb-2 orange">
-                <CustomNavItem text="In Stock" tab="0" />
-                <CustomNavItem text="Back Orders" tab="1" />
+              <Nav pills className="mb-2 orange d-flex justify-content-between">
+                <div className="d-flex">
+                  <NavItem>
+                    <NavLink
+                      active={store?.active === "0"}
+                      onClick={() => {
+                        toggle("0");
+                      }}
+                    >
+                      In Stock
+                    </NavLink>
+                  </NavItem>
+                  <NavItem>
+                    <NavLink
+                      active={store?.active === "1"}
+                      onClick={() => {
+                        toggle("1");
+                      }}
+                    >
+                      Back Orders
+                    </NavLink>
+                  </NavItem>
+                </div>
+                <div className="d-flex">
+                  <div className="mx-2 d-flex align-items-center justify-content-center">
+                    <Input
+                      type="checkbox"
+                      id="locked"
+                      name="locked"
+                      checked={store?.locked}
+                      onChange={(e) => {
+                        e?.preventDefault();
+                        allSelect(store?.data?.batch_routes);
+                      }}
+                    />
+                    <label htmlFor="locked">Select / Deselect all</label>
+                  </div>
+                  {store?.locked ? (
+                    <Button color="primary" onClick={onCreateBatches}>
+                      Create Batches
+                    </Button>
+                  ) : (
+                    <Button color="primary" onClick={onCreateBatches}>
+                      Auto Batch Running
+                    </Button>
+                  )}
+                </div>
               </Nav>
               <TabContent activeTab={store?.active}>
-                <TabPane tabId="0">
-                  {loading ? (
-                    <div className="text-center">
-                      <h4>Loading...</h4>
-                    </div>
-                  ) : store?.data?.batch_routes?.length > 0 ? (
-                    <span>
-                      <Row>
-                        <Col sm="2" className="p-1 border">
-                          <b>Batch #</b>
-                        </Col>
-                        <Col sm="1" className="p-1 border">
-                          <b>S.L #</b>
-                        </Col>
-                        <Col sm="1" className="p-1 border">
-                          <b>Batch S.L #</b>
-                        </Col>
-                        <Col sm="2" className="border">
-                          <b>
-                            Item ID <br />
-                            Order #
-                          </b>
-                        </Col>
-                        <Col sm="3" className=" border">
-                          <b>
-                            Order date
-                            <br />
-                            Store
-                          </b>
-                        </Col>
-                        <Col sm="1" className="p-1 border">
-                          <b>SKU</b>
-                        </Col>
-                        <Col sm="2" className="p-1 border">
-                          <b>Quantity</b>
-                        </Col>
-                      </Row>
-                      {store?.data?.batch_routes?.map((batchRoute) => {
-                        var rowSerial = 1;
-                        count++;
-                        return (
-                          <div className="p-1 border">
-                            <Row key={batchRoute.id}>
-                              <Col sm="1" className="p-1 ">
-                                {count}
-                              </Col>
-                              <Col sm="4" className="p-1 ">
-                                Route: {batchRoute.batch_code} ={" "}
-                                {batchRoute.batch_route_name}
-                              </Col>
-                              <Col sm="7" className="p-1 ">
-                                Next station {">>>"} {batchRoute.next_station}
-                                <hr />
-                              </Col>
-                            </Row>
-
-                            {batchRoute?.items?.map((item) => {
-                              serial++;
-                              rowSerial++;
-                              return (
-                                <Row>
-                                  <Col sm="2" className="p-1">
-                                    <img
-                                      src={item.item_thumb}
-                                      alt="Item Thumbnail"
-                                      height={60}
-                                    />
-                                  </Col>
-                                  <Col sm="1" className="p-1">
-                                    {serial}
-                                  </Col>
-                                  <Col sm="1" className="p-1">
-                                    {rowSerial}
-                                  </Col>
-                                  <Col sm="2" className="p-1">
-                                    ***{item.item_table_id}
-                                    <br />
-                                    <a
-                                      href={`/customer-order-edit/${item.order_5p}`}
-                                      target="_blank"
-                                    >
-                                      {item.short_order}
-                                    </a>
-                                  </Col>
-                                  <Col sm="3" className="p-1">
-                                    {item.order_date.substring(0, 10)}
-                                    <br />
-                                    {item.store_name}
-                                  </Col>
-                                  <Col sm="1" className="p-1">
-                                    {item.item_code}
-                                  </Col>
-                                  <Col sm="2" className="p-1">
-                                    {item.quantity}
-                                  </Col>
-                                </Row>
-                              );
-                            })}
-                            <Row>
-                              <Col sm="10" className="p-1"></Col>
-                              <Col sm="2" className="p-1">
-                                <span>
-                                  {rowSerial - 1} of{" "}
-                                  {batchRoute.batch_max_units} Max
-                                </span>
-                              </Col>
-                            </Row>
-                          </div>
-                        );
-                      })}
-                    </span>
-                  ) : (
-                    <h4 className="text-center">No batches to create.</h4>
-                  )}
-                </TabPane>
-                <TabPane tabId="1">
-                  {loading ? (
-                    <div className="text-center">
-                      <h4>Loading...</h4>
-                    </div>
-                  ) : store?.data?.batch_routes?.length > 0 ? (
-                    <span>
-                      <Row>
-                        <Col sm="2" className="p-1 border">
-                          <b>Batch #</b>
-                        </Col>
-                        <Col sm="1" className="p-1 border">
-                          <b>S.L #</b>
-                        </Col>
-                        <Col sm="1" className="p-1 border">
-                          <b>Batch S.L #</b>
-                        </Col>
-                        <Col sm="2" className="border">
-                          <b>
-                            Item ID <br />
-                            Order #
-                          </b>
-                        </Col>
-                        <Col sm="3" className=" border">
-                          <b>
-                            Order date
-                            <br />
-                            Store
-                          </b>
-                        </Col>
-                        <Col sm="1" className="p-1 border">
-                          <b>SKU</b>
-                        </Col>
-                        <Col sm="2" className="p-1 border">
-                          <b>Quantity</b>
-                        </Col>
-                      </Row>
-                      {store?.data?.batch_routes?.map((batchRoute) => {
-                        var rowSerial = 1;
-                        count++;
-                        return (
-                          <div className="p-1 border">
-                            <Row key={batchRoute.id}>
-                              <Col sm="1" className="p-1 ">
-                                {count}
-                              </Col>
-                              <Col sm="4" className="p-1 ">
-                                Route: {batchRoute.batch_code} ={" "}
-                                {batchRoute.batch_route_name}
-                              </Col>
-                              <Col sm="7" className="p-1 ">
-                                Next station {">>>"} {batchRoute.next_station}
-                                <hr />
-                              </Col>
-                            </Row>
-
-                            {batchRoute?.items?.map((item) => {
-                              serial++;
-                              rowSerial++;
-                              return (
-                                <Row>
-                                  <Col sm="2" className="p-1">
-                                    <img
-                                      src={item.item_thumb}
-                                      alt="Item Thumbnail"
-                                      height={60}
-                                    />
-                                  </Col>
-                                  <Col sm="1" className="p-1">
-                                    {serial}
-                                  </Col>
-                                  <Col sm="1" className="p-1">
-                                    {rowSerial}
-                                  </Col>
-                                  <Col sm="2" className="p-1">
-                                    ***{item.item_table_id}
-                                    <br />
-                                    <a
-                                      href={`/customer-order-edit/${item.order_5p}`}
-                                      target="_blank"
-                                    >
-                                      {item.short_order}
-                                    </a>
-                                  </Col>
-                                  <Col sm="3" className="p-1">
-                                    {item.order_date.substring(0, 10)}
-                                    <br />
-                                    {item.store_name}
-                                  </Col>
-                                  <Col sm="1" className="p-1">
-                                    {item.item_code}
-                                  </Col>
-                                  <Col sm="2" className="p-1">
-                                    {item.quantity}
-                                  </Col>
-                                </Row>
-                              );
-                            })}
-                            <Row>
-                              <Col sm="10" className="p-1"></Col>
-                              <Col sm="2" className="p-1">
-                                <span>
-                                  {rowSerial - 1} of{" "}
-                                  {batchRoute.batch_max_units} Max
-                                </span>
-                              </Col>
-                            </Row>
-                          </div>
-                        );
-                      })}
-                    </span>
-                  ) : (
-                    <h4 className="text-center">No batches to create.</h4>
-                  )}
-                </TabPane>
+                {viewList("0")}
+                {viewList("1")}
               </TabContent>
             </Row>
           </CardBody>
@@ -407,4 +398,5 @@ const index = () => {
     </div>
   );
 };
+
 export default index;
