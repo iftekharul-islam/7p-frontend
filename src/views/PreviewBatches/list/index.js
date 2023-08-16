@@ -11,6 +11,7 @@ import {
   CardBody,
   Col,
   Input,
+  Label,
   Nav,
   NavItem,
   NavLink,
@@ -33,10 +34,6 @@ const index = () => {
   const store = useSelector((state) => state.previewBatches);
   const [loading, setLoading] = useState(false);
   const params = store?.searchParams;
-  console.log("🚀 ~ file: index.js:36 ~ index ~ params:", params);
-
-  var count = store?.data?.count - 1;
-  let serial = store?.data?.serial - 1;
 
   useEffect(() => {
     onSearch();
@@ -54,8 +51,8 @@ const index = () => {
     setLoading(false);
   };
 
-  const onChange = async (data) => {
-    await dispatch(setSearchParams(data));
+  const onChange = (data) => {
+    dispatch(setSearchParams(data));
   };
 
   const toggle = (tab) => {
@@ -77,29 +74,40 @@ const index = () => {
     }
     onChange({ batches: data });
   };
-  const multiSelect = (count, id, items) => {
+  const multiSelect = (count, id, items, checked) => {
     let data = [...(store?.searchParams?.batches ?? [])];
     items?.forEach((item) => {
       let batches = `${count}|${id}|${item?.item_table_id}|${item?.batch}|${item?.store_id}`;
-      if (data?.includes(batches)) {
-        data = data?.filter((item) => item !== batches);
-      } else {
+      if (checked) {
         data = [...data, batches];
+      } else {
+        data = data?.filter((item) => item !== batches);
       }
     });
     onChange({ batches: data });
   };
-  const allSelect = (batchRoutes) => {
+  const checkedMulti = (count, id, items) => {
+    let data = [...(store?.searchParams?.batches ?? [])];
+    let flag = true;
+    items?.forEach((item) => {
+      let batches = `${count}|${id}|${item?.item_table_id}|${item?.batch}|${item?.store_id}`;
+      if (!data?.includes(batches) && flag) {
+        flag = false;
+      }
+    });
+    return flag;
+  };
+  const allSelect = (batchRoutes, checked) => {
     let data = [...(store?.searchParams?.batches ?? [])];
     let count = 0;
     batchRoutes?.forEach((batchRoute) => {
       count++;
       batchRoute?.items?.forEach((item) => {
         let batches = `${count}|${batchRoute?.id}|${item?.item_table_id}|${item?.batch}|${item?.store_id}`;
-        if (data?.includes(batches)) {
-          data = data?.filter((item) => item !== batches);
-        } else {
+        if (checked) {
           data = [...data, batches];
+        } else {
+          data = data?.filter((item) => item !== batches);
         }
       });
     });
@@ -107,6 +115,8 @@ const index = () => {
   };
 
   const viewList = (i) => {
+    let count = store?.data?.count - 1;
+    let serial = store?.data?.serial - 1;
     return (
       <TabPane tabId={i}>
         {loading ? (
@@ -148,6 +158,7 @@ const index = () => {
             {store?.data?.batch_routes?.map((batchRoute) => {
               var rowSerial = 0;
               count++;
+              const checkCount = count;
               return (
                 <div className="p-1 border">
                   <Row key={batchRoute.id}>
@@ -161,12 +172,19 @@ const index = () => {
                     <Col sm="1" className="p-1">
                       <Input
                         type="checkbox"
-                        id="locked"
-                        name="locked"
-                        checked={batchRoute?.locked}
+                        checked={checkedMulti(
+                          checkCount,
+                          batchRoute?.id,
+                          batchRoute?.items
+                        )}
                         onChange={(e) => {
                           e?.preventDefault();
-                          multiSelect(count, batchRoute?.id, batchRoute?.items);
+                          multiSelect(
+                            checkCount,
+                            batchRoute?.id,
+                            batchRoute?.items,
+                            e.target?.checked
+                          );
                         }}
                       />
                     </Col>
@@ -179,6 +197,7 @@ const index = () => {
                   {batchRoute?.items?.map((item) => {
                     serial++;
                     rowSerial++;
+                    const batches = `${count}|${batchRoute?.id}|${item?.item_table_id}|${item?.batch}|${item?.store_id}`;
                     return (
                       <Row>
                         <Col sm="2" className="p-1">
@@ -200,12 +219,11 @@ const index = () => {
                               type="checkbox"
                               id="locked"
                               name="locked"
-                              checked={store?.searchParams?.batches?.includes(`${count}|${batchRoute?.id}|${item?.item_table_id}|${item?.batch}|${item?.store_id}`)}
+                              checked={store?.searchParams?.batches?.includes(
+                                batches
+                              )}
                               onChange={(e) => {
-                                e?.preventDefault();
-                                singleSelect(
-                                  `${count}|${batchRoute?.id}|${item?.item_table_id}|${item?.batch}|${item?.store_id}`
-                                );
+                                singleSelect(batches);
                               }}
                             />
                           </div>
@@ -366,15 +384,12 @@ const index = () => {
                   <div className="mx-2 d-flex align-items-center justify-content-center">
                     <Input
                       type="checkbox"
-                      id="locked"
-                      name="locked"
-                      checked={store?.locked}
                       onChange={(e) => {
                         e?.preventDefault();
-                        allSelect(store?.data?.batch_routes);
+                        allSelect(store?.data?.batch_routes, e.target?.checked);
                       }}
                     />
-                    <label htmlFor="locked">Select / Deselect all</label>
+                    <Label className="mx-1">Select / Deselect all</Label>
                   </div>
                   {store?.locked ? (
                     <Button color="primary" onClick={onCreateBatches}>
