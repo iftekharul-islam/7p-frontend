@@ -17,6 +17,16 @@ export const getAllData = createAsyncThunk(
   }
 );
 
+export const createBatch = createAsyncThunk(
+  "previewBatches/createBatch",
+  async (_, { dispatch }) => {
+    const response = await Api.post("preview-batches");
+    if (response?.data?.status == 201) {
+      dispatch(getAllData());
+    }
+  }
+);
+
 export const getSearchInOptions = createAsyncThunk(
   "previewBatches/getSearchInOptions",
   async () => {
@@ -49,8 +59,7 @@ export const previewBatchesSlice = createSlice({
 
     params: {},
 
-    searchParams: {
-    },
+    searchParams: {},
 
     allData: [],
 
