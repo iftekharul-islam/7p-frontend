@@ -18,7 +18,10 @@ const index = () => {
   const [loading, setLoading] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const q = searchParams.get("q");
+  const search_for = searchParams.get("search_for");
+  const search_in = searchParams.get("search_in");
   const [currentPage, setCurrentPage] = useState(1);
+
 
   const [sort, setSort] = useState("desc");
   const [sortColumn, setSortColumn] = useState("id");
@@ -29,7 +32,7 @@ const index = () => {
   };
 
   useEffect(() => {
-    dispatch(getAllData({ page: currentPage, sort, sortColumn, ...query }));
+    dispatch(getAllData({ page: currentPage, sort, sortColumn, search_for, search_in, ...query }));
   }, [currentPage, sort, sortColumn]);
 
   useEffect(() => {

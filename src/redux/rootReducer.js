@@ -40,6 +40,7 @@ import sectionReports from "@src/views/SectionReport/store";
 import bulkEmails from "@src/views/SendBulkEmail/store";
 import sentToPrinter from "@src/views/SentToPrinter/store";
 import shipDateReports from "@src/views/ShipDateReport/store";
+import shipmentLists from "@src/views/ShipmentList/store";
 import productspecifications from "@src/views/SpecificationSheet/store";
 import stations from "@src/views/Station/store";
 import stores from "@src/views/Stores/store";
@@ -101,7 +102,8 @@ const rootReducer = {
   printBatchSummaries,
   moveToProductions,
   moveToQC,
-  WAP
+  WAP,
+  shipmentLists
 };
 
 export default rootReducer;
