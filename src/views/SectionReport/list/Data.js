@@ -88,7 +88,7 @@ const Data = ({
               section = summary?.section_id;
               section_name = summary?.section_name;
 
-              if (summary?.station_name === "S-Wait_for_Pic") {
+              if (summary?.station_name == "S-Wait_for_Pic") {
                 first[1] = [summary?.lines_count];
                 first[2] = [summary?.items_count];
                 first[3] = [summary?.order_1];

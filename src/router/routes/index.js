@@ -53,6 +53,7 @@ import SectionReportRoute from "../../views/SectionReport/SectionReportRoute";
 import SendBulkEmailRoute from "../../views/SendBulkEmail/SendBulkEmailRoute";
 import SentToPrinterRoute from "../../views/SentToPrinter/SentToPrinterRoute";
 import ShipDateReportRoute from "../../views/ShipDateReport/ShipDateReportRoute";
+import ShipmentListRoute from "../../views/ShipmentList/ShipmentListRoute";
 import SpecificationSheetRoute from "../../views/SpecificationSheet/SpecificationSheetRoute";
 import StationRoute from "../../views/Station/StationRoute";
 import StoresRoute from "../../views/Stores/StoresRoute";
@@ -131,6 +132,7 @@ const Routes = [
   ...MoveToProductionRoute,
   ...MoveToQCRoute,
   ...WAPRoute,
+  ...ShipmentListRoute,
   {
     path: "/",
     index: true,
