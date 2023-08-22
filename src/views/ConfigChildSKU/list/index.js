@@ -88,7 +88,7 @@ const index = () => {
   };
 
   const CustomPagination = () => {
-    const count = Number(Math.ceil(store.total / 10));
+    const count = Number(Math.ceil(store?.data?.total / 10));
 
     return (
       <ReactPaginate
@@ -393,7 +393,7 @@ const index = () => {
               sortIcon={<ChevronDown />}
               className="react-dataTable"
               paginationComponent={CustomPagination}
-              data={store.data}
+              data={store?.data?.data}
               subHeaderComponent={<CustomHeader />}
             />
           </div>
