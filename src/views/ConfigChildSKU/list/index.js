@@ -74,12 +74,16 @@ const index = () => {
     return (
       <div className="invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75 px-2">
         <Row>
-          <Col xl="3 d-flex align-items-center">{store?.data?.total} Child SKUs found</Col>
+          <Col xl="3 d-flex align-items-center">
+            {store?.data?.total} Child SKUs found
+          </Col>
           <Col sm="2 d-flex align-items-center" className="d-flex">
             <Input type="checkbox" />
             Select All Child SKUs
           </Col>
-          <Col sm="2 d-flex align-items-center justify-content-end">Bypass options:</Col>
+          <Col sm="2 d-flex align-items-center justify-content-end">
+            Bypass options:
+          </Col>
           <Col sm="2">
             <Select
               options={[
@@ -103,7 +107,7 @@ const index = () => {
                 color="primary"
                 onClick={(e) => {
                   e.preventDefault();
-                  navigate("/inventory-add");
+                  navigate("/config-child-sku-add");
                 }}
               >
                 <PlusCircle size={14} /> New Child SKU
@@ -415,7 +419,7 @@ const index = () => {
                         <Input type="checkbox" className="mx-2" />
                         <Link
                           className="text-truncate text-capitalize align-middle"
-                          to={`/inventory-edit/${option.id}`}
+                          to={`/config-child-sku-edit/${option.unique_row_value}`}
                           id={`edit-${option?.id}`}
                         >
                           <Edit size={18} className={`text-primary me-50`} />
@@ -436,36 +440,38 @@ const index = () => {
                         <UncontrolledTooltip
                           target={`create-sku-${option?.id}`}
                         >
-                          Edit
+                          Create child SKUs
                         </UncontrolledTooltip>
                         <Link
                           className="text-truncate text-capitalize align-middle"
-                          to={`/inventory-edit/${option.id}`}
+                          to={option?.product?.product_url}
+                          target="_blank"
                           id={`image-${option?.id}`}
                         >
                           <Image size={18} className={`text-primary me-50`} />
                         </Link>
                         <UncontrolledTooltip target={`image-${option?.id}`}>
-                          Edit
+                          View on Web
                         </UncontrolledTooltip>
                         <Link
                           className="text-truncate text-capitalize align-middle"
-                          to={`/inventory-edit/${option.id}`}
+                          to={`/config-child-sku-add?id=${option.unique_row_value}`}
+                          target="_blank"
                           id={`copy-${option?.id}`}
                         >
                           <Copy size={18} className={`text-primary me-50`} />
                         </Link>
                         <UncontrolledTooltip target={`copy-${option?.id}`}>
-                          Edit
+                          Duplicate
                         </UncontrolledTooltip>
                         <Link
                           className="text-truncate text-capitalize align-middle"
                           to={`/inventory-edit/${option.id}`}
-                          id={`copy-${option?.id}`}
+                          id={`task-${option?.id}`}
                         >
                           <Send size={18} className={`text-primary me-50`} />
                         </Link>
-                        <UncontrolledTooltip target={`copy-${option?.id}`}>
+                        <UncontrolledTooltip target={`task-${option?.id}`}>
                           Edit
                         </UncontrolledTooltip>
                       </Col>
@@ -571,10 +577,9 @@ const index = () => {
                             { value: "1", label: "Yes" },
                             { value: "0", label: "No" },
                           ]}
-                          value={{
-                            value: option?.allow_mixing,
-                            label: option?.allow_mixing == 1 ? "Yes" : "No",
-                          }}
+                          onChange={(e) =>
+                            onChange({ allow_mixing_update: e?.value })
+                          }
                         />
                       </Col>
                       <Col sm="2">
@@ -601,10 +606,9 @@ const index = () => {
                             { value: "1", label: "Yes" },
                             { value: "0", label: "No" },
                           ]}
-                          value={{
-                            value: option?.allow_mixing,
-                            label: option?.allow_mixing == 1 ? "Yes" : "No",
-                          }}
+                          onChange={(e) =>
+                            onChange({ allow_mixing_update: e?.value })
+                          }
                         />
                       </Col>
                       <Col sm="2">
@@ -643,6 +647,9 @@ const index = () => {
                                 value: option?.allow_mixing,
                                 label: option?.allow_mixing == 1 ? "Yes" : "No",
                               }}
+                              onChange={(e) =>
+                                onChange({ allow_mixing_update: e?.value })
+                              }
                             />
                           </Col>
                         </Row>
@@ -650,14 +657,27 @@ const index = () => {
                           <Col sm="6">Frame Size:</Col>
                           <Col sm="6">
                             {" "}
-                            <Input type="number" />
+                            <Input
+                              type="number"
+                              name="frame_size_update"
+                              onChange={(e) =>
+                                onChange({
+                                  frame_size_update: e?.target?.value,
+                                })
+                              }
+                            />
                           </Col>
                         </Row>
                         <Row>
                           <Col sm="6">Mirror:</Col>
                           <Col sm="6">
                             {" "}
-                            <Input type="checkbox" />
+                            <Input
+                              type="checkbox"
+                              onChange={(e) =>
+                                onChange({ fs_: e?.target?.checked })
+                              }
+                            />
                           </Col>
                         </Row>
                       </Col>
@@ -676,27 +696,6 @@ const index = () => {
             </div>
           )}
         </Card>
-
-        {/* <Card className="overflow-hidden">
-          <div className="react-dataTable">
-            <DataTable
-              striped
-              noHeader
-              subHeader
-              sortServer
-              pagination
-              responsive
-              paginationServer
-              columns={columns}
-              //   onSort={handleSort}
-              sortIcon={<ChevronDown />}
-              className="react-dataTable"
-              paginationComponent={CustomPagination}
-              data={store?.data?.data}
-              subHeaderComponent={<CustomHeader />}
-            />
-          </div>
-        </Card> */}
       </Fragment>
     </div>
   );
