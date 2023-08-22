@@ -2,13 +2,27 @@ import "@styles/react/libs/flatpickr/flatpickr.scss";
 import "@styles/react/libs/react-select/_react-select.scss";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 import { Fragment, useEffect, useState } from "react";
-import DataTable from "react-data-table-component";
-import { ChevronDown, PlusCircle } from "react-feather";
+import {
+  Copy,
+  DivideCircle,
+  Edit,
+  Image,
+  PlusCircle,
+  Send,
+} from "react-feather";
 import ReactPaginate from "react-paginate";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import Select from "react-select";
-import { Button, Card, CardBody, Col, Input, Row } from "reactstrap";
+import {
+  Button,
+  Card,
+  CardBody,
+  Col,
+  Input,
+  Row,
+  UncontrolledTooltip,
+} from "reactstrap";
 import {
   getAllData,
   getBatchRouteOptions,
@@ -16,7 +30,6 @@ import {
   setParams,
   setSearchParams,
 } from "../store";
-import { columns } from "./columns";
 
 const index = () => {
   const dispatch = useDispatch();
@@ -59,12 +72,27 @@ const index = () => {
   const CustomHeader = () => {
     const navigate = useNavigate();
     return (
-      <div className="invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75">
+      <div className="invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75 px-2">
         <Row>
-          <Col xl="10">
-            {store?.total} items found costing: $
-            {store?.cost?.cost?.toFixed(2) ?? 0}
+          <Col xl="3 d-flex align-items-center">{store?.data?.total} Child SKUs found</Col>
+          <Col sm="2 d-flex align-items-center" className="d-flex">
+            <Input type="checkbox" />
+            Select All Child SKUs
           </Col>
+          <Col sm="2 d-flex align-items-center justify-content-end">Bypass options:</Col>
+          <Col sm="2">
+            <Select
+              options={[
+                { value: "1", label: "Yes" },
+                { value: "0", label: "No" },
+              ]}
+              value={store?.inOptions?.find(
+                (item) => item?.value == params?.contains_first
+              )}
+              onChange={(e) => onChange({ contains_first: e?.value })}
+            />
+          </Col>
+          <Col sm="1"></Col>
           <Col
             xl="2"
             className="d-flex align-items-sm-center justify-content-xl-end justify-content-start flex-xl-nowrap flex-wrap flex-sm-row flex-column pe-xl-1 p-0 mt-xl-0 mt-1"
@@ -78,7 +106,7 @@ const index = () => {
                   navigate("/inventory-add");
                 }}
               >
-                <PlusCircle size={14} /> Stock
+                <PlusCircle size={14} /> New Child SKU
               </Button>
             </div>
           </Col>
@@ -352,7 +380,7 @@ const index = () => {
                   formatOptionLabel={({ label, image }) => {
                     return (
                       <div className="d-flex">
-                        <img src={image} style={{ width: 50, height: 50 }} />
+                        {/* <img src={image} style={{ width: 50, height: 50 }} /> */}
                         <div className="d-flex align-self-center px-2">
                           {label}
                         </div>
@@ -375,7 +403,281 @@ const index = () => {
           </CardBody>
         </Card>
 
-        <Card className="overflow-hidden">
+        <Card>
+          <CustomHeader />
+          {store?.data?.data?.length > 0 ? (
+            <div>
+              {store?.data?.data?.map((option, index) => {
+                return (
+                  <div className="m-1 p-1 border">
+                    <Row>
+                      <Col sm="2" className="d-flex">
+                        <Input type="checkbox" className="mx-2" />
+                        <Link
+                          className="text-truncate text-capitalize align-middle"
+                          to={`/inventory-edit/${option.id}`}
+                          id={`edit-${option?.id}`}
+                        >
+                          <Edit size={18} className={`text-primary me-50`} />
+                        </Link>
+                        <UncontrolledTooltip target={`edit-${option?.id}`}>
+                          Edit
+                        </UncontrolledTooltip>
+                        <Link
+                          className="text-truncate text-capitalize align-middle"
+                          to={`/inventory-edit/${option.id}`}
+                          id={`create-sku-${option?.id}`}
+                        >
+                          <DivideCircle
+                            size={18}
+                            className={`text-primary me-50`}
+                          />
+                        </Link>
+                        <UncontrolledTooltip
+                          target={`create-sku-${option?.id}`}
+                        >
+                          Edit
+                        </UncontrolledTooltip>
+                        <Link
+                          className="text-truncate text-capitalize align-middle"
+                          to={`/inventory-edit/${option.id}`}
+                          id={`image-${option?.id}`}
+                        >
+                          <Image size={18} className={`text-primary me-50`} />
+                        </Link>
+                        <UncontrolledTooltip target={`image-${option?.id}`}>
+                          Edit
+                        </UncontrolledTooltip>
+                        <Link
+                          className="text-truncate text-capitalize align-middle"
+                          to={`/inventory-edit/${option.id}`}
+                          id={`copy-${option?.id}`}
+                        >
+                          <Copy size={18} className={`text-primary me-50`} />
+                        </Link>
+                        <UncontrolledTooltip target={`copy-${option?.id}`}>
+                          Edit
+                        </UncontrolledTooltip>
+                        <Link
+                          className="text-truncate text-capitalize align-middle"
+                          to={`/inventory-edit/${option.id}`}
+                          id={`copy-${option?.id}`}
+                        >
+                          <Send size={18} className={`text-primary me-50`} />
+                        </Link>
+                        <UncontrolledTooltip target={`copy-${option?.id}`}>
+                          Edit
+                        </UncontrolledTooltip>
+                      </Col>
+                      <Col sm="10">
+                        <div className="mx-5">
+                          <h5>
+                            <a
+                              href={
+                                "config-child-sku?search_for_first=" +
+                                option?.parent_sku +
+                                "&search_in_first=parent_sku"
+                              }
+                              className="text-danger"
+                            >
+                              {option?.product
+                                ? option?.product?.product_name
+                                : "PRODUCT NOT FOUND"}
+                            </a>
+                            :{" "}
+                            <a
+                              href={
+                                "items-list?search_for_first=" +
+                                option?.child_sku +
+                                "&search_in_first=parent_sku"
+                              }
+                              className="text-danger"
+                            >
+                              {option?.child_sku}
+                            </a>
+                          </h5>
+                        </div>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col sm="1"></Col>
+                      <Col sm="1">
+                        {option?.product && option?.product?.product_thumb ? (
+                          <img
+                            src={option?.product?.product_thumb}
+                            alt="img"
+                            width={100}
+                            height={100}
+                          />
+                        ) : (
+                          "N/A"
+                        )}
+                      </Col>
+                      <Col sm="2">
+                        {option?.inventoryunit_relation?.map(
+                          (inventoryunit) => {
+                            return (
+                              <span>
+                                {inventoryunit?.stock_no_unique !=
+                                "ToBeAssigned" ? (
+                                  <div>
+                                    <Row>
+                                      <Col sm="3">
+                                        {inventoryunit?.inventory &&
+                                          inventoryunit?.inventory?.warehouse !=
+                                            "" && (
+                                            <img
+                                              src={
+                                                inventoryunit?.inventory
+                                                  ?.warehouse
+                                              }
+                                              alt="img"
+                                              height={40}
+                                            />
+                                          )}
+                                      </Col>
+                                      <Col sm="9">
+                                        <a
+                                          href={
+                                            "/inventories?search_for_first=" +
+                                            inventoryunit?.stock_no_unique +
+                                            "&search_in_first=stock_no_unique"
+                                          }
+                                          target="_blank"
+                                          className="text-danger"
+                                        >
+                                          {inventoryunit?.stock_no_unique}
+                                        </a>
+                                        {inventoryunit?.unit_qty != 1 && (
+                                          <div>x {inventoryunit?.unit_qty}</div>
+                                        )}
+                                      </Col>
+                                    </Row>
+                                  </div>
+                                ) : (
+                                  <div>{inventoryunit?.stock_no_unique}</div>
+                                )}
+                              </span>
+                            );
+                          }
+                        )}
+                      </Col>
+                      <Col sm="1">
+                        Mix:
+                        <Select
+                          className="react-select"
+                          classNamePrefix="select"
+                          options={[
+                            { value: "1", label: "Yes" },
+                            { value: "0", label: "No" },
+                          ]}
+                          value={{
+                            value: option?.allow_mixing,
+                            label: option?.allow_mixing == 1 ? "Yes" : "No",
+                          }}
+                        />
+                      </Col>
+                      <Col sm="2">
+                        Route:
+                        <Select
+                          className="react-select"
+                          classNamePrefix="select"
+                          options={[
+                            { value: "1", label: "Yes" },
+                            { value: "0", label: "No" },
+                          ]}
+                          value={{
+                            value: option?.allow_mixing,
+                            label: option?.allow_mixing == 1 ? "Yes" : "No",
+                          }}
+                        />
+                      </Col>
+                      <Col sm="2">
+                        Graphic SKU:
+                        <Select
+                          className="react-select"
+                          classNamePrefix="select"
+                          options={[
+                            { value: "1", label: "Yes" },
+                            { value: "0", label: "No" },
+                          ]}
+                          value={{
+                            value: option?.allow_mixing,
+                            label: option?.allow_mixing == 1 ? "Yes" : "No",
+                          }}
+                        />
+                      </Col>
+                      <Col sm="2">
+                        <Row>
+                          <Col sm="6">Template:</Col>
+                          <Col sm="6">
+                            {option?.design?.template == "1"
+                              ? "Found"
+                              : "Not Found"}
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col sm="6">Settings:</Col>
+                          <Col sm="6">
+                            {option?.design?.xml == "1" ? "Found" : "Not Found"}
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col sm="6">Use Sure3d:</Col>
+                          <Col sm="6">
+                            {" "}
+                            <Input type="checkbox" />
+                          </Col>
+                        </Row>
+                        <Row className="d-flex align-items-center">
+                          <Col sm="6">Orientation:</Col>
+                          <Col sm="6">
+                            <Select
+                              className="react-select"
+                              classNamePrefix="select"
+                              options={[
+                                { value: "0", label: "portrait" },
+                                { value: "1", label: "landscape" },
+                              ]}
+                              value={{
+                                value: option?.allow_mixing,
+                                label: option?.allow_mixing == 1 ? "Yes" : "No",
+                              }}
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="d-flex  align-items-center">
+                          <Col sm="6">Frame Size:</Col>
+                          <Col sm="6">
+                            {" "}
+                            <Input type="number" />
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col sm="6">Mirror:</Col>
+                          <Col sm="6">
+                            {" "}
+                            <Input type="checkbox" />
+                          </Col>
+                        </Row>
+                      </Col>
+                      <Col sm="1">
+                        <Button color="primary">Update</Button>
+                      </Col>
+                    </Row>
+                  </div>
+                );
+              })}
+              <CustomPagination />
+            </div>
+          ) : (
+            <div className="d-flex align-items-center justify-content-center">
+              No Data Found
+            </div>
+          )}
+        </Card>
+
+        {/* <Card className="overflow-hidden">
           <div className="react-dataTable">
             <DataTable
               striped
@@ -386,9 +688,6 @@ const index = () => {
               responsive
               paginationServer
               columns={columns}
-              customStyles={{
-                cells: { style: { marginTop: 25, marginBottom: 25 } },
-              }}
               //   onSort={handleSort}
               sortIcon={<ChevronDown />}
               className="react-dataTable"
@@ -397,7 +696,7 @@ const index = () => {
               subHeaderComponent={<CustomHeader />}
             />
           </div>
-        </Card>
+        </Card> */}
       </Fragment>
     </div>
   );

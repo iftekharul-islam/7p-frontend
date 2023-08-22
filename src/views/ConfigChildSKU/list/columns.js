@@ -1,8 +1,10 @@
 import { useState } from "react";
 import {
   Copy,
+  DivideCircle,
   DollarSign,
   Edit,
+  Image,
   List,
   Printer,
   Send,
@@ -482,119 +484,237 @@ const OnHand = (row) => {
 
 export const columns = [
   {
-    name: "Image",
-    sortable: false,
-    minWidth: "20px",
-    sortField: "warehouse",
-    selector: (row) => row.warehouse,
-    cell: (row) => <img src={row.warehouse} height="50" width="50" />,
-  },
-  {
-    name: "Inventory Item",
-    sortable: false,
-    minWidth: "320px",
-    sortField: "stock_no",
-    selector: (row) => row.stock_no_unique,
-    cell: (row) => (
-      <div>
+    cell: (row) => {
+      return (
         <div>
-          {row?.stock_no_unique} : {row?.stock_name_discription}
+          <Row>
+            <Col sm="12" className="d-flex border">
+              <Input type="checkbox" className="mx-2" />
+              <Link
+                className="text-truncate text-capitalize align-middle"
+                to={`/inventory-edit/${row.id}`}
+                id={`edit-${row?.id}`}
+              >
+                <Edit size={18} className={`text-primary me-50`} />
+              </Link>
+              <UncontrolledTooltip target={`edit-${row?.id}`}>
+                Edit
+              </UncontrolledTooltip>
+              <Link
+                className="text-truncate text-capitalize align-middle"
+                to={`/inventory-edit/${row.id}`}
+                id={`create-sku-${row?.id}`}
+              >
+                <DivideCircle size={18} className={`text-primary me-50`} />
+              </Link>
+              <UncontrolledTooltip target={`create-sku-${row?.id}`}>
+                Edit
+              </UncontrolledTooltip>
+              <Link
+                className="text-truncate text-capitalize align-middle"
+                to={`/inventory-edit/${row.id}`}
+                id={`image-${row?.id}`}
+              >
+                <Image size={18} className={`text-primary me-50`} />
+              </Link>
+              <UncontrolledTooltip target={`image-${row?.id}`}>
+                Edit
+              </UncontrolledTooltip>
+              <Link
+                className="text-truncate text-capitalize align-middle"
+                to={`/inventory-edit/${row.id}`}
+                id={`copy-${row?.id}`}
+              >
+                <Copy size={18} className={`text-primary me-50`} />
+              </Link>
+              <UncontrolledTooltip target={`copy-${row?.id}`}>
+                Edit
+              </UncontrolledTooltip>
+              <div className="mx-5">
+                <h5>
+                  <a
+                    href={
+                      "config-child-sku?search_for_first=" +
+                      row?.parent_sku +
+                      "&search_in_first=parent_sku"
+                    }
+                    className="text-danger"
+                  >
+                    {row?.product
+                      ? row?.product?.product_name
+                      : "PRODUCT NOT FOUND"}
+                  </a>
+                  : {" "}
+                  <a
+                    href={
+                      "items-list?search_for_first=" +
+                      row?.child_sku +
+                      "&search_in_first=parent_sku"
+                    }
+                    className="text-danger"
+                  >
+                    {row?.child_sku}
+                  </a>
+                </h5>
+              </div>
+            </Col>
+            <Col sm="12" className="d-flex border">
+              <Input type="checkbox" className="mx-2" />
+              <Link
+                className="text-truncate text-capitalize align-middle"
+                to={`/inventory-edit/${row.id}`}
+                id={`edit-${row?.id}`}
+              >
+                <Edit size={18} className={`text-primary me-50`} />
+              </Link>
+              <UncontrolledTooltip target={`edit-${row?.id}`}>
+                Edit
+              </UncontrolledTooltip>
+
+              <Link
+                className="text-truncate text-capitalize align-middle"
+                to={`/inventory-edit/${row.id}`}
+                id={`create-sku-${row?.id}`}
+              >
+                <DivideCircle size={18} className={`text-primary me-50`} />
+              </Link>
+              <UncontrolledTooltip target={`create-sku-${row?.id}`}>
+                Edit
+              </UncontrolledTooltip>
+
+              <Link
+                className="text-truncate text-capitalize align-middle"
+                to={`/inventory-edit/${row.id}`}
+                id={`image-${row?.id}`}
+              >
+                <Image size={18} className={`text-primary me-50`} />
+              </Link>
+              <UncontrolledTooltip target={`image-${row?.id}`}>
+                Edit
+              </UncontrolledTooltip>
+
+              <Link
+                className="text-truncate text-capitalize align-middle"
+                to={`/inventory-edit/${row.id}`}
+                id={`copy-${row?.id}`}
+              >
+                <Copy size={18} className={`text-primary me-50`} />
+              </Link>
+              <UncontrolledTooltip target={`copy-${row?.id}`}>
+                Edit
+              </UncontrolledTooltip>
+            </Col>
+          </Row>
         </div>
-        <small>{row?.section?.section_name}</small>
-        {renderAction(row)}
-        {row?.qty_user && (
-          <small>
-            QTY updated by {row?.qty_user?.name} - {row?.qty_date}
-          </small>
-        )}
-      </div>
-    ),
+      );
+    },
   },
-  {
-    name: "Bin",
-    sortable: false,
-    minWidth: "180px",
-    sortField: "wh_bin",
-    selector: (row) => row.wh_bin,
-    cell: BIN,
-  },
-  {
-    name: "On Hand",
-    sortable: false,
-    minWidth: "180px",
-    sortField: "qty_on_hand",
-    selector: (row) => row.qty_on_hand,
-    cell: OnHand,
-  },
-  {
-    name: "Vendor",
-    sortable: false,
-    minWidth: "150px",
-    sortField: "vendor_name",
-    selector: (row) => row.vendor_name,
-    cell: (row) => (
-      <div>
-        {row?.last_product?.vendor && (
-          <div>{row?.last_product?.vendor?.vendor_name}</div>
-        )}
-        {row?.last_product?.vendor && (
-          <div>Lead Time: {row?.last_product?.lead_time_days}</div>
-        )}
-        <div>Purchase: {row?.total_purchase}</div>
-      </div>
-    ),
-  },
-  {
-    name: "Current",
-    sortable: false,
-    minWidth: "120px",
-    sortField: "qty_alloc",
-    selector: (row) => row.qty_alloc,
-    cell: (row) => (
-      <div>
-        <div>Allocated: {row?.qty_alloc}</div>
-        <div>Expected: {row?.qty_exp}</div>
-      </div>
-    ),
-  },
-  {
-    name: "Ordering",
-    sortable: false,
-    minWidth: "120px",
-    sortField: "qty_av",
-    selector: (row) => row.qty_av,
-    cell: (row) => (
-      <div>
-        <div>Available: {row?.qty_av}</div>
-        <div>Min. Qty: {row?.min_reorder}</div>
-      </div>
-    ),
-  },
-  {
-    name: "Value",
-    sortable: false,
-    minWidth: "120px",
-    sortField: "last_cost",
-    selector: (row) => row.last_cost,
-    cell: (row) => (
-      <div>
-        <div>Cost: {row?.last_cost}</div>
-        <div>Value: ${row?.value}</div>
-      </div>
-    ),
-  },
-  {
-    name: "Sales History",
-    sortable: false,
-    minWidth: "120px",
-    sortField: "sales_30",
-    selector: (row) => row.sales_30,
-    cell: (row) => (
-      <div>
-        <div>30 days: {row?.sales_30}</div>
-        <div>90 days: {row?.sales_90}</div>
-        <div>Total: {row?.total_sale}</div>
-      </div>
-    ),
-  },
+  // {
+  //   name: "Inventory Item",
+  //   sortable: false,
+  //   minWidth: "320px",
+  //   sortField: "stock_no",
+  //   selector: (row) => row.stock_no_unique,
+  //   cell: (row) => (
+  //     <div>
+  //       <div>
+  //         {row?.stock_no_unique} : {row?.stock_name_discription}
+  //       </div>
+  //       <small>{row?.section?.section_name}</small>
+  //       {renderAction(row)}
+  //       {row?.qty_user && (
+  //         <small>
+  //           QTY updated by {row?.qty_user?.name} - {row?.qty_date}
+  //         </small>
+  //       )}
+  //     </div>
+  //   ),
+  // },
+  // {
+  //   name: "Bin",
+  //   sortable: false,
+  //   minWidth: "180px",
+  //   sortField: "wh_bin",
+  //   selector: (row) => row.wh_bin,
+  //   cell: BIN,
+  // },
+  // {
+  //   name: "On Hand",
+  //   sortable: false,
+  //   minWidth: "180px",
+  //   sortField: "qty_on_hand",
+  //   selector: (row) => row.qty_on_hand,
+  //   cell: OnHand,
+  // },
+  // {
+  //   name: "Vendor",
+  //   sortable: false,
+  //   minWidth: "150px",
+  //   sortField: "vendor_name",
+  //   selector: (row) => row.vendor_name,
+  //   cell: (row) => (
+  //     <div>
+  //       {row?.last_product?.vendor && (
+  //         <div>{row?.last_product?.vendor?.vendor_name}</div>
+  //       )}
+  //       {row?.last_product?.vendor && (
+  //         <div>Lead Time: {row?.last_product?.lead_time_days}</div>
+  //       )}
+  //       <div>Purchase: {row?.total_purchase}</div>
+  //     </div>
+  //   ),
+  // },
+  // {
+  //   name: "Current",
+  //   sortable: false,
+  //   minWidth: "120px",
+  //   sortField: "qty_alloc",
+  //   selector: (row) => row.qty_alloc,
+  //   cell: (row) => (
+  //     <div>
+  //       <div>Allocated: {row?.qty_alloc}</div>
+  //       <div>Expected: {row?.qty_exp}</div>
+  //     </div>
+  //   ),
+  // },
+  // {
+  //   name: "Ordering",
+  //   sortable: false,
+  //   minWidth: "120px",
+  //   sortField: "qty_av",
+  //   selector: (row) => row.qty_av,
+  //   cell: (row) => (
+  //     <div>
+  //       <div>Available: {row?.qty_av}</div>
+  //       <div>Min. Qty: {row?.min_reorder}</div>
+  //     </div>
+  //   ),
+  // },
+  // {
+  //   name: "Value",
+  //   sortable: false,
+  //   minWidth: "120px",
+  //   sortField: "last_cost",
+  //   selector: (row) => row.last_cost,
+  //   cell: (row) => (
+  //     <div>
+  //       <div>Cost: {row?.last_cost}</div>
+  //       <div>Value: ${row?.value}</div>
+  //     </div>
+  //   ),
+  // },
+  // {
+  //   name: "Sales History",
+  //   sortable: false,
+  //   minWidth: "120px",
+  //   sortField: "sales_30",
+  //   selector: (row) => row.sales_30,
+  //   cell: (row) => (
+  //     <div>
+  //       <div>30 days: {row?.sales_30}</div>
+  //       <div>90 days: {row?.sales_90}</div>
+  //       <div>Total: {row?.total_sale}</div>
+  //     </div>
+  //   ),
+  // },
 ];
