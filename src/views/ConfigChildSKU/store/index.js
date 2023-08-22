@@ -6,100 +6,18 @@ export const getAllData = createAsyncThunk(
   "ConfigChildSKU/getAllData",
   async (_, { getState }) => {
     const { params, searchParams } = getState()?.configchildskus;
-    const response = await Api.get("config-child-sku", { params:{...params, ...searchParams} });
+    const response = await Api.get("config-child-sku", {
+      params: { ...params, ...searchParams },
+    });
     return response.data;
   }
 );
 
-export const AddStock = createAsyncThunk("Inventory/AddStock", async (data) => {
-  const response = await Api.post("inventories", data);
-  if (response?.status == 201) {
-    return { status: true };
-  } else {
-    return { status: false, data: response?.data };
-  }
-});
-
-export const UpdateStock = createAsyncThunk(
-  "Inventory/UpdateStock",
-  async (data) => {
-    const response = await Api.post(`inventories/${data?.id}`, data?.data);
-    if (response?.status == 201) {
-      return { status: true };
-    } else {
-      return { status: false, data: response?.data };
-    }
-  }
-);
-
-export const CalculateOrdering = createAsyncThunk(
-  "Inventory/CalculateOrdering",
-  async (data) => {
-    const response = await Api.post(`calculate-ordering`, data);
-    if (response?.status == 201) {
-      return { status: true };
-    } else {
-      return { status: false, data: response?.data };
-    }
-  }
-);
-
-
-export const getStock = createAsyncThunk("Inventory/getStock", async (id) => {
-  const response = await Api.get(`inventories/${id}`);
-  return response.data;
-});
-
-
-export const getAllSections = createAsyncThunk(
-  "Inventory/getAllSections",
-  async () => {
-    const response = await Api.get("section-options");
+export const getChildData = createAsyncThunk(
+  "ConfigChildSKU/getChildData",
+  async (id) => {
+    const response = await Api.get("get-config-child-sku/" + id);
     return response.data;
-  }
-);
-
-export const getVendor = createAsyncThunk("Inventory/getVendor", async (id) => {
-  const response = await Api.get(`vendors/${id}`);
-  return response.data;
-});
-
-export const DeleteInventory = createAsyncThunk(
-  "Inventory/DeleteVendor",
-  async (id, { dispatch }) => {
-    const response = await Api.post(`destroy-inventories/${id}`);
-    if (response?.status == 201) {
-      dispatch(getAllData());
-      return { status: true };
-    } else {
-      return { status: false, data: response?.data };
-    }
-  }
-);
-
-export const AddVendor = createAsyncThunk(
-  "Vendor/AddVendor",
-  async (data, { dispatch }) => {
-    const response = await Api.post("vendors", data);
-    if (response?.status == 201) {
-      dispatch(getAllData());
-      return { status: true };
-    } else {
-      return { status: false, data: response?.data };
-    }
-  }
-);
-
-export const UpdateVendor = createAsyncThunk(
-  "Vendor/UpdateVendor",
-  async (data, { dispatch }) => {
-    const response = await Api.post(`vendors/${data?.id}`, data?.data);
-    if (response?.status == 201) {
-      dispatch(getAllData());
-      return { status: true };
-    } else {
-      return { status: false, data: response?.data };
-    }
   }
 );
 
@@ -118,12 +36,29 @@ export const getStockWithImageOptions = createAsyncThunk(
   }
 );
 
-export const UpdateBinQty = createAsyncThunk(
-  "Vendor/UpdateBinQty",
-  async (data, { dispatch }) => {
-    const response = await Api.post(`update-bin-&-qty`, data);
-    dispatch(getAllData());
-    return response.data;
+export const newChildSku = createAsyncThunk(
+  "UnbatchableItems/newChildSku",
+  async (_, { getState }) => {
+    const { childData } = getState()?.configchildskus;
+    const response = await Api.post("add-child-sku", childData);
+    if (response.data?.status === 201) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+);
+
+export const updateChildSku = createAsyncThunk(
+  "UnbatchableItems/newChildSku",
+  async (_, { getState }) => {
+    const { childData } = getState()?.configchildskus;
+    const response = await Api.post("update-child-sku", childData);
+    if (response.data?.status === 201) {
+      return true;
+    } else {
+      return false;
+    }
   }
 );
 
@@ -131,6 +66,12 @@ export const ConfigChildSKUSlice = createSlice({
   name: "ConfigChildSKU",
   initialState: {
     data: [],
+    childData: {
+      allow_mixing: 0,
+      batch_route_id: 115,
+      graphic_sku: "NeedGraphicFile",
+      sure3d: 0,
+    },
     total: 1,
     cost: null,
 
@@ -140,16 +81,16 @@ export const ConfigChildSKUSlice = createSlice({
 
     searchParams: {
       search_for_first: null,
-      contains_first: 'in',
+      contains_first: "in",
       search_in_first: null,
       search_for_second: null,
-      contains_second: 'in',
+      contains_second: "in",
       search_in_second: null,
       search_for_third: null,
-      contains_third: 'in',
+      contains_third: "in",
       search_in_third: null,
       search_for_fourth: null,
-      contains_fourth: 'in',
+      contains_fourth: "in",
       search_in_fourth: null,
 
       active: null,
@@ -201,14 +142,22 @@ export const ConfigChildSKUSlice = createSlice({
     ],
     batchRouteOptions: [],
     typeOptions: [
-      { label: 'Not Sure3d', value: '0'},
-      { label: 'Sure3d', value: '1'}
+      { label: "Not Sure3d", value: "0" },
+      { label: "Sure3d", value: "1" },
     ],
     mixingOptions: [
-      { label: 'No', value: '0'},
-      { label: 'Yes', value: '1'}
+      { label: "No", value: "0" },
+      { label: "Yes", value: "1" },
     ],
     stockwithImageOptions: [],
+    sure3dOptions: [
+      { label: "Yes", value: 1 },
+      { label: "No", value: 0 },
+    ],
+    bypassOption: [
+      { label: "No", value: 0 },
+      { label: "Yes", value: 1 },
+    ]
   },
   extraReducers: (builder) => {
     builder
@@ -218,15 +167,12 @@ export const ConfigChildSKUSlice = createSlice({
         // state.cost = action.payload?.total_cost;
         // state.total = action.payload?.inventories?.total;
       })
-      .addCase(getVendor.fulfilled, (state, action) => {
-        state.vendor = action.payload;
-      })
-      .addCase(getStock.fulfilled, (state, action) => {
-        state.stock = action.payload;
+      .addCase(getChildData.fulfilled, (state, action) => {
+        state.childData = action.payload;
       })
       .addCase(getBatchRouteOptions.fulfilled, (state, action) => {
         state.batchRouteOptions = action.payload;
-      })      
+      })
       .addCase(getStockWithImageOptions.fulfilled, (state, action) => {
         state.stockwithImageOptions = action.payload;
       });
@@ -238,8 +184,12 @@ export const ConfigChildSKUSlice = createSlice({
     setSearchParams: (state, action) => {
       state.searchParams = { ...state.searchParams, ...action.payload };
     },
+    setChildData: (state, action) => {
+      state.childData = { ...state.childData, ...action.payload };
+    },
   },
 });
 
-export const { setParams, setSearchParams } = ConfigChildSKUSlice.actions;
+export const { setParams, setSearchParams, setChildData } =
+  ConfigChildSKUSlice.actions;
 export default ConfigChildSKUSlice.reducer;

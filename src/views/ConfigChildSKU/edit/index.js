@@ -1,291 +1,222 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import Select from "react-select";
 import {
   Button,
   Card,
   CardBody,
   CardHeader,
-  CardTitle,
   Col,
-  Form,
   Input,
   Label,
   Row,
-  Spinner,
 } from "reactstrap";
-import { selectThemeColors } from "@utils";
-import Select from "react-select";
-import { useDispatch, useSelector } from "react-redux";
-import { getAllSections, getStock, UpdateStock } from "../store";
-import { useNavigate, useParams } from "react-router-dom";
+import { getBatchRouteOptions, getChildData, setChildData, updateChildSku } from "../store";
 
 const index = () => {
-  const [data, setData] = useState(null);
-  const { id } = useParams();
-  const [errors, setErrors] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const store = useSelector((state) => state.inventories);
+  const {id} = useParams();
+  const { childData, mixingOptions, batchRouteOptions, sure3dOptions, bypassOption } = useSelector(
+    (state) => state?.configchildskus
+  );
 
   useEffect(() => {
-    if (id) {
-      dispatch(getStock(id));
-    }
-  }, [id]);
-
-  useEffect(() => {
-    if (store?.stock) {
-      setData({ ...store?.stock });
-    }
-  }, [store?.stock]);
-
-  useEffect(() => {
-    dispatch(getAllSections());
+    dispatch(getBatchRouteOptions());
+    dispatch(getChildData(id));
   }, []);
 
-  const onChange = (e) => {
-    setData({
-      ...data,
-      [e.target?.name]: e.target?.value,
-    });
+  const handleChange = async (name, value) => {
+    await updateData({ [name]: value });
   };
 
-  const onSubmit = async () => {
-    const res = await dispatch(UpdateStock({ id, data }));
-    if (res?.payload?.status) {
-      navigate("/inventory");
-    } else {
-      setErrors(res?.payload?.data?.errors);
+  const updateData = (payload) => {
+    dispatch(setChildData(payload));
+  };
+
+  const UpdateChildSKU = async () => {
+    const res = await dispatch(updateChildSku());
+    if (res?.payload) {
+      const params = {
+        search_for_first: childData?.child_sku,
+        search_in_first: "child_sku",
+      };
+      const u = new URLSearchParams(params).toString();
+      navigate("/config-child-sku?" + u, { replace: true });
     }
   };
 
   return (
     <Fragment>
-      <Row>
-        <Form>
-          <Col sm="6">
-            <Card>
-              <CardHeader>
-                <CardTitle tag="h4">New Stock</CardTitle>
-              </CardHeader>
-              <CardBody>
-                <Row>
-                  <Col sm="12">
-                    <Label className="form-label" for="stock_no_unique">
-                      Stock Number
-                    </Label>
-                    <Input
-                      type="number"
-                      name="stock_no_unique"
-                      id="stock_no_unique"
-                      placeholder="Stock Number"
-                      value={data?.stock_no_unique}
-                      disabled
-                    />
-                  </Col>
-                  <small className="text-danger">
-                    {errors?.stock_no_unique}
-                  </small>
-                  <Col sm="12">
-                    <Label className="form-label" for="stock_name_discription">
-                      Discription
-                    </Label>
-                    <Input
-                      type="text"
-                      name="stock_name_discription"
-                      id="stock_name_discription"
-                      placeholder="Discription"
-                      value={data?.stock_name_discription}
-                      onChange={onChange}
-                    />
-                  </Col>
-
-                  <Col sm="12">
-                    <Label className="form-label" for="section_id">
-                      Section
-                    </Label>
-                    <Select
-                      className="react-select"
-                      classNamePrefix="select"
-                      theme={selectThemeColors}
-                      placeholder="Select Section"
-                      options={store?.sectionOptions}
-                      value={store?.sectionOptions?.find(
-                        (item) => item?.value === data?.section_id
-                      )}
-                      onChange={(e) => {
-                        onChange({
-                          target: { value: e?.value, name: "section_id" },
-                        });
-                      }}
-                      isClearable={false}
-                    />
-                  </Col>
-
-                  <Col sm="12">
-                    <Label className="form-label" for="sku_weight">
-                      Weight
-                    </Label>
-                    <Input
-                      type="number"
-                      name="sku_weight"
-                      id="sku_weight"
-                      placeholder="Weight"
-                      value={data?.sku_weight}
-                      onChange={onChange}
-                    />
-                  </Col>
-                  <Col sm="12">
-                    <Label className="form-label" for="re_order_qty">
-                      Order Quantity
-                    </Label>
-                    <Input
-                      type="number"
-                      name="re_order_qty"
-                      id="re_order_qty"
-                      placeholder="Order Quantity"
-                      value={data?.re_order_qty}
-                      onChange={onChange}
-                    />
-                  </Col>
-
-                  <Col sm="12">
-                    <Label className="form-label" for="min_reorder">
-                      Minimum Stock Quantity
-                    </Label>
-                    <Input
-                      type="number"
-                      name="min_reorder"
-                      id="min_reorder"
-                      placeholder="Minimum Stock Quantity"
-                      value={data?.min_reorder}
-                      onChange={onChange}
-                    />
-                  </Col>
-                  <Col sm="12">
-                    <Label className="form-label" for="last_cost">
-                      Last Cost
-                    </Label>
-                    <Input
-                      type="number"
-                      name="last_cost"
-                      id="last_cost"
-                      placeholder="Last Cost"
-                      value={data?.last_cost}
-                      onChange={onChange}
-                    />
-                  </Col>
-                  <Col sm="12">
-                    <Label className="form-label" for="upc">
-                      UPC
-                    </Label>
-                    <Input
-                      type="text"
-                      name="upc"
-                      id="upc"
-                      placeholder="UPC"
-                      value={data?.upc}
-                      onChange={onChange}
-                    />
-                  </Col>
-
-                  <Col sm="12">
-                    <Label className="form-label" for="wh_bin">
-                      BIN
-                    </Label>
-                    <Input
-                      type="text"
-                      name="wh_bin"
-                      id="wh_bin"
-                      placeholder="BIN"
-                      value={data?.wh_bin}
-                      onChange={onChange}
-                    />
-                  </Col>
-                  <Col sm="12">
-                    <Label className="form-label" for="warehouse">
-                      Image Url
-                    </Label>
-                    <Input
-                      type="text"
-                      name="warehouse"
-                      id="warehouse"
-                      placeholder="Image Url"
-                      value={data?.warehouse}
-                      onChange={onChange}
-                    />
-                  </Col>
-                  <Col sm="12" className="d-flex">
-                    <Input
-                      type="checkbox"
-                      name="dropship"
-                      className="m-1"
-                      checked={data?.dropship}
-                      onChange={(e) =>
-                        onChange({
-                          target: {
-                            name: "dropship",
-                            value: e?.target?.checked,
-                          },
-                        })
-                      }
-                    />
-                    <Label
-                      for="warehouse"
-                      className="form-label d-flex align-content-center flex-wrap"
-                    >
-                      Dropship
-                    </Label>
-                  </Col>
-                  <Col sm="12">
-                    <Label className="form-label" for="dropship_sku">
-                      Dropship SKU
-                    </Label>
-                    <Input
-                      type="text"
-                      name="dropship_sku"
-                      id="dropship_sku"
-                      placeholder="Dropship SKU"
-                      value={data?.dropship_sku}
-                      onChange={onChange}
-                    />
-                  </Col>
-                  <Col sm="12">
-                    <Label className="form-label" for="dropship_cost">
-                      Dropship Cost
-                    </Label>
-                    <Input
-                      type="text"
-                      name="dropship_cost"
-                      id="dropship_cost"
-                      placeholder="Dropship Cost"
-                      value={data?.dropship_cost}
-                      onChange={onChange}
-                    />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col sm="12" className="mt-1">
-                    <div className="d-flex">
-                      <Button
-                        className="me-1"
-                        color="primary"
-                        type="submit"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          onSubmit();
-                        }}
-                      >
-                        Submit
-                      </Button>
-                    </div>
-                  </Col>
-                </Row>
-              </CardBody>
-            </Card>
-          </Col>
-        </Form>
-      </Row>
+      <Card>
+        <CardHeader>
+          <h4 className="card-title">Add Child SKU</h4>
+        </CardHeader>
+        <CardBody>
+          <Row className="mt-1">
+            <Col sm="2"></Col>
+            <Col
+              sm="2"
+              className="d-flex align-items-center justify-content-end"
+            >
+              <Label>Allow Mixing :</Label>
+            </Col>
+            <Col sm="4">
+              <Select
+                className="react-select"
+                classNamePrefix="select"
+                name="allow_mixing"
+                options={mixingOptions}
+                value={mixingOptions?.find(
+                  (item) => item?.value == childData?.allow_mixing
+                )}
+                onChange={(e) => handleChange("allow_mixing", e.value)}
+              />
+            </Col>
+          </Row>
+          <Row className="mt-1">
+            <Col sm="2"></Col>
+            <Col
+              sm="2"
+              className="d-flex align-items-center justify-content-end"
+            >
+              <Label>Batch route :</Label>
+            </Col>
+            <Col sm="4">
+              <Select
+                className="react-select"
+                classNamePrefix="select"
+                name="batch_route_id"
+                options={batchRouteOptions}
+                value={batchRouteOptions?.find(
+                  (item) => item.value === childData?.batch_route_id
+                )}
+                onChange={(e) => handleChange("batch_route_id", e.value)}
+              />
+            </Col>
+          </Row>
+          <Row className="mt-1">
+            <Col sm="2"></Col>
+            <Col
+              sm="2"
+              className="d-flex align-items-center justify-content-end"
+            >
+              <Label>ID Catalog :</Label>
+            </Col>
+            <Col sm="4">
+              <Input
+                type="text"
+                name="id_catalog"
+                value={childData?.id_catalog}
+                onChange={(e) => handleChange("id_catalog", e.target.value)}
+              />
+            </Col>
+          </Row>
+          <Row className="mt-1">
+            <Col sm="2"></Col>
+            <Col
+              sm="2"
+              className="d-flex align-items-center justify-content-end"
+            >
+              <Label>Parent SKU :</Label>
+            </Col>
+            <Col sm="4">
+              <Input
+                type="text"
+                name="parent_sku"
+                value={childData?.parent_sku}
+                onChange={(e) => handleChange("parent_sku", e.target.value)}
+              />
+            </Col>
+          </Row>
+          <Row className="mt-1">
+            <Col sm="2"></Col>
+            <Col
+              sm="2"
+              className="d-flex align-items-center justify-content-end"
+            >
+              <Label>Child SKU :</Label>
+            </Col>
+            <Col sm="4">
+              <Input
+                type="text"
+                name="child_sku"
+                value={childData?.child_sku}
+                onChange={(e) => handleChange("child_sku", e.target.value)}
+              />
+            </Col>
+          </Row>
+          <Row className="mt-1">
+            <Col sm="2"></Col>
+            <Col
+              sm="2"
+              className="d-flex align-items-center justify-content-end"
+            >
+              <Label>Graphic SKU :</Label>
+            </Col>
+            <Col sm="4">
+              <Input
+                type="text"
+                name="graphic_sku"
+                value={childData?.graphic_sku}
+                onChange={(e) => handleChange("graphic_sku", e.target.value)}
+              />
+            </Col>
+          </Row>
+          <Row className="mt-1">
+            <Col sm="2"></Col>
+            <Col
+              sm="2"
+              className="d-flex align-items-center justify-content-end"
+            >
+              <Label>Sure3d :</Label>
+            </Col>
+            <Col sm="4">
+              <Select
+                className="react-select"
+                classNamePrefix="select"
+                name="allow_mixing"
+                options={sure3dOptions}
+                value={sure3dOptions?.find(
+                  (item) => item?.value === childData?.sure3d
+                )}
+                onChange={(e) => handleChange("sure3d", e.value)}
+              />
+            </Col>
+          </Row><Row className="mt-1">
+            <Col sm="2"></Col>
+            <Col
+              sm="2"
+              className="d-flex align-items-center justify-content-end"
+            >
+              <Label>Bypass Options :</Label>
+            </Col>
+            <Col sm="4">
+              <Select
+                className="react-select"
+                classNamePrefix="select"
+                name="allow_mixing"
+                options={bypassOption}
+                value={bypassOption?.find(
+                  (item) => item?.value == childData?.bypass_option
+                )}
+                onChange={(e) => handleChange("bypass_option", e.value)}
+              />
+            </Col>
+          </Row>
+          <Row className="mt-1">
+            <Col sm="4"></Col>
+            <Col sm="4">
+              <Button color="primary" onClick={UpdateChildSKU}>
+                Update child SKU
+              </Button>
+            </Col>
+          </Row>
+        </CardBody>
+      </Card>
     </Fragment>
   );
 };
+
 export default index;
