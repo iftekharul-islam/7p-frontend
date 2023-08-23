@@ -29,6 +29,7 @@ import {
   getStockWithImageOptions,
   setParams,
   setSearchParams,
+  setSelectedSKU,
 } from "../store";
 
 const index = () => {
@@ -69,6 +70,27 @@ const index = () => {
     await dispatch(setSearchParams(data));
   };
 
+  const selectAll = (e) => {
+    e.preventDefault();
+    let selected = [];
+    if (e?.target?.checked) {
+      store?.data?.data?.forEach((item) => {
+        selected.push(item?.id);
+      });
+    }
+    setSelectedSKUs({ child_skus: selected });
+  };
+
+  const setSelectedSKUs = (data) => {
+    dispatch(setSelectedSKU(data));
+  };
+
+  const UpdateSelectedSKU = async () => {
+    setLoading(true);
+    console.log(store?.selectedSKU);
+    setLoading(false);
+  };
+
   const CustomHeader = () => {
     const navigate = useNavigate();
     return (
@@ -78,7 +100,13 @@ const index = () => {
             {store?.data?.total} Child SKUs found
           </Col>
           <Col sm="2 d-flex align-items-center" className="d-flex">
-            <Input type="checkbox" />
+            <Input
+              type="checkbox"
+              onChange={selectAll}
+              checked={store?.data?.data?.every((item1) =>
+                store?.selectedSKU?.child_skus?.includes(item1?.id)
+              )}
+            />
             Select All Child SKUs
           </Col>
           <Col sm="2 d-flex align-items-center justify-content-end">
@@ -325,7 +353,9 @@ const index = () => {
                   value={store?.mixingOptions?.find(
                     (item) => item?.value == params?.allow_mixing_update
                   )}
-                  onChange={(e) => onChange({ allow_mixing_update: e?.value })}
+                  onChange={(e) =>
+                    setSelectedSKUs({ allow_mixing_update: e?.value })
+                  }
                 />
               </Col>
               <Col sm="4">
@@ -336,7 +366,7 @@ const index = () => {
                     (item) => item?.value == params?.batch_route_id_update
                   )}
                   onChange={(e) =>
-                    onChange({ batch_route_id_update: e?.value })
+                    setSelectedSKUs({ batch_route_id_update: e?.value })
                   }
                 />
               </Col>
@@ -345,7 +375,7 @@ const index = () => {
                   placeholder="Graphic SKU"
                   value={params?.graphic_sku_update}
                   onChange={(e) =>
-                    onChange({ graphic_sku_update: e?.target?.value })
+                    setSelectedSKUs({ graphic_sku_update: e?.target?.value })
                   }
                 />
               </Col>
@@ -356,7 +386,7 @@ const index = () => {
                   value={store?.typeOptions?.find(
                     (item) => item?.value == params?.sure3d_update
                   )}
-                  onChange={(e) => onChange({ sure3d_update: e?.value })}
+                  onChange={(e) => setSelectedSKUs({ sure3d_update: e?.value })}
                 />
               </Col>
               <Col sm="2">
@@ -365,7 +395,7 @@ const index = () => {
                   placeholder="Frame Size"
                   value={params?.frame_size_update}
                   onChange={(e) =>
-                    onChange({ frame_size_update: e?.target?.value })
+                    setSelectedSKUs({ frame_size_update: e?.target?.value })
                   }
                 />
               </Col>
@@ -399,8 +429,12 @@ const index = () => {
               </Col>
               <Col sm="1"></Col>
               <Col sm="2" className="d-flex align-items-end flex-column">
-                <Button color="primary" onClick={onSearch} disabled={loading}>
-                  {loading ? "Updating" : "Update Selected SKUs"}
+                <Button
+                  color="primary"
+                  onClick={UpdateSelectedSKU}
+                  disabled={loading}
+                >
+                  {loading ? "Please Wait" : "Update Selected SKUs"}
                 </Button>
               </Col>
             </Row>
@@ -416,7 +450,29 @@ const index = () => {
                   <div className="m-1 p-1 border">
                     <Row>
                       <Col sm="2" className="d-flex">
-                        <Input type="checkbox" className="mx-2" />
+                        <Input
+                          type="checkbox"
+                          className="mx-2"
+                          checked={store?.selectedSKU?.child_skus?.includes(
+                            option?.id
+                          )}
+                          onChange={(e) => {
+                            let selected = store?.selectedSKU?.child_skus;
+                            if (e?.target?.checked) {
+                              selected.push(option?.id);
+                            } else {
+                              selected = selected.filter(
+                                (item) => item != option?.id
+                              );
+                            }
+                            dispatch(
+                              setSelectedSKU({
+                                ...store?.selectedSKU,
+                                child_skus: selected,
+                              })
+                            );
+                          }}
+                        />
                         <Link
                           className="text-truncate text-capitalize align-middle"
                           to={`/config-child-sku-edit/${option.unique_row_value}`}
@@ -587,14 +643,10 @@ const index = () => {
                         <Select
                           className="react-select"
                           classNamePrefix="select"
-                          options={[
-                            { value: "1", label: "Yes" },
-                            { value: "0", label: "No" },
-                          ]}
-                          value={{
-                            value: option?.allow_mixing,
-                            label: option?.allow_mixing == 1 ? "Yes" : "No",
-                          }}
+                          options={store?.batchRouteOptions}
+                          value={store?.stockwithImageOptions?.find(
+                            (item) => item?.value == 0
+                          )}
                         />
                       </Col>
                       <Col sm="2">
