@@ -50,7 +50,7 @@ export const newChildSku = createAsyncThunk(
 );
 
 export const updateChildSku = createAsyncThunk(
-  "UnbatchableItems/newChildSku",
+  "UnbatchableItems/updateChildSku",
   async (_, { getState }) => {
     const { childData } = getState()?.configchildskus;
     const response = await Api.post("update-child-sku", childData);
@@ -61,6 +61,21 @@ export const updateChildSku = createAsyncThunk(
     }
   }
 );
+
+export const updateChildSkus = createAsyncThunk(
+  "UnbatchableItems/updateChildSkus",
+  async (_, { getState }) => {
+    const { selectedSKU } = getState()?.configchildskus;
+    const response = await Api.post("update-child-skus", selectedSKU);
+    if (response.data?.status === 201) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+);
+
+
 
 export const ConfigChildSKUSlice = createSlice({
   name: "ConfigChildSKU",

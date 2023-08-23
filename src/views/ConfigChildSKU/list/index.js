@@ -30,6 +30,7 @@ import {
   setParams,
   setSearchParams,
   setSelectedSKU,
+  updateChildSkus,
 } from "../store";
 
 const index = () => {
@@ -87,7 +88,7 @@ const index = () => {
 
   const UpdateSelectedSKU = async () => {
     setLoading(true);
-    console.log(store?.selectedSKU);
+    await dispatch(updateChildSkus());
     setLoading(false);
   };
 
@@ -422,12 +423,77 @@ const index = () => {
                     );
                   }}
                   value={store?.stockwithImageOptions?.find(
-                    (item) => item?.value == params?.stock_select
+                    (item) => item?.value == null
                   )}
-                  onChange={(e) => onChange({ stock_select: e?.value })}
+                  onChange={(e) => {
+                    if (
+                      !store?.selectedSKU?.stocklist
+                        ?.map((itm) => itm?.value)
+                        ?.includes(e?.value)
+                    ) {
+                      setSelectedSKUs({
+                        stocklist: [
+                          ...(store?.selectedSKU?.stocklist ?? []),
+                          e,
+                        ],
+                      });
+                    }
+                  }}
                 />
               </Col>
-              <Col sm="1"></Col>
+              <Col sm="3">
+                {store?.selectedSKU?.stocklist?.map((item) => {
+                  return (
+                    <Row className="b">
+                      <Col sm="2">
+                        <img
+                          src={item?.image}
+                          style={{ width: 50, height: 50 }}
+                        />
+                      </Col>
+                      <Col sm="6">{item?.label}</Col>
+                      <Col sm="3">
+                        <Input
+                          type="number"
+                          placeholder="Qty"
+                          value={item?.qty}
+                          onChange={(e) => {
+                            let selected = [
+                              ...(store?.selectedSKU?.stocklist ?? []),
+                            ];
+                            selected = selected.map((item1) => {
+                              if (item1?.value == item?.value) {
+                                return { ...item1, qty: e?.target?.value };
+                              }
+                              return item1;
+                            });
+                            setSelectedSKUs({
+                              stocklist: selected,
+                            });
+                          }}
+                        />
+                      </Col>
+                      <Col
+                        sm="1"
+                        className="text-danger"
+                        onClick={() => {
+                          let selected = [
+                            ...(store?.selectedSKU?.stocklist ?? []),
+                          ];
+                          selected = selected.filter(
+                            (item1) => item1?.value == item?.value
+                          );
+                          setSelectedSKUs({
+                            stocklist: selected,
+                          });
+                        }}
+                      >
+                        X
+                      </Col>
+                    </Row>
+                  );
+                })}
+              </Col>
               <Col sm="2" className="d-flex align-items-end flex-column">
                 <Button
                   color="primary"
@@ -457,7 +523,9 @@ const index = () => {
                             option?.id
                           )}
                           onChange={(e) => {
-                            let selected = store?.selectedSKU?.child_skus;
+                            let selected = [
+                              ...(store?.selectedSKU?.child_skus ?? []),
+                            ];
                             if (e?.target?.checked) {
                               selected.push(option?.id);
                             } else {
