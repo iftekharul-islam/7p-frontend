@@ -72,6 +72,7 @@ export const ConfigChildSKUSlice = createSlice({
       graphic_sku: "NeedGraphicFile",
       sure3d: 0,
     },
+    selectedSKU: [],
     total: 1,
     cost: null,
 
@@ -187,9 +188,12 @@ export const ConfigChildSKUSlice = createSlice({
     setChildData: (state, action) => {
       state.childData = { ...state.childData, ...action.payload };
     },
+    setSelectedSKU: (state, action) => {
+      state.selectedSKU = {...state.selectedSKU, ...action.payload};
+    }
   },
 });
 
-export const { setParams, setSearchParams, setChildData } =
+export const { setParams, setSearchParams, setChildData, setSelectedSKU } =
   ConfigChildSKUSlice.actions;
 export default ConfigChildSKUSlice.reducer;
