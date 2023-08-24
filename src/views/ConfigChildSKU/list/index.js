@@ -607,7 +607,7 @@ const index = () => {
                         </UncontrolledTooltip>
                         <Link
                           className="text-truncate text-capitalize align-middle"
-                          to={`/inventory-edit/${option.id}`}
+                          to={`/tasks?id=${option.id}&search_in=App\\Models\\Option&status=ALL`}
                           id={`task-${option?.id}`}
                         >
                           <Send size={18} className={`text-primary me-50`} />
