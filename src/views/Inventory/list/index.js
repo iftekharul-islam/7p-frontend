@@ -7,16 +7,16 @@ import { ChevronDown, PlusCircle } from "react-feather";
 import Flatpickr from "react-flatpickr";
 import ReactPaginate from "react-paginate";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Select from "react-select";
 import { Button, Card, Col, Input, Row, Spinner } from "reactstrap";
 import {
-    CalculateOrdering,
-    getAllData,
-    getAllSections,
-    getAllVendors,
-    setParams,
-    setSearchParams,
+  CalculateOrdering,
+  getAllData,
+  getAllSections,
+  getAllVendors,
+  setParams,
+  setSearchParams,
 } from "./../store/index";
 import { columns } from "./columns";
 
@@ -28,6 +28,19 @@ const index = () => {
   const [isCalculate, setIsCalculate] = useState(false);
   const [calculateData, setCalculateData] = useState(null);
   const params = store?.searchParams;
+
+  const [URLParams, setURLParams] = useSearchParams();
+  useEffect(() => {
+    if (URLParams) {
+      let params = {};
+      URLParams?.forEach((value, key) => {
+        if (value != "null") {
+          params = { ...params, [key]: value };
+        }
+      });
+      onChange(params);
+    }
+  }, [URLParams]);
 
   useEffect(() => {
     if (store?.params) dispatch(getAllData());

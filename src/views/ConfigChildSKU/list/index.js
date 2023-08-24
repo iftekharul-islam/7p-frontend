@@ -30,12 +30,15 @@ import {
   setParams,
   setSearchParams,
   setSelectedSKU,
+  setSingleSKU,
   updateChildSkus,
+  updateSingleSku,
 } from "../store";
 
 const index = () => {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.configchildskus);
+  console.log("🚀 ~ file: index.js:40 ~ index ~ store:", store?.singleSKU);
   const [loading, setLoading] = useState(false);
   const params = store?.searchParams;
 
@@ -89,6 +92,20 @@ const index = () => {
   const UpdateSelectedSKU = async () => {
     setLoading(true);
     await dispatch(updateChildSkus());
+    setLoading(false);
+  };
+
+  const setSKU = (data, id) => {
+    dispatch(
+      setSingleSKU({
+        ...store?.singleSKU,
+        [id]: { ...store?.singleSKU?.[id], ...data },
+      })
+    );
+  };
+  const UpdateSingleSKU = async (id) => {
+    setLoading(true);
+    await dispatch(updateSingleSku(id));
     setLoading(false);
   };
 
@@ -415,7 +432,7 @@ const index = () => {
                   formatOptionLabel={({ label, image }) => {
                     return (
                       <div className="d-flex">
-                        {/* <img src={image} style={{ width: 50, height: 50 }} /> */}
+                        <img src={image} style={{ width: 50, height: 50 }} />
                         <div className="d-flex align-self-center px-2">
                           {label}
                         </div>
@@ -434,7 +451,7 @@ const index = () => {
                       setSelectedSKUs({
                         stocklist: [
                           ...(store?.selectedSKU?.stocklist ?? []),
-                          e,
+                          { ...e, qty: 1 },
                         ],
                       });
                     }
@@ -669,7 +686,7 @@ const index = () => {
                                       <Col sm="9">
                                         <a
                                           href={
-                                            "/inventories?search_for_first=" +
+                                            "/inventory?search_for_first=" +
                                             inventoryunit?.stock_no_unique +
                                             "&search_in_first=stock_no_unique"
                                           }
@@ -702,7 +719,7 @@ const index = () => {
                             { value: "0", label: "No" },
                           ]}
                           onChange={(e) =>
-                            onChange({ allow_mixing_update: e?.value })
+                            setSKU({ mix: e?.value }, option?.unique_row_value)
                           }
                         />
                       </Col>
@@ -715,6 +732,9 @@ const index = () => {
                           value={store?.stockwithImageOptions?.find(
                             (item) => item?.value == 0
                           )}
+                          onChange={(e) =>
+                            setSKU({ route: e?.value }, option?.unique_row_value)
+                          }
                         />
                       </Col>
                       <Col sm="2">
@@ -727,7 +747,7 @@ const index = () => {
                             { value: "0", label: "No" },
                           ]}
                           onChange={(e) =>
-                            onChange({ allow_mixing_update: e?.value })
+                            setSKU({ graphic_sku: e?.value }, option?.unique_row_value)
                           }
                         />
                       </Col>
@@ -750,7 +770,15 @@ const index = () => {
                           <Col sm="6">Use Sure3d:</Col>
                           <Col sm="6">
                             {" "}
-                            <Input type="checkbox" />
+                            <Input
+                              type="checkbox"
+                              onChange={(e) =>
+                                setSKU(
+                                  { sure3d: e?.target?.checked ? 1 : 0 },
+                                  option?.unique_row_value
+                                )
+                              }
+                            />
                           </Col>
                         </Row>
                         <Row className="d-flex align-items-center">
@@ -768,7 +796,7 @@ const index = () => {
                                 label: option?.allow_mixing == 1 ? "Yes" : "No",
                               }}
                               onChange={(e) =>
-                                onChange({ allow_mixing_update: e?.value })
+                                setSKU({ orientation: e?.value }, option?.unique_row_value)
                               }
                             />
                           </Col>
@@ -781,9 +809,13 @@ const index = () => {
                               type="number"
                               name="frame_size_update"
                               onChange={(e) =>
-                                onChange({
-                                  frame_size_update: e?.target?.value,
-                                })
+                                setSKU(
+                                  { frame_size: e?.target?.value },
+                                  option?.unique_row_value
+                                )
+                              }
+                              value={
+                                store?.singleSKU?.[option?.unique_row_value]?.frame_size ?? ""
                               }
                             />
                           </Col>
@@ -795,14 +827,22 @@ const index = () => {
                             <Input
                               type="checkbox"
                               onChange={(e) =>
-                                onChange({ fs_: e?.target?.checked })
+                                setSKU(
+                                  { mirror: e?.target?.checked },
+                                  option?.unique_row_value
+                                )
                               }
                             />
                           </Col>
                         </Row>
                       </Col>
                       <Col sm="1">
-                        <Button color="primary">Update</Button>
+                        <Button color="primary" onClick={(e)=>{
+                          e?.preventDefault()
+                          UpdateSingleSKU(option?.unique_row_value)
+                        }}>
+                          {loading ? "Please wait" : "Update"}
+                        </Button>
                       </Col>
                     </Row>
                   </div>
