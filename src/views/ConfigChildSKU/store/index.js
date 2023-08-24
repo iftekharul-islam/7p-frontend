@@ -75,7 +75,19 @@ export const updateChildSkus = createAsyncThunk(
   }
 );
 
-
+export const updateSingleSku = createAsyncThunk(
+  "UnbatchableItems/updateChildSkus",
+  async (id, { getState }) => {
+    const { singleSKU } = getState()?.configchildskus;
+    const response = await Api.post("update-single-sku", {
+      ...singleSKU?.[id],
+      unique_row_value: id,
+    });
+    if (response.data?.status === 201) {
+      dispatch(getAllData())
+    }
+  }
+);
 
 export const ConfigChildSKUSlice = createSlice({
   name: "ConfigChildSKU",
@@ -88,6 +100,7 @@ export const ConfigChildSKUSlice = createSlice({
       sure3d: 0,
     },
     selectedSKU: [],
+    singleSKU: {},
     total: 1,
     cost: null,
 
@@ -173,7 +186,7 @@ export const ConfigChildSKUSlice = createSlice({
     bypassOption: [
       { label: "No", value: 0 },
       { label: "Yes", value: 1 },
-    ]
+    ],
   },
   extraReducers: (builder) => {
     builder
@@ -204,11 +217,19 @@ export const ConfigChildSKUSlice = createSlice({
       state.childData = { ...state.childData, ...action.payload };
     },
     setSelectedSKU: (state, action) => {
-      state.selectedSKU = {...state.selectedSKU, ...action.payload};
-    }
+      state.selectedSKU = { ...state.selectedSKU, ...action.payload };
+    },
+    setSingleSKU: (state, action) => {
+      state.singleSKU = action.payload;
+    },
   },
 });
 
-export const { setParams, setSearchParams, setChildData, setSelectedSKU } =
-  ConfigChildSKUSlice.actions;
+export const {
+  setParams,
+  setSearchParams,
+  setChildData,
+  setSelectedSKU,
+  setSingleSKU,
+} = ConfigChildSKUSlice.actions;
 export default ConfigChildSKUSlice.reducer;
