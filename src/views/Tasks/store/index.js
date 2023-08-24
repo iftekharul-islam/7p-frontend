@@ -29,6 +29,15 @@ export const getSearchInOption = createAsyncThunk(
   }
 );
 
+export const deleteTask = createAsyncThunk(
+  "tasks/deleteTask",
+  async (id, { dispatch }) => {
+    const response = await Api.post(`tasks/${id}`);
+    dispatch(getAllData());
+    return response.data;
+  }
+);
+
 export const tasksSlice = createSlice({
   name: "tasks",
   initialState: {
@@ -38,6 +47,7 @@ export const tasksSlice = createSlice({
     params: {},
 
     searchParams: {},
+    newTask: {},
 
     allData: [],
 
@@ -68,8 +78,11 @@ export const tasksSlice = createSlice({
     setSearchParams: (state, action) => {
       state.searchParams = { ...state.searchParams, ...action.payload };
     },
+    setNewTask: (state, action) => {
+      state.newTask = { ...state.newTask, ...action.payload };
+    }
   },
 });
 
-export const { setParams, setSearchParams } = tasksSlice.actions;
+export const { setParams, setSearchParams, setNewTask } = tasksSlice.actions;
 export default tasksSlice.reducer;
