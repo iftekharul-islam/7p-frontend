@@ -44,6 +44,7 @@ import shipmentLists from "@src/views/ShipmentList/store";
 import productspecifications from "@src/views/SpecificationSheet/store";
 import stations from "@src/views/Station/store";
 import stores from "@src/views/Stores/store";
+import tasks from "@src/views/Tasks/store";
 import unbatchableItems from "@src/views/UnbatchableItems/store";
 import users from "@src/views/User/store";
 import vendors from "@src/views/Vendor/store";
@@ -103,7 +104,8 @@ const rootReducer = {
   moveToProductions,
   moveToQC,
   WAP,
-  shipmentLists
+  shipmentLists,
+  tasks
 };
 
 export default rootReducer;

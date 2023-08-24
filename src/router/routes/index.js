@@ -57,6 +57,7 @@ import ShipmentListRoute from "../../views/ShipmentList/ShipmentListRoute";
 import SpecificationSheetRoute from "../../views/SpecificationSheet/SpecificationSheetRoute";
 import StationRoute from "../../views/Station/StationRoute";
 import StoresRoute from "../../views/Stores/StoresRoute";
+import TaskRoute from "../../views/Tasks/TasksRoute";
 import UnbatchableItemsRoute from "../../views/UnbatchableItems/UnbatchableItemsRoute";
 import UserRoute from "../../views/User/UserRoute";
 import VendorRoute from "../../views/Vendor/VendorRoute";
@@ -133,6 +134,7 @@ const Routes = [
   ...MoveToQCRoute,
   ...WAPRoute,
   ...ShipmentListRoute,
+  ...TaskRoute,
   {
     path: "/",
     index: true,
