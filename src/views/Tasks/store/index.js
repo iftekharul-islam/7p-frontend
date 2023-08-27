@@ -38,6 +38,22 @@ export const deleteTask = createAsyncThunk(
   }
 );
 
+export const createNewTask = createAsyncThunk(
+  "tasks/createNewTask",
+  async (data) => {
+    const response = await Api.post(`task`, data);
+    return response.data;
+  }
+);
+
+export const updateTasks = createAsyncThunk(
+  "tasks/updateTasks",
+  async (data) => {
+    const response = await Api.post(`task/${data?.id}`, data?.data);
+    return response.data;
+  }
+);
+
 export const tasksSlice = createSlice({
   name: "tasks",
   initialState: {

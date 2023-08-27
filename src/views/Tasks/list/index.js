@@ -4,7 +4,7 @@ import "@styles/react/libs/tables/react-dataTable-component.scss";
 import { Fragment, useEffect, useState } from "react";
 import { Check, Edit } from "react-feather";
 import { useDispatch, useSelector } from "react-redux";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Select from "react-select";
 import {
   Button,
@@ -17,17 +17,21 @@ import {
   Spinner,
 } from "reactstrap";
 import {
+  createNewTask,
   deleteTask,
   getAllData,
   getSearchInOption,
   getUserOptions,
   setNewTask,
   setSearchParams,
+  updateTasks,
 } from "../store";
 
 const index = () => {
   const dispatch = useDispatch();
-  const [isCreate, setIsCreate] = useState(true);
+  const navigate = useNavigate();
+  const [isCreate, setIsCreate] = useState(false);
+  const [isEdit, setIsEdit] = useState(null);
   const store = useSelector((state) => state.tasks);
   const { searchParams, newTask } = store;
   const [loading, setLoading] = useState(false);
@@ -66,8 +70,42 @@ const index = () => {
     dispatch(setNewTask(data));
   };
 
-  const onDeleteTask = async(id) => {
+  const onDeleteTask = async (id) => {
     await dispatch(deleteTask(id));
+  };
+
+  const createTask = async (e) => {
+    e?.preventDefault();
+    setLoading(true);
+    const formData = new FormData();
+    formData.append("user", newTask?.user);
+    formData.append("text", newTask?.text);
+    formData.append("due_date", newTask?.due_date);
+    formData.append("attachment", newTask?.attachment);
+    formData.append("search_in", newTask?.search_in);
+    formData.append("associate_with", newTask?.associate_with);
+    const res = await dispatch(createNewTask(formData));
+    if (res?.payload?.status == 201) {
+      navigate("/tasks?task_id=" + res?.payload?.params?.task_id, {
+        replace: true,
+      });
+    }
+    setLoading(false);
+  };
+
+  const updateTask = async () => {
+    setLoading(true);
+    const formData = new FormData();
+    formData.append("reassign", newTask?.reassign);
+    formData.append("note_text", newTask?.note_text);
+    formData.append("attach", newTask?.attach);
+    const res = await dispatch(updateTasks({ data: formData, id: isEdit }));
+    if (res?.payload?.status == 201) {
+      navigate("/tasks?task_id=" + res?.payload?.params?.task_id, {
+        replace: true,
+      });
+    }
+    setLoading(false);
   };
 
   return (
@@ -240,14 +278,16 @@ const index = () => {
                             onChangeNewTask({ search_in: e?.target?.value })
                           }
                         />
-                        </Col>
-                        <Col sm="12">
+                      </Col>
+                      <Col sm="12">
                         <Input
                           type="text"
                           placeholder="Search For"
                           value={newTask?.associate_with}
                           onChange={(e) =>
-                            onChangeNewTask({ associate_with: e?.target?.value })
+                            onChangeNewTask({
+                              associate_with: e?.target?.value,
+                            })
                           }
                         />
                       </Col>
@@ -255,7 +295,11 @@ const index = () => {
                   )}
                 </Col>
                 <Col sm="1" className="d-flex align-items-center">
-                  <Button color="primary" onClick={onSearch} disabled={loading}>
+                  <Button
+                    color="primary"
+                    onClick={createTask}
+                    disabled={loading}
+                  >
                     {loading ? "Please Wait" : "Create"}
                   </Button>
                 </Col>
@@ -267,97 +311,156 @@ const index = () => {
           <CardBody>
             {store?.data?.tasks?.length > 0 ? (
               store?.data?.tasks?.map((task, index) => (
-                <Row key={index} className="p-1 border rounded mb-1">
-                  <Col sm="1" className="d-flex justify-content-end">
-                    <Edit ize={18} className={`text-info me-50`} />
-                    <Check ize={18} className={`text-success me-50`} onClick={()=>onDeleteTask(task?.id)} />
-                  </Col>
-                  <Col sm="2">
-                    {task?.msg_read != "2" ? (
-                      <strong>*Task {task?.id}</strong>
-                    ) : (
-                      <span>Task {task?.id}</span>
-                    )}
-                    <br />
-                    {task?.due_date &&
-                      task?.due_date != "0000-00-00" &&
-                      task?.due_date <= new Date() && (
-                        <strong className="text-danger">
-                          Due {task?.due_date}
-                        </strong>
+                <span>
+                  <Row key={index} className="p-1 border rounded mb-1">
+                    <Col sm="1" className="d-flex justify-content-end">
+                      <Edit
+                        ize={18}
+                        className={`text-info me-50`}
+                        onClick={() => setIsEdit(task?.id)}
+                      />
+                      <Check
+                        ize={18}
+                        className={`text-success me-50`}
+                        onClick={() => onDeleteTask(task?.id)}
+                      />
+                    </Col>
+                    <Col sm="2">
+                      {task?.msg_read != "2" ? (
+                        <strong>*Task {task?.id}</strong>
+                      ) : (
+                        <span>Task {task?.id}</span>
                       )}
-                    {task?.due_date && task?.due_date != "0000-00-00" && (
-                      <span>Due {task?.due_date}</span>
-                    )}
-                  </Col>
-                  <Col sm="2">
-                    {!task?.assigned_user ? (
-                      <span>USER NOT FOUND</span>
-                    ) : task?.status == "O" ? (
-                      <strong>{task?.assigned_user?.username}</strong>
-                    ) : task?.status == "C" ? (
-                      <span>{task?.assigned_user?.username}</span>
-                    ) : (
-                      <span>Unrecognized status</span>
-                    )}
-                  </Col>
-                  <Col sm="4">
-                    <div className="alert-info mb-1 p-1 rounded">
-                      <div>{task?.text}</div>
-                      <div>
-                        {task?.create_user ? (
-                          <span>- {task?.create_user?.username}</span>
-                        ) : (
-                          <span>USER NOT FOUND</span>
+                      <br />
+                      {task?.due_date &&
+                        task?.due_date != "0000-00-00" &&
+                        task?.due_date <= new Date() && (
+                          <strong className="text-danger">
+                            Due {task?.due_date}
+                          </strong>
                         )}
-                        <span>{task?.created_at}</span>
-                      </div>
-                    </div>
-                    {task?.notes?.map((note, index) => {
-                      if (classVariable == "alert-warning") {
-                        classVariable = "alert-success";
-                      } else {
-                        classVariable = "alert-warning";
-                      }
-                      return (
-                        <div
-                          key={index}
-                          className={`mb-1 ${classVariable} p-1`}
-                        >
-                          <div>
-                            {note?.ext == null ? (
-                              <div>{note?.text}</div>
-                            ) : (
-                              <a
-                                download={note?.text}
-                                href={`/assets/attachments/${note.text}`}
-                              >
-                                {["gif", "jpg", "png", "jpeg"]?.includes(
-                                  note?.ext
-                                ) ? (
-                                  <img
-                                    src={`/assets/attachments/${note?.text}`}
-                                    className="Image"
-                                  />
-                                ) : (
-                                  <span>Download {note?.ext}</span>
-                                )}
-                              </a>
-                            )}
-                          </div>
-                          <div>
-                            {note?.user ? (
-                              <span>- {note?.user?.username}</span>
-                            ) : (
-                              <span>USER NOT FOUND</span>
-                            )}
-                            <span>{note?.created_at}</span>
-                          </div>
+                      {task?.due_date && task?.due_date != "0000-00-00" && (
+                        <span>Due {task?.due_date}</span>
+                      )}
+                    </Col>
+                    <Col sm="2">
+                      {!task?.assigned_user ? (
+                        <span>USER NOT FOUND</span>
+                      ) : task?.status == "O" ? (
+                        <strong>{task?.assigned_user?.username}</strong>
+                      ) : task?.status == "C" ? (
+                        <span>{task?.assigned_user?.username}</span>
+                      ) : (
+                        <span>Unrecognized status</span>
+                      )}
+                    </Col>
+                    <Col sm="4">
+                      <div className="alert-info mb-1 p-1 rounded">
+                        <div>{task?.text}</div>
+                        <div>
+                          {task?.create_user ? (
+                            <span>- {task?.create_user?.username}</span>
+                          ) : (
+                            <span>USER NOT FOUND</span>
+                          )}
+                          <span>{task?.created_at}</span>
                         </div>
-                      );
-                    })}
-                  </Col>
-                </Row>
+                      </div>
+                      {task?.notes?.map((note, index) => {
+                        if (classVariable == "alert-warning") {
+                          classVariable = "alert-success";
+                        } else {
+                          classVariable = "alert-warning";
+                        }
+                        return (
+                          <div
+                            key={index}
+                            className={`mb-1 ${classVariable} p-1`}
+                          >
+                            <div>
+                              {note?.ext == null ? (
+                                <div>{note?.text}</div>
+                              ) : (
+                                <a
+                                  download={note?.text}
+                                  href={`/assets/attachments/${note.text}`}
+                                >
+                                  {["gif", "jpg", "png", "jpeg"]?.includes(
+                                    note?.ext
+                                  ) ? (
+                                    <img
+                                      src={`/assets/attachments/${note?.text}`}
+                                      className="Image"
+                                    />
+                                  ) : (
+                                    <span>Download {note?.ext}</span>
+                                  )}
+                                </a>
+                              )}
+                            </div>
+                            <div>
+                              {note?.user ? (
+                                <span>- {note?.user?.username}</span>
+                              ) : (
+                                <span>USER NOT FOUND</span>
+                              )}
+                              <span> - {note?.created_at}</span>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </Col>
+                  </Row>
+                  {isEdit == task?.id && (
+                    <Row className="border rounded p-1">
+                      <Col sm="3">
+                        <Select
+                          className="react-select"
+                          classNamePrefix="select"
+                          options={store?.userOptions}
+                          placeholder="Reassign"
+                          value={store?.userOptions?.find(
+                            (item) => item?.value == task?.reassign
+                          )}
+                          onChange={(e) =>
+                            onChangeNewTask({ reassign: e?.value })
+                          }
+                          isClearable={true}
+                        />
+                      </Col>
+                      <Col sm="4">
+                        <Input
+                          type="text"
+                          placeholder="Add Note"
+                          value={newTask?.note_text}
+                          onChange={(e) =>
+                            onChangeNewTask({ note_text: e?.target?.value })
+                          }
+                        />
+                      </Col>
+                      <Col sm="3">
+                        <Input
+                          type="file"
+                          placeholder="Attachment"
+                          onChange={(e) =>
+                            onChangeNewTask({
+                              attach: e?.target?.files[0],
+                            })
+                          }
+                        />
+                      </Col>
+                      <Col sm="2" className="d-flex align-items-center">
+                        <Button
+                          color="primary"
+                          onClick={updateTask}
+                          disabled={loading}
+                        >
+                          {loading ? "Please Wait" : "Create"}
+                        </Button>
+                      </Col>
+                    </Row>
+                  )}
+                </span>
               ))
             ) : (
               <div className="text-center">
