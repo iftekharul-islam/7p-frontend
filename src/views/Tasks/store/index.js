@@ -94,11 +94,14 @@ export const tasksSlice = createSlice({
     setSearchParams: (state, action) => {
       state.searchParams = { ...state.searchParams, ...action.payload };
     },
+    setDefaultSearchParams: (state, action) => {
+      state.searchParams = action.payload;
+    },
     setNewTask: (state, action) => {
       state.newTask = { ...state.newTask, ...action.payload };
     }
   },
 });
 
-export const { setParams, setSearchParams, setNewTask } = tasksSlice.actions;
+export const { setParams, setSearchParams, setDefaultSearchParams, setNewTask } = tasksSlice.actions;
 export default tasksSlice.reducer;
