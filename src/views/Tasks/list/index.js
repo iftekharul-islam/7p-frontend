@@ -22,6 +22,7 @@ import {
   getAllData,
   getSearchInOption,
   getUserOptions,
+  setDefaultSearchParams,
   setNewTask,
   setSearchParams,
   updateTasks,
@@ -51,7 +52,7 @@ const index = () => {
           params = { ...params, [key]: value };
         }
       });
-      onChange(params);
+      dispatch(setDefaultSearchParams(params))
       onSearch();
     }
   }, [URLParams]);
