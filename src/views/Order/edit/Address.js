@@ -3,6 +3,7 @@ import "@styles/react/libs/react-select/_react-select.scss";
 import { Fragment, useEffect } from "react";
 import { Eye, Mail } from "react-feather";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import { Col, Input, Label, Row } from "reactstrap";
 import { getShipOptions } from "../store";
 
@@ -349,7 +350,11 @@ const Address = (data, onChange, errors, setShowMail) => {
             <Mail size={20} className="mx-1" />
           </div>
           |
-          <Eye size={20} className="mx-1" />
+          <Link
+            to={`/customer-order?search_for_first=${data?.customer?.bill_email}&operator_first=equals&search_in_first=email`}
+          >
+            <Eye size={20} className="mx-1" />
+          </Link>
         </Col>
       </Row>
       <Row className="pt-1">

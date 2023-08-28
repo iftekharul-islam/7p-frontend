@@ -51,6 +51,12 @@ const ProductList = (
     onChange({ target: { name: "items", value: array } });
   };
 
+  const onItemSelectChange = (e, name, index) => {
+    const array = data?.items?.map((item) => ({ ...item }));
+    array[index][name] = e.value;
+    onChange({ target: { name: "items", value: array } });
+  };
+
   useEffect(() => {
     const subtotal = parseFloat(
       data?.items.reduce(function (prev, cur) {
@@ -167,21 +173,6 @@ const ProductList = (
                 </a>
               </div>
               <div>Item ID: {item?.id}</div>
-              {/* @if (count($item->allChildSkus) > 0 &&
-                                        (empty($item->parameter_option) || $item->parameter_option->batch_route_id == 115))
-                                    @setvar($child_skus = array())
-                                    @setvar($child_skus[$item->child_sku] = $item->child_sku)
-                                    @foreach ($item->allChildSkus as $sku)
-                                        @setvar($child_skus[$sku->child_sku] = $sku->child_sku)
-                                    @endforeach
-                                    {!! Form::select('child_sku[]', $child_skus, $item->child_sku, ['class' => 'child_sku']) !!}
-                                @else
-                                    {!! Form::text('child_sku[]', $item->child_sku, ['class' => 'child_sku']) !!}
-                                @endif
-                                /
-                                <a style='color:red'
-                                    href="{{ url(sprintf('/logistics/sku_list?search_for_first=%s&contains_first=in&search_in_first=parent_sku', $item->item_code)) }}"
-                                    target="_blank">{{ $item->item_code }}</a> */}
               {item?.all_child_skus?.length > 0 &&
               (item?.parameter_option === null ||
                 true ||
@@ -189,12 +180,18 @@ const ProductList = (
                 <Select
                   classNames="react-select"
                   classNamePrefix="select"
+                  name="child_sku"
                   options={item?.all_child_skus?.map((sku) => ({
                     value: sku?.child_sku,
                     label: sku?.child_sku,
                   }))}
-                  value={{ value: item?.child_sku, label: item?.child_sku }}
-                  onChange={(e) => onItemChange(e, index)}
+                  value={item?.all_child_skus
+                    ?.map((sku) => ({
+                      value: sku?.child_sku,
+                      label: sku?.child_sku,
+                    }))
+                    ?.find((sku) => sku?.value === item?.child_sku)}
+                  onChange={(e) => onItemSelectChange(e, 'child_sku', index)}
                 />
               ) : (
                 <Input
@@ -213,7 +210,6 @@ const ProductList = (
               >
                 {item?.item_code}
               </a>
-              
             </Col>
             <Col sm="4">
               <Input
