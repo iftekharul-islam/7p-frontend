@@ -4,6 +4,7 @@ import { selectThemeColors } from "@utils";
 import { Fragment, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useParams } from "react-router-dom";
+import Select from "react-select";
 import AsyncSelect from "react-select/async";
 import { Col, Input, Row } from "reactstrap";
 import { DeleteItem, RestoreItem, getProductOptions } from "../store";
@@ -71,14 +72,45 @@ const ProductList = (
   };
 
   const deleteItem = (e, orderId, itemId) => {
-    e.preventDefault()
-    dispatch(DeleteItem({id, orderId, itemId}))    
-  }
+    e.preventDefault();
+    dispatch(DeleteItem({ id, orderId, itemId }));
+  };
 
   const restoreItem = (e, orderId, itemId) => {
-    e.preventDefault()
-    dispatch(RestoreItem({id, orderId, itemId}))
-  }
+    e.preventDefault();
+    dispatch(RestoreItem({ id, orderId, itemId }));
+  };
+
+  const formatString = (json, separator = "\n", bold = 0) => {
+    let pre = "";
+    let post = "";
+
+    if (bold === 1) {
+      pre = '<strong style="font-size: 110%;">';
+      post = "</strong>";
+    }
+
+    let formattedString = "";
+    const jsonArray = JSON.parse(json);
+
+    if (jsonArray) {
+      for (const key in jsonArray) {
+        let value = jsonArray[key];
+
+        if (key !== "Confirmation_of_Order_Details" && key !== "couponcode") {
+          if (typeof value === String && value?.includes("$") && bold === 1) {
+            value = `<span style="font-size: 120%;">${value}</span>`;
+          }
+          formattedString += `${key.replaceAll(
+            "_",
+            " "
+          )} = ${pre}${value}${post}${separator}`;
+        }
+      }
+    }
+
+    return formattedString;
+  };
 
   return (
     <Fragment>
@@ -111,7 +143,7 @@ const ProductList = (
                   <Link
                     style={{ color: "gray" }}
                     className="delete-item"
-                    onClick={(e)=>deleteItem(e, data?.id, item?.id)}
+                    onClick={(e) => deleteItem(e, data?.id, item?.id)}
                   >
                     Cancel
                   </Link>
@@ -121,7 +153,7 @@ const ProductList = (
                   <Link
                     style={{ color: "gray" }}
                     className="delete-item"
-                    onClick={(e)=>restoreItem(e, data?.id, item?.id)}
+                    onClick={(e) => restoreItem(e, data?.id, item?.id)}
                   >
                     Restore
                   </Link>
@@ -129,17 +161,60 @@ const ProductList = (
               </div>
             </Col>
             <Col sm="3">
-              <div>{item?.child_sku}</div>
-              <div>{item?.item_description}</div>
+              <div>
+                <a href={item?.item_url ?? "#"} target="_blank">
+                  {item?.item_description}
+                </a>
+              </div>
+              <div>Item ID: {item?.id}</div>
+              {/* @if (count($item->allChildSkus) > 0 &&
+                                        (empty($item->parameter_option) || $item->parameter_option->batch_route_id == 115))
+                                    @setvar($child_skus = array())
+                                    @setvar($child_skus[$item->child_sku] = $item->child_sku)
+                                    @foreach ($item->allChildSkus as $sku)
+                                        @setvar($child_skus[$sku->child_sku] = $sku->child_sku)
+                                    @endforeach
+                                    {!! Form::select('child_sku[]', $child_skus, $item->child_sku, ['class' => 'child_sku']) !!}
+                                @else
+                                    {!! Form::text('child_sku[]', $item->child_sku, ['class' => 'child_sku']) !!}
+                                @endif
+                                /
+                                <a style='color:red'
+                                    href="{{ url(sprintf('/logistics/sku_list?search_for_first=%s&contains_first=in&search_in_first=parent_sku', $item->item_code)) }}"
+                                    target="_blank">{{ $item->item_code }}</a> */}
+              {item?.all_child_skus?.length > 0 &&
+              (item?.parameter_option === null ||
+                true ||
+                item?.parameter_option?.batch_route_id === 115) ? (
+                <Select
+                  classNames="react-select"
+                  classNamePrefix="select"
+                  options={item?.all_child_skus?.map((sku) => ({
+                    value: sku?.child_sku,
+                    label: sku?.child_sku,
+                  }))}
+                  value={{ value: item?.child_sku, label: item?.child_sku }}
+                  onChange={(e) => onItemChange(e, index)}
+                />
+              ) : (
+                <Input
+                  type="text"
+                  name="child_sku"
+                  className="child_sku"
+                  value={item?.child_sku}
+                  onChange={(e) => onItemChange(e, index)}
+                />
+              )}
             </Col>
             <Col sm="4">
               <Input
-                type="text"
+                type="textarea"
                 Rows="1"
                 name="options"
                 id="options"
                 placeholder="Click Here"
-                value={item?.options}
+                value={formatString(item?.item_option)}
+                rows="4"
                 onChange={(e) => onItemChange(e, index)}
               />
             </Col>
