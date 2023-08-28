@@ -205,6 +205,15 @@ const ProductList = (
                   onChange={(e) => onItemChange(e, index)}
                 />
               )}
+              /
+              <a
+                style={{ color: "red" }}
+                href={`/config-child-sku?search_for_first=${item?.item_code}&contains_first=in&search_in_first=parent_sku`}
+                target="_blank"
+              >
+                {item?.item_code}
+              </a>
+              
             </Col>
             <Col sm="4">
               <Input
