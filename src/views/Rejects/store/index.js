@@ -13,6 +13,17 @@ export const getAllData = createAsyncThunk(
   }
 );
 
+export const sendAllToFirstStation = createAsyncThunk(  
+  "rejects/sendAllToFirstStation",
+  async (_, { getState }) => {
+    const { params, searchParams } = getState()?.rejects;
+    const response = await Api.post("send-to-start", {
+      params: { ...params, ...searchParams },
+    });
+    return response.data;
+  }
+);
+
 export const getSectionOptions = createAsyncThunk(
   "rejects/getSectionOptions",
   async () => {

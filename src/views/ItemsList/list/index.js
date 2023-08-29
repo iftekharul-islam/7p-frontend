@@ -5,6 +5,7 @@ import { Fragment, useEffect, useState } from "react";
 import Flatpickr from "react-flatpickr";
 import ReactPaginate from "react-paginate";
 import { useDispatch, useSelector } from "react-redux";
+import { useSearchParams } from "react-router-dom";
 import Select from "react-select";
 import { Button, Card, Col, Input, Row } from "reactstrap";
 import {
@@ -38,6 +39,19 @@ const index = () => {
     await dispatch(getAllData());
     setLoading(false);
   };
+
+  const [URLParams, setURLParams] = useSearchParams();
+  useEffect(() => {
+    if (URLParams) {
+      let params = {};
+      URLParams?.forEach((value, key) => {
+        if (value != "null") {
+          params = { ...params, [key]: value };
+        }
+      });
+      onChange(params);
+    }
+  }, [URLParams]);
 
   const onChange = (data) => {
     dispatch(setSearchParams(data));

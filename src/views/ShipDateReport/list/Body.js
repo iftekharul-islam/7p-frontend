@@ -138,8 +138,8 @@ const Body = (data) => {
                           <Row style={{ backgroundColor: "#F5F5F5" }}>
                             <Col sm="3" className="border">
                               {store?.storeOptions?.find(
-                                (itm) => itm?.value === ship?.store_id
-                              ) ?? "Store not Found"}
+                                (itm) => itm?.value == ship?.store_id
+                              )?.label ?? "Store not Found"}
                             </Col>
                             <Col
                               sm="2"

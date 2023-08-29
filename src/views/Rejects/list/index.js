@@ -47,6 +47,12 @@ const index = () => {
     setLoading(false);
   };
 
+  const sendAll = async () => {
+    setLoading(true);
+    await dispatch(sendAllToFirstStation());
+    setLoading(false);
+  };
+
   const onChange = (data) => {
     dispatch(setSearchParams(data));
   };
@@ -79,7 +85,7 @@ const index = () => {
         let value = jsonArray[key];
 
         if (key !== "Confirmation_of_Order_Details" && key !== "couponcode") {
-          if (value?.includes("$") && bold === 1) {
+          if (typeof value == "string" && value?.includes("$") && bold === 1) {
             value = `<span style="font-size: 120%;">${value}</span>`;
           }
           formattedString += `${key.replaceAll(
@@ -87,7 +93,6 @@ const index = () => {
             " "
           )} = ${pre}${value}${post}${separator}`;
         }
-        console.log(formattedString);
       }
     }
 
@@ -159,7 +164,7 @@ const index = () => {
                 </Button>
               </Col>
               <Col sm="2" className="d-flex align-items-start flex-column">
-                <Button color="primary" onClick={onSearch} disabled={loading}>
+                <Button color="primary" onClick={sendAll} disabled={loading}>
                   {loading ? "Please Wait" : "Send All to First Station"}
                 </Button>
               </Col>
@@ -212,175 +217,181 @@ const index = () => {
               </CardBody>
             </Card>
           </span>
-        ) : store?.data?.batch_array?.length > 0 ? (
+        ) : Object.keys(store?.data?.batch_array ?? {})?.length > 0 ? (
           <Card>
             <CardHeader>
               <h4>
                 {store?.data?.total_items} found in{" "}
-                {store?.data?.batch_array?.length} Batch/es
+                {Object.keys(store?.data?.batch_array ?? {})?.length} Batch/es
               </h4>
             </CardHeader>
             {/* TODO need to update with data format */}
             <CardBody>
-              {store?.data?.batch_array?.map((batch, index) => (
-                <span>
-                  <Row className="mb-1 border rounded">
-                    <Col sm="2">
-                      <strong className="m-1">
-                        <Link to={`/batch-list/${batch?.key}`}>
-                          {batch?.key}
-                        </Link>
-                      </strong>
-                      <div>
-                        <Select
-                          className="react-select m-1"
-                          classNamePrefix="select"
-                          placeholder="Send Batch to"
-                          options={store?.destinationOptions}
-                        />
-                        <Button
-                          color="primary"
-                          className="m-1"
-                          onClick={(e) => {
-                            e.preventDefault();
-                          }}
-                        >
-                          Update Batch {batch?.key}
-                        </Button>
-                      </div>
-                    </Col>
-                    <Col sm="10">
-                      {batch?.items?.length > 0 &&
-                        batch?.items?.map((item, index) => (
-                          <Row key={index} className="border rounded">
-                            <Col sm="2">
-                              <div>
-                                <Link
-                                  to={`/customer-order-edit/${item?.order?.id}`}
-                                >
-                                  {item?.order?.short_order}
-                                </Link>
-                              </div>
-                              <div>
-                                {moment(item?.order?.order_date).format(
-                                  "DD MMM YYYY"
-                                )}
-                              </div>
-                              <div>Item: {item?.id}</div>
-                              {item?.item_quantity > 1 && (
-                                <strong style={{ fontSize: "125%" }}>
-                                  QTY: {item.item_quantity}
-                                </strong>
-                              )}
-                              <br />
-                              {item?.rejections?.length > 1 && (
-                                <>
-                                  <br />
-                                  <strong style={{ color: "red" }}>
-                                    Rejected {item?.rejections?.length} Times
+              {Object.keys(store?.data?.batch_array)?.map((key, index) => {
+                const batch = store?.data?.batch_array[key];
+                console.log("🚀 ~ file: index.js:237 ~ {Object.keys ~ batch:", batch)
+                return (
+                  <span>
+                    <Row className="mb-1 border rounded">
+                      <Col sm="2">
+                        <strong className="m-1">
+                          <Link to={`/batch-list/${key}`}>
+                            {key}
+                          </Link>
+                        </strong>
+                        <div>
+                          <Select
+                            className="react-select m-1"
+                            classNamePrefix="select"
+                            placeholder="Send Batch to"
+                            options={store?.destinationOptions}
+                          />
+                          <Button
+                            color="primary"
+                            className="m-1"
+                            onClick={(e) => {
+                              e.preventDefault();
+                            }}
+                          >
+                            Update Batch {key}
+                          </Button>
+                        </div>
+                      </Col>
+                      <Col sm="10">
+                        {batch?.items?.length > 0 &&
+                          batch?.items?.map((item, index) => (
+                            <Row key={index} className="border rounded">
+                              <Col sm="2">
+                                <div>
+                                  <Link
+                                    to={`/customer-order-edit/${item?.order?.id}`}
+                                  >
+                                    {item?.order?.short_order}
+                                  </Link>
+                                </div>
+                                <div>
+                                  {moment(item?.order?.order_date).format(
+                                    "DD MMM YYYY"
+                                  )}
+                                </div>
+                                <div>Item: {item?.id}</div>
+                                {item?.item_quantity > 1 && (
+                                  <strong style={{ fontSize: "125%" }}>
+                                    QTY: {item.item_quantity}
                                   </strong>
-                                  <br />
-                                </>
-                              )}
-                              {item?.rejection && (
-                                <a
-                                  href={`/rejections/reprint?id=${item?.rejection?.id}`}
-                                  className="btn btn-xs"
-                                >
-                                  Reprint Label
-                                </a>
-                              )}
-                              {batch?.items?.length > 1 && (
-                                <a
-                                  href={`/rejections/split?item_id=${item.id}&batch_number=${item.batch_number}`}
-                                  className="btn btn-xs"
-                                >
-                                  New Batch
-                                </a>
-                              )}
-                            </Col>
-                            <Col sm="2">
-                              <a href={item?.item_url} target="_blank">
-                                <img
-                                  src={item?.item_thumb}
-                                  height={200}
-                                  width={150}
-                                />
-                              </a>
-                            </Col>
-                            <Col sm="4">
-                              <div>
-                                <div>{item.item_description}</div>
-                                <p>SKU: {item.child_sku}</p>
-                                {item.rejection ? (
-                                  <div>
-                                    <strong>
-                                      {item.rejection.graphic_status}:
+                                )}
+                                <br />
+                                {item?.rejections?.length > 1 && (
+                                  <>
+                                    <br />
+                                    <strong style={{ color: "red" }}>
+                                      Rejected {item?.rejections?.length} Times
                                     </strong>
-                                    {item.rejection.rejection_reason_info && (
-                                      <span>
-                                        {
-                                          item.rejection.rejection_reason_info
-                                            .rejection_message
-                                        }
-                                      </span>
-                                    )}
-                                    {item.rejection.rejection_message.length >
-                                      0 && (
-                                      <div>
-                                        <strong>Note:</strong>{" "}
-                                        {item.rejection.rejection_message}
-                                      </div>
-                                    )}
+                                    <br />
+                                  </>
+                                )}
+                                {item?.rejection && (
+                                  <a
+                                    href={`/rejections/reprint?id=${item?.rejection?.id}`}
+                                    className="btn btn-xs"
+                                  >
+                                    Reprint Label
+                                  </a>
+                                )}
+                                {batch?.items?.length > 1 && (
+                                  <a
+                                    href={`/rejections/split?item_id=${item.id}&batch_number=${item.batch_number}`}
+                                    className="btn btn-xs"
+                                  >
+                                    New Batch
+                                  </a>
+                                )}
+                              </Col>
+                              <Col sm="2">
+                                <a href={item?.item_url} target="_blank">
+                                  <img
+                                    src={item?.item_thumb}
+                                    height={200}
+                                    width={150}
+                                  />
+                                </a>
+                              </Col>
+                              <Col sm="4">
+                                <div>
+                                  <div>{item.item_description}</div>
+                                  <p>SKU: {item.child_sku}</p>
+                                  {item.rejection ? (
                                     <div>
-                                      <strong>Rejected:</strong>{" "}
-                                      {moment(item.rejection.created_at).format(
-                                        "DD MMM YYYY"
-                                      )}
-                                      {item.rejection.from_station && (
+                                      <strong>
+                                        {item.rejection.graphic_status}:
+                                      </strong>
+                                      {item.rejection.rejection_reason_info && (
                                         <span>
-                                          {" "}
-                                          from{" "}
                                           {
-                                            item.rejection.from_station
-                                              .station_name
+                                            item.rejection.rejection_reason_info
+                                              .rejection_message
                                           }
                                         </span>
                                       )}
-                                      {item.rejection.user && (
-                                        <span>
-                                          {" "}
-                                          by {item.rejection.user.username}
-                                        </span>
+                                      {item?.rejection?.rejection_message
+                                        ?.length > 0 && (
+                                        <div>
+                                          <strong>Note:</strong>{" "}
+                                          {item.rejection.rejection_message}
+                                        </div>
                                       )}
-                                    </div>
-                                    {item.rejection.supervisor_message && (
                                       <div>
-                                        <strong>Supervisor:</strong>{" "}
-                                        {item.rejection.supervisor_message}
-                                        <br />
+                                        <strong>Rejected:</strong>{" "}
+                                        {moment(
+                                          item.rejection.created_at
+                                        ).format("DD MMM YYYY")}
+                                        {item.rejection.from_station && (
+                                          <span>
+                                            {" "}
+                                            from{" "}
+                                            {
+                                              item.rejection.from_station
+                                                .station_name
+                                            }
+                                          </span>
+                                        )}
+                                        {item.rejection.user && (
+                                          <span>
+                                            {" "}
+                                            by {item.rejection.user.username}
+                                          </span>
+                                        )}
                                       </div>
-                                    )}
-                                    <input
-                                      type="text"
-                                      name={`supervisor_message[${item.rejection.id}]`}
-                                      className="supervisor_message form-control"
-                                      style={{ minWidth: "200px" }}
-                                      placeholder="Enter a message"
-                                    />
-                                  </div>
-                                ) : (
-                                  <p>- Reject information not found -</p>
-                                )}
-                              </div>
-                            </Col>
-                            <Col sm="4">{formatString(item?.item_option)}</Col>
-                          </Row>
-                        ))}
-                    </Col>
-                  </Row>
-                </span>
-              ))}
+                                      {item.rejection.supervisor_message && (
+                                        <div>
+                                          <strong>Supervisor:</strong>{" "}
+                                          {item.rejection.supervisor_message}
+                                          <br />
+                                        </div>
+                                      )}
+                                      <input
+                                        type="text"
+                                        name={`supervisor_message[${item.rejection.id}]`}
+                                        className="supervisor_message form-control"
+                                        style={{ minWidth: "200px" }}
+                                        placeholder="Enter a message"
+                                      />
+                                    </div>
+                                  ) : (
+                                    <p>- Reject information not found -</p>
+                                  )}
+                                </div>
+                              </Col>
+                              <Col sm="4">
+                                {formatString(item?.item_option)}
+                              </Col>
+                            </Row>
+                          ))}
+                      </Col>
+                    </Row>
+                  </span>
+                );
+              })}
             </CardBody>
           </Card>
         ) : (

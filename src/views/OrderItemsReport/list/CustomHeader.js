@@ -13,7 +13,6 @@ const CustomHeader = () => {
   const store = useSelector((state) => state.orderItemsReports);
   const [loading, setLoading] = useState(false);
   const params = store?.searchParams;
-  console.log("🚀 ~ file: CustomHeader.js:16 ~ CustomHeader ~ params:", params)
 
   useEffect(() => {
     dispatch(getStoreOptions());
