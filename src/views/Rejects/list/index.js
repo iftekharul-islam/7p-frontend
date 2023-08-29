@@ -21,6 +21,8 @@ import {
   getGraphicsStatusOptions,
   getReasonOptions,
   getSectionOptions,
+  reprintLabel,
+  sendAllToFirstStation,
   setSearchParams,
 } from "../store";
 
@@ -38,7 +40,7 @@ const index = () => {
 
   useEffect(() => {
     dispatch(getAllData());
-    dispatch(getDestinationOptions())
+    dispatch(getDestinationOptions());
   }, [params]);
 
   const onSearch = async () => {
@@ -49,8 +51,20 @@ const index = () => {
 
   const sendAll = async () => {
     setLoading(true);
-    await dispatch(sendAllToFirstStation());
+    let text =
+      "Are you sure you want to move all " +
+      Object.keys(store?.data?.batch_array)?.length +
+      " batches shown to the first station?";
+    if (confirm(text) == true) {
+      await dispatch(
+        sendAllToFirstStation(Object.keys(store?.data?.batch_array ?? {}))
+      );
+    }
     setLoading(false);
+  };
+
+  const ReprintLabel = async (id) => {
+    await dispatch(reprintLabel({ id }));
   };
 
   const onChange = (data) => {
@@ -229,15 +243,12 @@ const index = () => {
             <CardBody>
               {Object.keys(store?.data?.batch_array)?.map((key, index) => {
                 const batch = store?.data?.batch_array[key];
-                console.log("🚀 ~ file: index.js:237 ~ {Object.keys ~ batch:", batch)
                 return (
                   <span>
                     <Row className="mb-1 border rounded">
                       <Col sm="2">
                         <strong className="m-1">
-                          <Link to={`/batch-list/${key}`}>
-                            {key}
-                          </Link>
+                          <Link to={`/batch-list/${key}`}>{key}</Link>
                         </strong>
                         <div>
                           <Select
@@ -245,6 +256,12 @@ const index = () => {
                             classNamePrefix="select"
                             placeholder="Send Batch to"
                             options={store?.destinationOptions}
+                            value={store?.destinationOptions?.find(
+                              (item) => item?.value == params?.station_change
+                            )}
+                            onChange={(e) =>
+                              onChange({ station_change: e?.value })
+                            }
                           />
                           <Button
                             color="primary"
@@ -258,7 +275,8 @@ const index = () => {
                         </div>
                       </Col>
                       <Col sm="10">
-                        {batch?.items?.length > 0 &&
+                        {typeof batch?.items == "array" &&
+                          batch?.items?.length > 0 &&
                           batch?.items?.map((item, index) => (
                             <Row key={index} className="border rounded">
                               <Col sm="2">
@@ -291,12 +309,16 @@ const index = () => {
                                   </>
                                 )}
                                 {item?.rejection && (
-                                  <a
-                                    href={`/rejections/reprint?id=${item?.rejection?.id}`}
-                                    className="btn btn-xs"
+                                  <Button
+                                    color="primary"
+                                    className="m-1"
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      ReprintLabel(item?.rejection?.id);
+                                    }}
                                   >
                                     Reprint Label
-                                  </a>
+                                  </Button>
                                 )}
                                 {batch?.items?.length > 1 && (
                                   <a
@@ -311,8 +333,8 @@ const index = () => {
                                 <a href={item?.item_url} target="_blank">
                                   <img
                                     src={item?.item_thumb}
-                                    height={200}
-                                    width={150}
+                                    height={90}
+                                    width={90}
                                   />
                                 </a>
                               </Col>
@@ -387,6 +409,146 @@ const index = () => {
                               </Col>
                             </Row>
                           ))}
+                        {typeof batch?.items == "object" &&
+                          Object.keys(batch?.items ?? {})?.length > 0 &&
+                          Object.keys(batch?.items ?? {})?.map((key, index) => {
+                            const item = batch?.items[key];
+                            return (
+                              <Row key={index} className="border rounded">
+                                <Col sm="2">
+                                  <div>
+                                    <Link
+                                      to={`/customer-order-edit/${item?.order?.id}`}
+                                    >
+                                      {item?.order?.short_order}
+                                    </Link>
+                                  </div>
+                                  <div>
+                                    {moment(item?.order?.order_date).format(
+                                      "DD MMM YYYY"
+                                    )}
+                                  </div>
+                                  <div>Item: {item?.id}</div>
+                                  {item?.item_quantity > 1 && (
+                                    <strong style={{ fontSize: "125%" }}>
+                                      QTY: {item.item_quantity}
+                                    </strong>
+                                  )}
+                                  <br />
+                                  {item?.rejections?.length > 1 && (
+                                    <>
+                                      <br />
+                                      <strong style={{ color: "red" }}>
+                                        Rejected {item?.rejections?.length}{" "}
+                                        Times
+                                      </strong>
+                                      <br />
+                                    </>
+                                  )}
+                                  {item?.rejection && (
+                                    <Button
+                                    color="primary"
+                                    className="m-1"
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      ReprintLabel(item?.rejection?.id);
+                                    }}
+                                  >
+                                    Reprint Label
+                                  </Button>
+                                  )}
+                                  {batch?.items?.length > 1 && (
+                                    <a
+                                      href={`/rejections/split?item_id=${item.id}&batch_number=${item.batch_number}`}
+                                      className="btn btn-xs"
+                                    >
+                                      New Batch
+                                    </a>
+                                  )}
+                                </Col>
+                                <Col sm="2">
+                                  <a href={item?.item_url} target="_blank">
+                                    <img
+                                      src={item?.item_thumb}
+                                      height={200}
+                                      width={150}
+                                    />
+                                  </a>
+                                </Col>
+                                <Col sm="4">
+                                  <div>
+                                    <div>{item.item_description}</div>
+                                    <p>SKU: {item.child_sku}</p>
+                                    {item.rejection ? (
+                                      <div>
+                                        <strong>
+                                          {item.rejection.graphic_status}:
+                                        </strong>
+                                        {item.rejection
+                                          .rejection_reason_info && (
+                                          <span>
+                                            {
+                                              item.rejection
+                                                .rejection_reason_info
+                                                .rejection_message
+                                            }
+                                          </span>
+                                        )}
+                                        {item?.rejection?.rejection_message
+                                          ?.length > 0 && (
+                                          <div>
+                                            <strong>Note:</strong>{" "}
+                                            {item.rejection.rejection_message}
+                                          </div>
+                                        )}
+                                        <div>
+                                          <strong>Rejected:</strong>{" "}
+                                          {moment(
+                                            item.rejection.created_at
+                                          ).format("DD MMM YYYY")}
+                                          {item.rejection.from_station && (
+                                            <span>
+                                              {" "}
+                                              from{" "}
+                                              {
+                                                item.rejection.from_station
+                                                  .station_name
+                                              }
+                                            </span>
+                                          )}
+                                          {item.rejection.user && (
+                                            <span>
+                                              {" "}
+                                              by {item.rejection.user.username}
+                                            </span>
+                                          )}
+                                        </div>
+                                        {item.rejection.supervisor_message && (
+                                          <div>
+                                            <strong>Supervisor:</strong>{" "}
+                                            {item.rejection.supervisor_message}
+                                            <br />
+                                          </div>
+                                        )}
+                                        <input
+                                          type="text"
+                                          name={`supervisor_message[${item.rejection.id}]`}
+                                          className="supervisor_message form-control"
+                                          style={{ minWidth: "200px" }}
+                                          placeholder="Enter a message"
+                                        />
+                                      </div>
+                                    ) : (
+                                      <p>- Reject information not found -</p>
+                                    )}
+                                  </div>
+                                </Col>
+                                <Col sm="4">
+                                  {formatString(item?.item_option)}
+                                </Col>
+                              </Row>
+                            );
+                          })}
                       </Col>
                     </Row>
                   </span>

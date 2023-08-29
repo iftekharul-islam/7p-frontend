@@ -4,22 +4,29 @@ import Api from "@src/http";
 
 export const getAllData = createAsyncThunk(
   "rejects/getAllData",
-  async (_, { getState }) => {
+  async (data, { getState }) => {
     const { params, searchParams } = getState()?.rejects;
     const response = await Api.get("rejects", {
-      params: { ...params, ...searchParams },
+      params: { ...params, ...searchParams, ...data },
     });
     return response.data;
   }
 );
 
-export const sendAllToFirstStation = createAsyncThunk(  
+export const sendAllToFirstStation = createAsyncThunk(
   "rejects/sendAllToFirstStation",
-  async (_, { getState }) => {
-    const { params, searchParams } = getState()?.rejects;
-    const response = await Api.post("send-to-start", {
-      params: { ...params, ...searchParams },
-    });
+  async (data, { dispatch }) => {
+    const response = await Api.post("send-to-start", { batches: data });
+    dispatch(getAllData());
+    return response.data;
+  }
+);
+
+export const reprintLabel = createAsyncThunk(
+  "rejects/reprintLabel",
+  async (data, { dispatch }) => {
+    const response = await Api.post("reprint-label", data);
+    dispatch(getAllData(response?.data?.params));
     return response.data;
   }
 );
@@ -62,8 +69,7 @@ export const rejectsSlice = createSlice({
     data: null,
     total: 1,
 
-    params: {
-    },
+    params: {},
 
     searchParams: {},
 
