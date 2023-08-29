@@ -45,13 +45,10 @@ const ViewComponent = (loading, setLoading) => {
   const handleMove = async (batch_number) => {
     onChange(batch_number, "loader", true);
     const data = printData?.find((item) => item?.batch_number == batch_number);
-    if (data) {
-      const res = await dispatch(printSublimation(data));
-      if (res?.payload) {
-        window.open(res?.payload, "_blank");
-      }
-    } else {
-      alert("Please select Printer");
+
+    const res = await dispatch(printSublimation(data));
+    if (res?.payload) {
+      window.open(res?.payload, "_blank");
     }
     onChange(batch_number, "loader", false);
   };
@@ -66,7 +63,7 @@ const ViewComponent = (loading, setLoading) => {
         <span>
           <Row
             key={index}
-            className={batch?.to_printer_date != null && "bg-info"}
+            // className={batch?.to_printer_date != null && "bg-info"}
           >
             <Col sm="3">
               <Link to={`/batch-list/${batch?.batch_number}`}>

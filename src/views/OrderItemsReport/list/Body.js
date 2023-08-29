@@ -1,11 +1,13 @@
 import Prism from "prismjs";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import { Col, Row } from "reactstrap";
 
 const Body = (data) => {
   const store = useSelector((state) => state.shipDateReports);
   const [collapse, setCollapse] = useState(null);
+  const params = store?.searchParams;
 
   useEffect(() => {
     Prism.highlightAll();
@@ -18,7 +20,7 @@ const Body = (data) => {
 
   return (
     <>
-      {data?.shipped_today?.length > 0 ? (
+      {data?.items?.length > 0 ? (
         <>
           <Row style={{ backgroundColor: "#f7eaea" }}>
             <Col sm="6" className="border d-flex justify-content-center">
@@ -34,10 +36,10 @@ const Body = (data) => {
               Shipped
             </Col>
             <Col sm="1" className="border d-flex justify-content-center">
-              Average Days to Ship
+              Average Days
             </Col>
             <Col sm="1" className="border d-flex justify-content-center">
-              Max Days to Ship
+              Max Days
             </Col>
             <Col sm="1" className="border d-flex justify-content-center">
               Rejects
@@ -57,25 +59,40 @@ const Body = (data) => {
                     {item?.product_name}
                   </Col>
                   <Col sm="1" className="border d-flex justify-content-center">
-                    {item?.item_qty}
+                    <Link to={`/items-list?search_for_first=${item?.item_code}&search_in_first=item_code&store=${data?.store_str}&start_date=${params?.start_date}&end_date=${params?.end_date}`} target="_blank">{item?.item_qty}</Link>
                   </Col>
                   <Col sm="1" className="border d-flex justify-content-center">
-                    {item?.shipped}
+                  <Link to={`/items-list?search_for_first=${item?.item_code}&search_in_first=item_code&store=${data?.store_str}&start_date=${params?.start_date}&end_date=${params?.end_date}&status=2`} target="_blank">{item?.shipped}</Link>
                   </Col>
                   <Col sm="1" className="border d-flex justify-content-center">
-                    {paseFloat(
-                      (parseInt(item?.shipped) / parseInt(item?.item_qty)) * 100
-                    ).toFixed(2)}
-                    %
+                    {item?.shipped > 0 && item?.item_qty > 0 ? (
+                      <>
+                        {parseFloat(
+                          (parseInt(item?.shipped) / parseInt(item?.item_qty)) *
+                            100
+                        ).toFixed(2)}
+                        %
+                      </>
+                    ) : (
+                      <>--</>
+                    )}
                   </Col>
                   <Col sm="1" className="border d-flex justify-content-center">
-                    {parseInt(item?.ship_day) / parseInt(item?.shipped)}
+                    {item?.shipped > 0 ? (
+                      parseFloat(
+                        parseInt(item?.ship_days) / parseInt(item?.shipped)
+                      ).toFixed(1)
+                    ) : (
+                      <>--</>
+                    )}
                   </Col>
                   <Col sm="1" className="border d-flex justify-content-center">
-                    {item?.maxdays}
+                    {parseFloat(item?.maxdays).toFixed(1)}
                   </Col>
                   <Col sm="1" className="border d-flex justify-content-center">
-                    {item?.rejects?.count}
+                    {data?.rejects?.find(
+                      (reject) => reject?.item_code == item?.item_code
+                    )?.count ?? "--"}
                   </Col>
                 </Row>
               </>
