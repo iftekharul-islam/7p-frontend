@@ -34,7 +34,7 @@ const index = () => {
   };
 
   const exportqbcsv = () => {
-    dispatch(exportQuickbooksCSV(qbData));
+    dispatch(exportQuickbooksCSV(csvData));
   };
 
   
