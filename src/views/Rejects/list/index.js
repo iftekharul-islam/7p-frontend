@@ -24,12 +24,20 @@ import {
   reprintLabel,
   sendAllToFirstStation,
   setSearchParams,
+  updateSinglebatch,
 } from "../store";
 
 const index = () => {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.rejects);
   const [loading, setLoading] = useState(false);
+  const [batchData, setBatchData] = useState({});
+  console.log("🚀 ~ file: index.js:35 ~ index ~ batchData:", batchData);
+
+  const onChangeBatch = (data, key) => {
+    setBatchData({ ...batchData, [key]: { ...batchData?.[key], ...data } });
+  };
+
   const params = store?.searchParams;
 
   useEffect(() => {
@@ -65,6 +73,10 @@ const index = () => {
 
   const ReprintLabel = async (id) => {
     await dispatch(reprintLabel({ id }));
+  };
+
+  const updateBatch = async (batch_number) => {
+    await dispatch(updateSinglebatch({batch_number, ...batchData?.[batch_number]}));
   };
 
   const onChange = (data) => {
@@ -241,14 +253,14 @@ const index = () => {
             </CardHeader>
             {/* TODO need to update with data format */}
             <CardBody>
-              {Object.keys(store?.data?.batch_array)?.map((key, index) => {
-                const batch = store?.data?.batch_array[key];
+              {Object.keys(store?.data?.batch_array)?.map((keyBatch, index) => {
+                const batch = store?.data?.batch_array[keyBatch];
                 return (
                   <span>
                     <Row className="mb-1 border rounded">
                       <Col sm="2">
                         <strong className="m-1">
-                          <Link to={`/batch-list/${key}`}>{key}</Link>
+                          <Link to={`/batch-list/${keyBatch}`}>{keyBatch}</Link>
                         </strong>
                         <div>
                           <Select
@@ -260,7 +272,7 @@ const index = () => {
                               (item) => item?.value == params?.station_change
                             )}
                             onChange={(e) =>
-                              onChange({ station_change: e?.value })
+                              onChangeBatch({ station_change: e?.value }, keyBatch)
                             }
                           />
                           <Button
@@ -268,9 +280,10 @@ const index = () => {
                             className="m-1"
                             onClick={(e) => {
                               e.preventDefault();
+                              updateBatch(keyBatch);
                             }}
                           >
-                            Update Batch {key}
+                            Update Batch {keyBatch}
                           </Button>
                         </div>
                       </Col>
@@ -391,13 +404,27 @@ const index = () => {
                                           <br />
                                         </div>
                                       )}
-                                      <input
-                                        type="text"
-                                        name={`supervisor_message[${item.rejection.id}]`}
-                                        className="supervisor_message form-control"
-                                        style={{ minWidth: "200px" }}
-                                        placeholder="Enter a message"
-                                      />
+                                      <Input
+                                          type="text"
+                                          name={`supervisor_message[${item.rejection.id}]`}
+                                          className="supervisor_message form-control"
+                                          onChange={(e) => {
+                                            e.preventDefault();
+                                            onChangeBatch(
+                                              {
+                                                supervisor_message: {
+                                                  ...batchData?.[keyBatch]
+                                                    ?.supervisor_message,
+                                                  [item.rejection.id]:
+                                                    e?.target?.value,
+                                                },
+                                              },
+                                              keyBatch
+                                            );
+                                          }}
+                                          style={{ minWidth: "200px" }}
+                                          placeholder="Enter a message"
+                                        />
                                     </div>
                                   ) : (
                                     <p>- Reject information not found -</p>
@@ -447,15 +474,15 @@ const index = () => {
                                   )}
                                   {item?.rejection && (
                                     <Button
-                                    color="primary"
-                                    className="m-1"
-                                    onClick={(e) => {
-                                      e.preventDefault();
-                                      ReprintLabel(item?.rejection?.id);
-                                    }}
-                                  >
-                                    Reprint Label
-                                  </Button>
+                                      color="primary"
+                                      className="m-1"
+                                      onClick={(e) => {
+                                        e.preventDefault();
+                                        ReprintLabel(item?.rejection?.id);
+                                      }}
+                                    >
+                                      Reprint Label
+                                    </Button>
                                   )}
                                   {batch?.items?.length > 1 && (
                                     <a
@@ -530,10 +557,24 @@ const index = () => {
                                             <br />
                                           </div>
                                         )}
-                                        <input
+                                        <Input
                                           type="text"
                                           name={`supervisor_message[${item.rejection.id}]`}
                                           className="supervisor_message form-control"
+                                          onChange={(e) => {
+                                            e.preventDefault();
+                                            onChangeBatch(
+                                              {
+                                                supervisor_message: {
+                                                  ...batchData?.[keyBatch]
+                                                    ?.supervisor_message,
+                                                  [item.rejection.id]:
+                                                    e?.target?.value,
+                                                },
+                                              },
+                                              keyBatch
+                                            );
+                                          }}
                                           style={{ minWidth: "200px" }}
                                           placeholder="Enter a message"
                                         />
