@@ -1,6 +1,6 @@
 // ** Redux Imports
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import Api from "@src/http";
 // ** Axios Imports
 import axios from "axios";
 
@@ -23,12 +23,21 @@ export const updateBookmarked = createAsyncThunk(
   }
 );
 
+export const getUserTasks = createAsyncThunk(
+  "layout/getUserTasks",
+  async () => {
+    const res = await Api.get("/user-tasks");
+    return res?.data;
+  }
+);
+
 export const layoutSlice = createSlice({
   name: "layout",
   initialState: {
     query: "",
     bookmarks: [],
     suggestions: [],
+    userTasks: {},
   },
   reducers: {
     handleSearchQuery: (state, action) => {
@@ -62,6 +71,9 @@ export const layoutSlice = createSlice({
         } else {
           state.bookmarks.splice(bookmarkIndex, 1);
         }
+      })
+      .addCase(getUserTasks.fulfilled, (state, action) => {
+        state.userTasks = action.payload;
       });
   },
 });

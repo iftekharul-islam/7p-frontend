@@ -20,6 +20,40 @@ export const getData = createAsyncThunk("batchList/getData", async (data) => {
   return response.data;
 });
 
+export const rejectBatch = createAsyncThunk(
+  "batchList/rejectBatch",
+  async (data) => {
+    const response = await Api.get("reject_item", { params: data });
+    if (response.data?.status === 201) return response.data;
+  }
+);
+
+export const FileUpload = createAsyncThunk(
+  "batchList/FileUpload",
+  async (data) => {
+    const response = await Api.post("graphics-upload-file", data);
+    return response.data;
+  }
+);
+
+export const exportBatch = createAsyncThunk(
+  "batchList/exportBatch",
+  async (data) => {
+    const response = await Api.get(
+      `export-batch/${data?.batch_number}/${data?.force}/${data?.format}`
+    );
+    return response.data;
+  }
+);
+
+export const reprintGraphic = createAsyncThunk(
+  "batchList/reprintGraphic",
+  async (params) => {
+    const response = await Api.post("reprint-graphic", params);
+    return response.data;
+  }
+);
+
 export const getRouteOptions = createAsyncThunk(
   "batchList/getRouteOptions",
   async () => {
@@ -56,22 +90,6 @@ export const getRejectOptions = createAsyncThunk(
   "batchList/getRejectOptions",
   async () => {
     const response = await Api.get("reason-options");
-    return response.data;
-  }
-);
-
-export const rejectBatch = createAsyncThunk(
-  "batchList/rejectBatch",
-  async (data) => {
-    const response = await Api.get("reject_item", { params: data });
-    if (response.data?.status === 201) return response.data;
-  }
-);
-
-export const FileUpload = createAsyncThunk(
-  "batchList/FileUpload",
-  async (data) => {
-    const response = await Api.post("graphics-upload-file", data);
     return response.data;
   }
 );

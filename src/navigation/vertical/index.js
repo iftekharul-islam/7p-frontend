@@ -1,4 +1,4 @@
-import { Activity, Codesandbox, Home, Instagram, Paperclip, PenTool, Settings, ShoppingBag, ShoppingCart, Terminal, Truck, User } from "react-feather";
+import { Activity, Codesandbox, Home, Instagram, Paperclip, PenTool, Settings, ShoppingBag, ShoppingCart, Truck, User } from "react-feather";
 
 const check = (permission) => {
   const permissions = JSON.parse(localStorage.getItem("permissions"));
@@ -24,48 +24,48 @@ export default [
     id: "roles",
     title: "Role",
     icon: <User size={20} />,
-    isAccess: check(["role"]),
+    isAccess: check(["user"]),
     navLink: "/role",
   },
   {
     id: "inventory",
     title: "Inventory",
     icon: <ShoppingBag size={20} />,
-    isAccess: check(["product", "vendor"]),
+    isAccess: check(["user"]),
     children: [
       {
         id: "purchase_product",
         title: "Purchase Product",
         icon: <Codesandbox size={20} />,
-        isAccess: check(["product"]),
+        isAccess: check(["user"]),
         navLink: "/product",
       },
       {
         id: "vendor",
         title: "Vendor",
         icon: <Codesandbox size={20} />,
-        isAccess: check(["vendor"]),
+        isAccess: check(["user"]),
         navLink: "/vendor",
       },
       {
         id: "purchase_order",
         title: "Purchase Order",
         icon: <Codesandbox size={20} />,
-        isAccess: check(["order"]),
+        isAccess: check(["user"]),
         navLink: "/purchase-order",
       },
       {
         id: "inventory",
         title: "Inventory",
         icon: <Codesandbox size={20} />,
-        isAccess: check(["order"]),
+        isAccess: check(["user"]),
         navLink: "/inventory",
       },
       {
         id: "adjustment",
         title: "Adjustments",
         icon: <Codesandbox size={20} />,
-        isAccess: check(["order"]),
+        isAccess: check(["user"]),
         navLink: "/adjustment",
       },
     ],
@@ -74,7 +74,7 @@ export default [
     id: "product_namgement",
     title: "Product Management",
     icon: <ShoppingCart size={20} />,
-    isAccess: check(["product", "vendor"]),
+    isAccess: check(["user"]),
     children: [
       {
         id: "config_child_sku",
@@ -111,7 +111,7 @@ export default [
     id: "maintenance",
     title: "Maintenance",
     icon: <Settings size={20} />,
-    isAccess: check(["product", "vendor"]),
+    isAccess: check(["user"]),
     children: [
       {
         id: "users",
@@ -124,56 +124,56 @@ export default [
         id: "sections",
         title: "Sections",
         icon: <Codesandbox size={20} />,
-        isAccess: check(["product"]),
+        isAccess: check(["user"]),
         navLink: "/section",
       },
       {
         id: "stations",
         title: "Stations",
         icon: <Codesandbox size={20} />,
-        isAccess: check(["product"]),
+        isAccess: check(["user"]),
         navLink: "/station",
       },
       {
         id: "route",
         title: "Route",
         icon: <Codesandbox size={20} />,
-        isAccess: check(["product"]),
+        isAccess: check(["user"]),
         navLink: "/route",
       },
       {
         id: "template",
         title: "Route Templates",
         icon: <Codesandbox size={20} />,
-        isAccess: check(["product"]),
+        isAccess: check(["user"]),
         navLink: "/template",
       },
       {
         id: "reason",
         title: "Rejection Reasons",
         icon: <Codesandbox size={20} />,
-        isAccess: check(["product"]),
+        isAccess: check(["user"]),
         navLink: "/reason",
       },
       {
         id: "parameter",
         title: "Parameters",
         icon: <Codesandbox size={20} />,
-        isAccess: check(["product"]),
+        isAccess: check(["user"]),
         navLink: "/parameter",
       },
       {
         id: "product_categories",
         title: "Product Categories",
         icon: <Codesandbox size={20} />,
-        isAccess: check(["product"]),
+        isAccess: check(["user"]),
         navLink: "/category",
       },
       {
         id: "manufacture",
         title: "Manufactures",
         icon: <Codesandbox size={20} />,
-        isAccess: check(["product"]),
+        isAccess: check(["user"]),
         navLink: "/manufacture",
       },
     ],
@@ -182,7 +182,7 @@ export default [
     id: "graphics",
     title: "Graphics",
     icon: <Instagram size={20} />,
-    isAccess: check(["product", "vendor"]),
+    isAccess: check(["user"]),
     children: [
       {
         id: "preview_batches",
@@ -246,7 +246,7 @@ export default [
     id: "production",
     title: "Production",
     icon: <Home size={20} />,
-    isAccess: check(["product", "vendor"]),
+    isAccess: check(["user"]),
     children: [
       {
         id: "batch_list",
@@ -283,7 +283,7 @@ export default [
     id: 'shipping_and_wap',
     title: "Shipping and WAP",
     icon: <Truck size={20} />,
-    isAccess: check(["product", "vendor"]),
+    isAccess: check(["user"]),
     children: [
       {
         id: 'must_ship_report',
@@ -319,7 +319,7 @@ export default [
     id: "customers_service",
     title: "Customers Service",
     icon: <PenTool size={20} />,
-    isAccess: check(["product", "vendor"]),
+    isAccess: check(["user"]),
     children: [
       {
         id: "orders",
@@ -376,7 +376,7 @@ export default [
     id: "report",
     title: "Report",
     icon: <Paperclip size={20} />,
-    isAccess: check(["product", "vendor"]),
+    isAccess: check(["user"]),
     children: [
       // {
       //   id: "stations_summary",
@@ -461,7 +461,7 @@ export default [
     id: "market-place",
     title: "Market Place",
     icon: <Activity size={20} />,
-    isAccess: check(["product", "vendor"]),
+    isAccess: check(["user"]),
     children: [
       {
         id: "manage-stores",
@@ -486,11 +486,11 @@ export default [
       },
     ],
   },
-  {
-    id: "tasks",
-    title: "Tasks",
-    icon: <Terminal size={20} />,
-    isAccess: check(["user"]),
-    navLink: "/tasks",
-  },
+  // {
+  //   id: "tasks",
+  //   title: "Tasks",
+  //   icon: <Terminal size={20} />,
+  //   isAccess: check(["user"]),
+  //   navLink: "/tasks",
+  // },
 ];

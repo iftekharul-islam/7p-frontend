@@ -1,8 +1,9 @@
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { Card, CardHeader } from "reactstrap";
+import { Card } from "reactstrap";
 import { FileUpload, getData } from "../store";
+import BatchHeader from "./BatchHeader";
 import RejectModal from "./RejectModal";
 import UploadModal from "./UploadModal";
 import Details from "./details";
@@ -51,13 +52,7 @@ const index = () => {
   return (
     <Fragment>
       <Card>
-        <CardHeader>
-          <h4 className="card-title">
-            Batch: {showData?.batch_number}{" "}
-            {showData?.batch?.store &&
-              "(" + showData?.batch?.store?.store_name + ")"}
-          </h4>
-        </CardHeader>
+        <BatchHeader getBatchData={getBatchData}/>        
         <Details />
         <Table
           handleClose={handleClose}
