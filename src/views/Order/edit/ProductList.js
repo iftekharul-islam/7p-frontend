@@ -175,7 +175,6 @@ const ProductList = (
               <div>Item ID: {item?.id}</div>
               {item?.all_child_skus?.length > 0 &&
               (item?.parameter_option === null ||
-                true ||
                 item?.parameter_option?.batch_route_id === 115) ? (
                 <Select
                   classNames="react-select"

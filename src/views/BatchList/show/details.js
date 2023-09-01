@@ -13,7 +13,7 @@ const Details = () => {
           {showData?.batch?.route && (
             <span>
               <span>
-                {showData?.batch?.route?.batch_code}/
+                {showData?.batch?.route?.batch_code}{" / "}
                 {showData?.batch?.route?.batch_route_name}
                 {" => "}
                 {showData?.stations}
