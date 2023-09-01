@@ -1,5 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 import baseUrl from "../../../config";
 import Api from "../../../http";
 
@@ -19,23 +21,33 @@ export const exportQuickbooks = createAsyncThunk(
       responseType: "blob",
       headers: {
         "Content-Type": "application/json",
-        Accept:
-        "application/json",
-        Authorization: "Bearer " + JSON.parse(localStorage.getItem("accessToken"))
+        Accept: "application/json",
+        Authorization:
+          "Bearer " + JSON.parse(localStorage.getItem("accessToken")),
       },
     });
 
-    const outputFilename = `${Date.now()}.xlsx`;
-    const url = URL.createObjectURL(new Blob([response?.data]));
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", outputFilename);
-    document.body.appendChild(link);
-    link.click();
+    if (response?.status == 203) {
+      const MySwal = withReactContent(Swal);
+      MySwal.fire({
+        position: "top-end",
+        icon: "error",
+        title: "Missing Parameters",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    } else {
+      const outputFilename = `${Date.now()}.xlsx`;
+      const url = URL.createObjectURL(new Blob([response?.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", outputFilename);
+      document.body.appendChild(link);
+      link.click();
 
-    // OR you can save/write file locally.
-    fs.writeFileSync(outputFilename, response?.data);
-
+      // OR you can save/write file locally.
+      fs.writeFileSync(outputFilename, response?.data);
+    }
     return response.data;
   }
 );
@@ -48,23 +60,41 @@ export const exportQuickbooksCSV = createAsyncThunk(
       responseType: "blob",
       headers: {
         "Content-Type": "application/json",
-        Accept:
-        "application/json",
-        Authorization: "Bearer " + JSON.parse(localStorage.getItem("accessToken"))
+        Accept: "application/json",
+        Authorization:
+          "Bearer " + JSON.parse(localStorage.getItem("accessToken")),
       },
     });
+    if (response?.status == 203) {
+      const MySwal = withReactContent(Swal);
+      MySwal.fire({
+        position: "top-end",
+        icon: "error",
+        title: "Missing Parameters",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    } else if (response?.status == 204) {
+      const MySwal = withReactContent(Swal);
+      MySwal.fire({
+        position: "top-end",
+        icon: "error",
+        title: "Something went wrong!!!",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    } else {
+      const outputFilename = `${Date.now()}.xlsx`;
+      const url = URL.createObjectURL(new Blob([response?.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", outputFilename);
+      document.body.appendChild(link);
+      link.click();
 
-    const outputFilename = `${Date.now()}.xlsx`;
-    const url = URL.createObjectURL(new Blob([response?.data]));
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", outputFilename);
-    document.body.appendChild(link);
-    link.click();
-
-    // OR you can save/write file locally.
-    fs.writeFileSync(outputFilename, response?.data);
-
+      // OR you can save/write file locally.
+      fs.writeFileSync(outputFilename, response?.data);
+    }
     return response.data;
   }
 );

@@ -22,6 +22,15 @@ export const sendAllToFirstStation = createAsyncThunk(
   }
 );
 
+export const updateSinglebatch = createAsyncThunk(
+  "rejects/updateSinglebatch",
+  async (data, { dispatch }) => {
+    const response = await Api.post("process", data);
+    dispatch(getAllData());
+    return response.data;
+  }
+);
+
 export const reprintLabel = createAsyncThunk(
   "rejects/reprintLabel",
   async (data, { dispatch }) => {
