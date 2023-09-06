@@ -15,6 +15,7 @@ import { isObjEmpty } from "@utils";
 import AdjustmentRoute from "../../views/Adjustment/AdjustmentRoute";
 import BackOrdersRoute from "../../views/BackOrders/BackOrdersRoute";
 import BatchListRoute from "../../views/BatchList/BatchListRoute";
+import CallAPIRoute from "../../views/CallAPI/CallAPIRoute";
 import ConfigChildSKURoute from "../../views/ConfigChildSKU/ConfigChildSKURoute";
 import CreateGraphicsRoute from "../../views/CreateGraphics/CreateGraphicsRoute";
 import CustomerServiceRoute from "../../views/CustomerService/CustomerServiceRoute";
@@ -135,6 +136,7 @@ const Routes = [
   ...WAPRoute,
   ...ShipmentListRoute,
   ...TaskRoute,
+  ...CallAPIRoute,
   {
     path: "/",
     index: true,
