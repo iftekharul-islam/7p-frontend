@@ -2,6 +2,7 @@ import adjustments from "@src/views/Adjustment/store";
 import Auth from "@src/views/Auth/store";
 import backOrders from "@src/views/BackOrders/store";
 import batchList from "@src/views/BatchList/store";
+import callAPIs from "@src/views/CallAPI/store";
 import configchildskus from "@src/views/ConfigChildSKU/store";
 import createGraphics from "@src/views/CreateGraphics/store";
 import customerServices from "@src/views/CustomerService/store";
@@ -105,7 +106,8 @@ const rootReducer = {
   moveToQC,
   WAP,
   shipmentLists,
-  tasks
+  tasks,
+  callAPIs,
 };
 
 export default rootReducer;

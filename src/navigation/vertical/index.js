@@ -1,4 +1,4 @@
-import { Activity, Codesandbox, Home, Instagram, Paperclip, PenTool, Settings, ShoppingBag, ShoppingCart, Truck, User } from "react-feather";
+import { Activity, Codesandbox, Home, Instagram, Paperclip, PenTool, Settings, ShoppingBag, ShoppingCart, Truck, User, Wind } from "react-feather";
 
 const check = (permission) => {
   const permissions = JSON.parse(localStorage.getItem("permissions"));
@@ -486,11 +486,11 @@ export default [
       },
     ],
   },
-  // {
-  //   id: "tasks",
-  //   title: "Tasks",
-  //   icon: <Terminal size={20} />,
-  //   isAccess: check(["user"]),
-  //   navLink: "/tasks",
-  // },
+  {
+    id: "api_call",
+    title: "API Call",
+    icon: <Wind size={20} />,
+    isAccess: check(["user"]),
+    navLink: "/api-call",
+  },
 ];
