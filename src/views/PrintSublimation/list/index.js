@@ -46,9 +46,13 @@ const index = () => {
     dispatch(setSearchParams(data));
   };
 
-  useEffect(async () => {
+  const setData = async (data) => {
     getData();
     await dispatch(setSearchParams({ select_batch: selectBatch }));
+  };
+
+  useEffect(() => {
+    setData();
   }, [selectBatch]);
 
   const getData = async () => {
