@@ -98,7 +98,7 @@ const index = () => {
                   <Link
                     onClick={(e) => {
                       e.preventDefault();
-                      setApi("synorderbydate?created_at_min=&created_at_max=");
+                      setApi("synorderbydate?created_at_min=2023-08-01&created_at_max=2023-09-02");
                     }}
                   >
                     Sync Order by Date
