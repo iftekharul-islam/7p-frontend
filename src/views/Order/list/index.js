@@ -17,7 +17,7 @@ import {
   getStatusOptions,
   getStoreOptions,
   setParams,
-  setSearchParams
+  setSearchParams,
 } from "./../store";
 import { columns } from "./columns";
 
@@ -58,7 +58,8 @@ const index = () => {
           </Col>
           <Col sm="2" className="d-flex align-items-center border-primary">
             <div>
-              Total Amount: ${parseFloat(store?.totalData?.money ?? 0).toFixed(2)}
+              Total Amount: $
+              {parseFloat(store?.totalData?.money ?? 0).toFixed(2)}
             </div>
           </Col>
           <Col sm="2" className="d-flex align-items-center border-primary">
@@ -83,10 +84,7 @@ const index = () => {
             </div>
           </Col>
           <Col sm="2" className="d-flex justify-content-center">
-            <Button
-              color="primary"
-              disabled={loading}
-            >
+            <Button color="primary" disabled={loading}>
               {loading ? "Searching" : "Create CSV Export#"}
             </Button>
           </Col>
@@ -193,7 +191,11 @@ const index = () => {
                 placeholder="Start Date"
                 value={params?.start_date ?? null}
                 options={{ dateFormat: "d-m-Y" }}
-                onChange={(date) => onChange({ start_date: date[0] })}
+                onChange={(date) => {
+                  let x = new Date();
+                  x.setDate(date[0].getDate());
+                  onChange({ start_date: x });
+                }}
               />
             </Col>
             <Col sm="2">
@@ -203,7 +205,11 @@ const index = () => {
                 placeholder="End Date"
                 value={params?.end_date ?? null}
                 options={{ dateFormat: "d-m-Y" }}
-                onChange={(date) => onChange({ end_date: date[0] })}
+                onChange={(date) => {
+                  let x = new Date();
+                  x.setDate(date[0].getDate());
+                  onChange({ end_date: x });
+                }}
               />
             </Col>
             <Col sm="3">
