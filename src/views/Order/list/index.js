@@ -53,6 +53,7 @@ const index = () => {
     return (
       <div className="invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75">
         <Row>
+          <Col sm="1"></Col>
           <Col sm="2" className="d-flex align-items-center border-primary">
             <div>Total Orders: {parseInt(store?.totalData?.total ?? 0)}</div>
           </Col>
@@ -83,11 +84,11 @@ const index = () => {
               {parseFloat(store?.totalData?.shipping ?? 0).toFixed(2)}
             </div>
           </Col>
-          <Col sm="2" className="d-flex justify-content-center">
+          {/* <Col sm="2" className="d-flex justify-content-center">
             <Button color="primary" disabled={loading}>
               {loading ? "Searching" : "Create CSV Export#"}
             </Button>
-          </Col>
+          </Col> */}
         </Row>
       </div>
     );
