@@ -3,13 +3,15 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import Api from "@src/http";
 
 export const CallAPI = createAsyncThunk("callAPIs/CallAPI", async (api) => {
-  if (!api) {
+  if (!api?.api) {
     return { message: "Please provide API link" };
   } else {
-    const response = await Api.get(api);
-    return response.data;
+    const response = await Api.get(api?.api);
+    console.log("🚀 ~ file: index.js:10 ~ CallAPI ~ response:", response)
+    return response;
   }
 });
+
 
 export const callAPIsSlice = createSlice({
   name: "callAPIs",

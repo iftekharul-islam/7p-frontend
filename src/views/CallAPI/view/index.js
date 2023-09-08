@@ -10,6 +10,7 @@ import {
   Input,
   Row,
 } from "reactstrap";
+import baseUrl from "../../../config";
 import { CallAPI } from "../store";
 
 const index = () => {
@@ -17,16 +18,70 @@ const index = () => {
   const { data } = useSelector((state) => state.callAPIs);
   const [api, setApi] = useState("");
 
+  const [list, setList] = useState([
+    { name: "Get Shopify Order", api: "getshopifyorder?orderid=", type: "api" },
+    { name: "Shopify Order", api: "shopify-order/{id}", type: "api" },
+    {
+      name: "Shopify Thumb",
+      api: "shopify-thumb/{order_id}/{item_id}",
+      type: "api",
+    },
+    {
+      name: "Update Shopify Thumb",
+      api: "update-shopify-thumb/{order_id}/{item_id}",
+      type: "api",
+    },
+    {
+      name: "Initial Token Generate Request",
+      api: "initial_token_generate_request",
+      type: "api",
+    },
+    {
+      name: "Generate Shopify Token",
+      api: "generate_shopify_token?hmac=",
+      type: "api",
+    },
+    {
+      name: "Get Shopify Order by Order Number",
+      api: "getShopifyorderbyordernumber?orderno=",
+      type: "api",
+    },
+    {
+      name: "Sync Order by Date",
+      api: "synorderbydate?created_at_min=2023-08-01&created_at_max=2023-09-02",
+      type: "api",
+    },
+    {
+      name: "Sync Order between Id",
+      api: "synOrderBetweenId?since_id_from=5108045709475&since_id_to=5108174323875&limit=10",
+      type: "api",
+    },
+    {
+      name: "Import Ship Station",
+      api: "import/ship-station",
+      type: "download",
+    },
+    {
+      name: "Get Coupon Products",
+      api: "getcouponproducts?term=",
+      type: "download",
+    },
+  ]);
+
   const callApi = async () => {
-    await dispatch(CallAPI(api));
+    if (api?.type == "api") {
+      await dispatch(CallAPI(api));
+    } else if (api?.type == "download") {
+      window.open(baseUrl.replace("api", "") + api?.api, "_blank");
+    }
   };
 
   useEffect(() => {
     if (data?.link) {
       window.open(data?.link, "_blank");
     }
-  }, [data]);
-  
+  }, [data?.link]);
+
   return (
     <Fragment>
       <Card>
@@ -42,8 +97,8 @@ const index = () => {
                   <Input
                     type="text"
                     placeholder="Provide your link here"
-                    value={api}
-                    onChange={(e) => setApi(e?.target?.value)}
+                    value={api?.api}
+                    onChange={(e) => setApi({ ...api, api: e?.target?.value })}
                   />
                 </Col>
                 <Col md="2">
@@ -54,56 +109,18 @@ const index = () => {
               </Row>
               <Row className="mt-2">
                 <h4>API List</h4>
-                <li>
-                  <Link
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setApi("getshopifyorder?orderid=");
-                    }}
-                  >
-                    Get Shopify Order
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setApi("initial_token_generate_request");
-                    }}
-                  >
-                    Initial Token Generate Request
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setApi("generate_shopify_token?hmac=");
-                    }}
-                  >
-                    Generate Shopify Token
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setApi("getShopifyorderbyordernumber?orderno=");
-                    }}
-                  >
-                    Get Shopify Order by Order Number
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setApi("synorderbydate?created_at_min=2023-08-01&created_at_max=2023-09-02");
-                    }}
-                  >
-                    Sync Order by Date
-                  </Link>
-                </li>
+                {list?.map((item, index) => (
+                  <li key={index}>
+                    <Link
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setApi(item);
+                      }}
+                    >
+                      {item?.name}
+                    </Link>
+                  </li>
+                ))}
               </Row>
             </Col>
             <Col md="8">
