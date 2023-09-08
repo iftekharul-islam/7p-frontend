@@ -1,3 +1,4 @@
+import baseUrl from "@src/config";
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -10,7 +11,6 @@ import {
   Input,
   Row,
 } from "reactstrap";
-import baseUrl from "../../../config";
 import { CallAPI } from "../store";
 
 const index = () => {
