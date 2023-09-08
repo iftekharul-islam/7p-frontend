@@ -193,9 +193,10 @@ const index = () => {
                 value={params?.start_date ?? null}
                 options={{ dateFormat: "d-m-Y" }}
                 onChange={(date) => {
-                  let x = new Date();
-                  x.setDate(date[0].getDate());
-                  onChange({ start_date: x });
+                  // let x = new Date();
+                  // x.setDate(date[0].getDate());
+                  // onChange({ start_date: x });
+                  onChange({ start_date: date[0] });
                 }}
               />
             </Col>
@@ -207,9 +208,10 @@ const index = () => {
                 value={params?.end_date ?? null}
                 options={{ dateFormat: "d-m-Y" }}
                 onChange={(date) => {
-                  let x = new Date();
-                  x.setDate(date[0].getDate());
-                  onChange({ end_date: x });
+                  // let x = new Date();
+                  // x.setDate(date[0].getDate());
+                  // onChange({ end_date: x });
+                  onChange({ end_date: date[0] });
                 }}
               />
             </Col>
