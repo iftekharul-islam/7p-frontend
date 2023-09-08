@@ -1,4 +1,3 @@
-import baseUrl from "@src/config";
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -72,7 +71,7 @@ const index = () => {
     if (api?.type == "api") {
       await dispatch(CallAPI(api));
     } else if (api?.type == "download") {
-      window.open(baseUrl.replace("api", "") + api?.api, "_blank");
+      window.open("https://7papi.monogramonline.com/" + api?.api, "_blank");
     }
   };
 
