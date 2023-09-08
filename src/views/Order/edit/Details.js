@@ -160,7 +160,7 @@ const Details = (data, onChange, errors, batched) => {
           />
         </Col>
         <Col sm="2" className="d-flex align-items-end">
-          {data?.order_status != 12 && data?.order_status != 7 && (
+          {/* {data?.order_status != 12 && data?.order_status != 7 && (
             <div>
               {data?.carrier == "MN" &&
               data?.order_status != 12 &&
@@ -182,7 +182,7 @@ const Details = (data, onChange, errors, batched) => {
                 )
               )}
             </div>
-          )}
+          )} */}
           {(data?.batched == 0 || data?.batched <= 2) && (
             <Button
               color="info"
