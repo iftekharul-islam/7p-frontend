@@ -7,7 +7,7 @@ export const CallAPI = createAsyncThunk("callAPIs/CallAPI", async (api) => {
     return { message: "Please provide API link" };
   } else {
     const response = await Api.get(api?.api);
-    return response;
+    return response?.data;
   }
 });
 
