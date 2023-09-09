@@ -7,7 +7,7 @@ import { Link, useParams } from "react-router-dom";
 import Select from "react-select";
 import AsyncSelect from "react-select/async";
 import { Col, Input, Row } from "reactstrap";
-import { DeleteItem, RestoreItem, getProductOptions } from "../store";
+import { DeleteItem, RestoreItem, UpdateItemThumb, UpdateThumb, getProductOptions } from "../store";
 import ItemComponent from "./ItemComponent";
 
 const ProductList = (
@@ -82,6 +82,16 @@ const ProductList = (
     dispatch(DeleteItem({ id, orderId, itemId }));
   };
 
+  const updateItemThumb = (e, orderId, itemId) => {
+    e.preventDefault();
+    dispatch(UpdateItemThumb({ id, orderId, itemId }));
+  };
+
+  const updateThumb = (e, orderId, itemId) => {
+    e.preventDefault();
+    dispatch(UpdateThumb({ id, orderId, itemId }));
+  };
+
   const restoreItem = (e, orderId, itemId) => {
     e.preventDefault();
     dispatch(RestoreItem({ id, orderId, itemId }));
@@ -121,8 +131,8 @@ const ProductList = (
   return (
     <Fragment>
       <Row className="rounded bg-secondary p-1 my-1 text-uppercase">
-        <Col sm="1 text-light fw-bolder ">Image</Col>
-        <Col sm="3 text-light fw-bolder">Name</Col>
+        <Col sm="2 text-light fw-bolder ">Image</Col>
+        <Col sm="2 text-light fw-bolder">Name</Col>
         <Col sm="4 text-light fw-bolder">Description</Col>
         <Col sm="1 text-light fw-bolder">Quantity</Col>
         <Col sm="1 text-light fw-bolder">Price</Col>
@@ -135,8 +145,28 @@ const ProductList = (
             <Col sm="1">
               <a href={item?.item_url ? item?.item_url : "#"} target="_blank">
                 <img
+                  src={item?.product?.product_thumb}
+                  alt="no image found"
+                  height="100"
+                  width="100"
+                />
+              </a>
+              <div>
+                <Link
+                  style={{ color: "gray" }}
+                  className="delete-item"
+                  onClick={(e) => updateThumb(e, data?.short_order, item?.item_id)}
+                >
+                  <small>Update Thumb</small>
+                </Link>
+              </div>
+            </Col>
+            <Col sm="1">
+              <a href={item?.item_url ? item?.item_url : "#"} target="_blank">
+                <img
                   src={item?.item_thumb}
-                  alt={item?.child_sku}
+                  // alt={item?.child_sku}
+                  alt="no image found"
                   height="100"
                   width="100"
                 />
@@ -146,13 +176,23 @@ const ProductList = (
                 data?.store?.change_items === "1" &&
                 item?.item_status !== "cancelled" &&
                 item?.item_status !== "shipped" ? (
-                  <Link
-                    style={{ color: "gray" }}
-                    className="delete-item"
-                    onClick={(e) => deleteItem(e, data?.id, item?.id)}
-                  >
-                    Cancel
-                  </Link>
+                  <span>
+                    <Link
+                      style={{ color: "gray" }}
+                      className="delete-item"
+                      onClick={(e) => deleteItem(e, data?.id, item?.id)}
+                    >
+                      <small>Cancel</small>
+                    </Link>
+                    /
+                    <Link
+                      style={{ color: "gray" }}
+                      className="delete-item"
+                      onClick={(e) => updateItemThumb(e, data?.id, item?.id)}
+                    >
+                      <small>update</small>
+                    </Link>
+                  </span>
                 ) : data?.store &&
                   data?.store?.change_items === "1" &&
                   item?.item_status === "cancelled" ? (
@@ -161,12 +201,12 @@ const ProductList = (
                     className="delete-item"
                     onClick={(e) => restoreItem(e, data?.id, item?.id)}
                   >
-                    Restore
+                    <small>Restore</small>
                   </Link>
                 ) : null}
               </div>
             </Col>
-            <Col sm="3">
+            <Col sm="2">
               <div>
                 <a href={item?.item_url ?? "#"} target="_blank">
                   {item?.item_description}
@@ -190,7 +230,7 @@ const ProductList = (
                       label: sku?.child_sku,
                     }))
                     ?.find((sku) => sku?.value === item?.child_sku)}
-                  onChange={(e) => onItemSelectChange(e, 'child_sku', index)}
+                  onChange={(e) => onItemSelectChange(e, "child_sku", index)}
                 />
               ) : (
                 <Input

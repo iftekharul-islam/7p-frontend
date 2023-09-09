@@ -190,13 +190,13 @@ const index = () => {
                 className="form-control"
                 id="date"
                 placeholder="Start Date"
-                value={params?.start_date ?? null}
+                value={params?.start_date ? params?.start_date - 1 : null}
                 options={{ dateFormat: "d-m-Y" }}
                 onChange={(date) => {
-                  // let x = new Date();
-                  // x.setDate(date[0].getDate());
-                  // onChange({ start_date: x });
-                  onChange({ start_date: date[0] });
+                  let x = new Date(date[0]);
+                  x.setDate(x.getDate() + 1);
+                  onChange({ start_date: x });
+                  // onChange({ start_date: date[0] });
                 }}
               />
             </Col>
@@ -205,13 +205,13 @@ const index = () => {
                 className="form-control"
                 id="date"
                 placeholder="End Date"
-                value={params?.end_date ?? null}
+                value={params?.end_date ? params?.end_date - 1 : null}
                 options={{ dateFormat: "d-m-Y" }}
                 onChange={(date) => {
-                  // let x = new Date();
-                  // x.setDate(date[0].getDate());
-                  // onChange({ end_date: x });
-                  onChange({ end_date: date[0] });
+                  let x = new Date(date[0]);
+                  x.setDate(x.getDate() + 1);
+                  onChange({ end_date: x });
+                  // onChange({ end_date: date[0] });
                 }}
               />
             </Col>

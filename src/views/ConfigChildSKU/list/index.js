@@ -38,7 +38,6 @@ import {
 const index = () => {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.configchildskus);
-  console.log("🚀 ~ file: index.js:40 ~ index ~ store:", store?.singleSKU);
   const [loading, setLoading] = useState(false);
   const params = store?.searchParams;
 

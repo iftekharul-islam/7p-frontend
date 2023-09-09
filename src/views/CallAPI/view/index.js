@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import {
   Button,
   Card,
@@ -9,6 +9,7 @@ import {
   Col,
   Input,
   Row,
+  Spinner,
 } from "reactstrap";
 import { CallAPI } from "../store";
 
@@ -16,6 +17,20 @@ const index = () => {
   const dispatch = useDispatch();
   const { data } = useSelector((state) => state.callAPIs);
   const [api, setApi] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const [URLParams, setURLParams] = useSearchParams();
+  useEffect(() => {
+    if (URLParams) {
+      let params = {};
+      URLParams?.forEach((value, key) => {
+        if (value != "null") {
+          params = { ...params, [key]: value };
+        }
+      });
+      setApi({ ...api, ...params });
+    }
+  }, [URLParams]);
 
   const [list, setList] = useState([
     { name: "Get Shopify Order", api: "getshopifyorder?orderid=", type: "api" },
@@ -47,12 +62,12 @@ const index = () => {
     },
     {
       name: "Sync Order by Date",
-      api: "synorderbydate?created_at_min=2023-08-01&created_at_max=2023-09-02",
+      api: "synorderbydate?created_at_min=2023-08-01&created_at_max=2023-09-02&limit=5",
       type: "api",
     },
     {
       name: "Sync Order between Id",
-      api: "synOrderBetweenId?since_id_from=5108045709475&since_id_to=5108174323875&limit=10",
+      api: "synOrderBetweenId?since_id_from=5108045709475&since_id_to=5108174323875&limit=5",
       type: "api",
     },
     {
@@ -69,7 +84,9 @@ const index = () => {
 
   const callApi = async () => {
     if (api?.type == "api") {
+      setLoading(true);
       await dispatch(CallAPI(api));
+      setLoading(false);
     } else if (api?.type == "download") {
       window.open("https://7papi.monogramonline.com/" + api?.api, "_blank");
     }
@@ -101,8 +118,8 @@ const index = () => {
                   />
                 </Col>
                 <Col md="2">
-                  <Button color="primary" onClick={callApi}>
-                    Call
+                  <Button color="primary" onClick={callApi} disabled={loading}>
+                    {loading ? <Spinner color="white" size="sm" /> : 'Call'}
                   </Button>
                 </Col>
               </Row>

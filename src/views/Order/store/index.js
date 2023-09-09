@@ -143,6 +143,32 @@ export const DeleteItem = createAsyncThunk(
   }
 );
 
+export const UpdateItemThumb = createAsyncThunk(
+  "Order/UpdateItemThumb",
+  async (data, { dispatch }) => {
+    const response = await Api.get(
+      `items/syn_item_thm/${data?.orderId}/${data?.itemId}`
+    );
+    if (response?.data?.status == 201) {
+      dispatch(getOrder(data?.id));
+    }
+    return response.data;
+  }
+);
+
+export const UpdateThumb = createAsyncThunk(
+  "Order/UpdateThumb",
+  async (data, { dispatch }) => {
+    const response = await Api.get(
+      `update-shopify-thumb/${data?.orderId}/${data?.itemId}`
+    );
+    if (response?.data?.status == 201) {
+      dispatch(getOrder(data?.id));
+    }
+    return response.data;
+  }
+);
+
 export const RestoreItem = createAsyncThunk(
   "Order/RestoreItem",
   async (data, { dispatch }) => {
