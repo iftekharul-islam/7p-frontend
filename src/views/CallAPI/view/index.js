@@ -71,14 +71,24 @@ const index = () => {
       type: "api",
     },
     {
+      name: "Get Coupon Products",
+      api: "getcouponproducts?term=",
+      type: "download",
+    },
+    {
       name: "Import Ship Station",
       api: "import/ship-station",
       type: "download",
     },
     {
-      name: "Get Coupon Products",
-      api: "getcouponproducts?term=",
-      type: "download",
+      name: "Delete Order By ID",
+      api: "deleteorderbyid/{id}",
+      type: "api",
+    },
+    {
+      name: "Delete Order By Date",
+      api: "deleteorderbydate?from=&to=",
+      type: "api",
     },
   ]);
 
@@ -88,6 +98,7 @@ const index = () => {
       await dispatch(CallAPI(api));
       setLoading(false);
     } else if (api?.type == "download") {
+      // window.open("http://7p.test/" + api?.api, "_blank");
       window.open("https://7papi.monogramonline.com/" + api?.api, "_blank");
     }
   };
