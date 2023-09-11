@@ -6,7 +6,7 @@ import Flatpickr from "react-flatpickr";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import Select from "react-select";
-import { Button, Col, Label, Row } from "reactstrap";
+import { Button, Col, Label, Row, Spinner } from "reactstrap";
 import {
   UpdateMethod,
   UpdateStore,
@@ -14,7 +14,7 @@ import {
   getStoreOptions,
 } from "../store";
 
-const Details = (data, onChange, errors, batched) => {
+const Details = (data, onChange, errors, batched, loading) => {
   const dispatch = useDispatch();
   const { id } = useParams();
   const store = useSelector((state) => state.orders);
@@ -188,7 +188,7 @@ const Details = (data, onChange, errors, batched) => {
               color="info"
               onClick={() => batched(data?.order?.id)}
             >
-              Batch
+              {loading ? <span><Spinner size="sm" />Batching</span> : "Batch"}
             </Button>
           )}
         </Col>

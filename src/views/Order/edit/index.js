@@ -21,24 +21,25 @@ import ProductList from "./ProductList";
 import TrackingModal from "./TrackingModal";
 
 const index = () => {
-  const {id} = useParams();
+  const { id } = useParams();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.orders);
-  const [showMail, setShowMail] = useState(false)
-  const [showTracking, setShowTracking] = useState(false)
-  const [itemTracking, setItemTracking] = useState(null)
+  const [showMail, setShowMail] = useState(false);
+  const [showTracking, setShowTracking] = useState(false);
+  const [itemTracking, setItemTracking] = useState(null);
   const [data, setData] = useState({ items: [] });
   const [errors, setErrors] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    dispatch(getOrder(id))
-  }, [id])
-  
+    dispatch(getOrder(id));
+  }, [id]);
+
   useEffect(() => {
     if (store?.order) {
       setData(store?.order);
     }
-  }, [store?.order])
+  }, [store?.order]);
 
   const onChange = (e) => {
     setData({
@@ -48,21 +49,22 @@ const index = () => {
   };
 
   const onSubmit = async () => {
-    const res = await dispatch(EditOrder({data, id}));
+    const res = await dispatch(EditOrder({ data, id }));
     if (res?.payload?.status) {
-      dispatch(getOrder(id))
+      dispatch(getOrder(id));
     } else {
       setErrors(res?.payload?.data?.errors);
     }
   };
 
-  const batched = async(orderId) => {
+  const batched = async (orderId) => {
+    setLoading(true);
     const res = await dispatch(BatchedOrder(id));
     if (res?.payload?.status) {
-      dispatch(getOrder(id))
+      dispatch(getOrder(id));
     }
-  }
-
+    setLoading(false);
+  };
 
   return (
     <Fragment>
@@ -74,11 +76,23 @@ const index = () => {
                 <CardTitle tag="h4">Edit Order</CardTitle>
               </CardHeader>
               <CardBody>
-                {Details(data, onChange, errors, batched)}
+                {Details(data, onChange, errors, batched, loading)}
                 {Address(data, onChange, errors, setShowMail)}
-                {ProductList(data, onChange, errors, setShowTracking, setItemTracking)}
+                {ProductList(
+                  data,
+                  onChange,
+                  errors,
+                  setShowTracking,
+                  setItemTracking
+                )}
                 {Calculation(data, onChange, onSubmit, errors)}
-                {TrackingModal(showTracking, setShowTracking, itemTracking, data?.id, data?.short_order)}
+                {TrackingModal(
+                  showTracking,
+                  setShowTracking,
+                  itemTracking,
+                  data?.id,
+                  data?.short_order
+                )}
                 {MailModal(showMail, setShowMail, data)}
               </CardBody>
             </Card>
