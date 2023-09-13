@@ -46,7 +46,7 @@ const CustomHeader = () => {
           id="start_date"
           placeholder="Enter Start Date"
           value={params?.start_date ?? null}
-          options={{ dateFormat: "d-m-Y" }}
+          options={{ dateFormat: "m-d-Y" }}
           onChange={(date) => onChange({ start_date: date[0] })}
         />
       </Col>
@@ -56,7 +56,7 @@ const CustomHeader = () => {
           id="end_date"
           placeholder="Enter End Date"
           value={params?.end_date ?? null}
-          options={{ dateFormat: "d-m-Y" }}
+          options={{ dateFormat: "m-d-Y" }}
           onChange={(date) => onChange({ end_date: date[0] })}
         />
       </Col>

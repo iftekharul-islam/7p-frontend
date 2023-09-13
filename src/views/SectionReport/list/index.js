@@ -53,7 +53,7 @@ const index = () => {
                 id="max_date"
                 placeholder="Before"
                 value={params?.max_date ?? null}
-                options={{ dateFormat: "d-m-Y" }}
+                options={{ dateFormat: "m-d-Y" }}
                 onChange={(date) => onChange({ max_date: date[0] })}
               />
             </Col>

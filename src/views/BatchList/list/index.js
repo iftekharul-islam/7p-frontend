@@ -139,7 +139,7 @@ const index = () => {
                   id="date"
                   placeholder="Last Scan Start date"
                   value={params?.start_date ?? null}
-                  options={{ dateFormat: "d-m-Y" }}
+                  options={{ dateFormat: "m-d-Y" }}
                   onChange={(date) => onChange({ start_date: date[0] })}
                 />
               </Col>
@@ -149,7 +149,7 @@ const index = () => {
                   id="date"
                   placeholder="Last Scan End date"
                   value={params?.end_date ?? null}
-                  options={{ dateFormat: "d-m-Y" }}
+                  options={{ dateFormat: "m-d-Y" }}
                   onChange={(date) => onChange({ end_date: date[0] })}
                 />
               </Col>
@@ -203,7 +203,7 @@ const index = () => {
                   id="date"
                   placeholder="Order Start date"
                   value={params?.order_start_date ?? null}
-                  options={{ dateFormat: "d-m-Y" }}
+                  options={{ dateFormat: "m-d-Y" }}
                   onChange={(date) => onChange({ order_start_date: date[0] })}
                 />
               </Col>
@@ -213,7 +213,7 @@ const index = () => {
                   id="date"
                   placeholder="Order End date"
                   value={params?.order_end_date ?? null}
-                  options={{ dateFormat: "d-m-Y" }}
+                  options={{ dateFormat: "m-d-Y" }}
                   onChange={(date) => onChange({ order_end_date: date[0] })}
                 />
               </Col>

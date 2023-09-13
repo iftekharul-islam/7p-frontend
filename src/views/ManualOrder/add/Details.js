@@ -63,7 +63,7 @@ const Details = (data, onChange, errors) => {
             id="date"
             placeholder="Select Date"
             value={data?.start_date ?? null}
-            options={{ dateFormat: "d-m-Y" }}
+            options={{ dateFormat: "m-d-Y" }}
             onChange={(date) =>
               onChange({
                 target: { name: "date", value: date[0] },

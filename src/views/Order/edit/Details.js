@@ -155,7 +155,7 @@ const Details = (data, onChange, errors, batched, loading) => {
             id="date"
             placeholder="Select Date"
             value={data?.ship_date ?? null}
-            options={{ dateFormat: "d-m-Y" }}
+            options={{ dateFormat: "m-d-Y" }}
             onChange={onShipDateChange}
           />
         </Col>

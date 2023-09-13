@@ -11,12 +11,12 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import Select from "react-select";
 import { Button, Card, Col, Input, Row, Spinner } from "reactstrap";
 import {
-  CalculateOrdering,
-  getAllData,
-  getAllSections,
-  getAllVendors,
-  setParams,
-  setSearchParams,
+    CalculateOrdering,
+    getAllData,
+    getAllSections,
+    getAllVendors,
+    setParams,
+    setSearchParams,
 } from "./../store/index";
 import { columns } from "./columns";
 
@@ -324,7 +324,7 @@ const index = () => {
                   className="form-control"
                   id="date"
                   value={calculateData?.start_date ?? new Date()}
-                  options={{ dateFormat: "d-m-Y" }}
+                  options={{ dateFormat: "m-d-Y" }}
                   onChange={(date) => onCalculateChange("start_date", date[0])}
                 />
               </Col>
@@ -333,7 +333,7 @@ const index = () => {
                   className="form-control"
                   id="date"
                   value={calculateData?.end_date ?? new Date()}
-                  options={{ dateFormat: "d-m-Y" }}
+                  options={{ dateFormat: "m-d-Y" }}
                   onChange={(date) => onCalculateChange("end_date", date[0])}
                 />
               </Col>

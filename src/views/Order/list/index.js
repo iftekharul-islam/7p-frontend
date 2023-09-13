@@ -191,7 +191,7 @@ const index = () => {
                 id="date"
                 placeholder="Start Date"
                 value={params?.start_date ? params?.start_date - 1 : null}
-                options={{ dateFormat: "d-m-Y" }}
+                options={{ dateFormat: "m-d-Y" }}
                 onChange={(date) => {
                   let x = new Date(date[0]);
                   x.setDate(x.getDate() + 1);
@@ -206,7 +206,7 @@ const index = () => {
                 id="date"
                 placeholder="End Date"
                 value={params?.end_date ? params?.end_date - 1 : null}
-                options={{ dateFormat: "d-m-Y" }}
+                options={{ dateFormat: "m-d-y" }}
                 onChange={(date) => {
                   let x = new Date(date[0]);
                   x.setDate(x.getDate() + 1);

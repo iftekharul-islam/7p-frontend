@@ -189,7 +189,7 @@ const index = () => {
               id="date"
               placeholder="Start Date"
               value={searchParams?.start_date ?? null}
-              options={{ dateFormat: "d-m-Y" }}
+              options={{ dateFormat: "m-d-Y" }}
               onChange={(date) => onChange({ start_date: date[0] })}
             />
           </Col>
@@ -199,7 +199,7 @@ const index = () => {
               id="date"
               placeholder="End Date"
               value={searchParams?.end_date ?? null}
-              options={{ dateFormat: "d-m-Y" }}
+              options={{ dateFormat: "m-d-Y" }}
               onChange={(date) => onChange({ end_date: date[0] })}
             />
           </Col>

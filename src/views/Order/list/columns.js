@@ -30,7 +30,7 @@ export const columns = [
               : row?.store?.store_name
             : "STORE NOT FOUND"}
         </div>
-        <div>{moment(row?.order_date).format("YYYY-MM-DD HH:MM:ss a")}</div>
+        <div>{moment(row?.order_date).format("YYYY-MM-DD hh:mm:ss a")}</div>
       </div>
     ),
   },

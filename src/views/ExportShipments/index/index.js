@@ -76,7 +76,7 @@ const index = () => {
                     id="date"
                     placeholder="End Date"
                     value={qbData?.start_date ?? null}
-                    options={{ dateFormat: "d-m-Y" }}
+                    options={{ dateFormat: "m-d-Y" }}
                     onChange={(date) =>
                       onQuickbooksChange({
                         target: { name: "start_date", value: date[0] },
@@ -90,7 +90,7 @@ const index = () => {
                     id="date"
                     placeholder="End Date"
                     value={qbData?.end_date ?? null}
-                    options={{ dateFormat: "d-m-Y" }}
+                    options={{ dateFormat: "m-d-Y" }}
                     onChange={(date) =>
                       onQuickbooksChange({
                         target: { name: "end_date", value: date[0] },
@@ -142,7 +142,7 @@ const index = () => {
                     id="date"
                     placeholder="End Date"
                     value={csvData?.start_date ?? null}
-                    options={{ dateFormat: "d-m-Y" }}
+                    options={{ dateFormat: "m-d-Y" }}
                     onChange={(date) =>
                       onCsvChange({
                         target: { name: "start_date", value: date[0] },
@@ -156,7 +156,7 @@ const index = () => {
                     id="date"
                     placeholder="End Date"
                     value={csvData?.end_date ?? null}
-                    options={{ dateFormat: "d-m-Y" }}
+                    options={{ dateFormat: "m-d-Y" }}
                     onChange={(date) =>
                       onCsvChange({
                         target: { name: "end_date", value: date[0] },

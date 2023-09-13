@@ -178,7 +178,7 @@ const index = () => {
                 className="form-control"
                 placeholder="From"
                 value={searchParams?.from_date ?? null}
-                options={{ dateFormat: "d-m-Y" }}
+                options={{ dateFormat: "m-d-Y" }}
                 onChange={(date) => onChange({ from_date: date[0] })}
               />
             </Col>
@@ -187,7 +187,7 @@ const index = () => {
                 className="form-control"
                 placeholder="To"
                 value={searchParams?.to_date ?? null}
-                options={{ dateFormat: "d-m-Y" }}
+                options={{ dateFormat: "m-d-Y" }}
                 onChange={(date) => onChange({ to_date: date[0] })}
               />
             </Col>

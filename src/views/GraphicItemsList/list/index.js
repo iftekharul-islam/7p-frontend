@@ -8,12 +8,12 @@ import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import { Button, Card, Col, Input, Row } from "reactstrap";
 import {
-  getAllData,
-  getSearchOptions,
-  getStatusOptions,
-  getStoreOptions,
-  setParams,
-  setSearchParams,
+    getAllData,
+    getSearchOptions,
+    getStatusOptions,
+    getStoreOptions,
+    setParams,
+    setSearchParams,
 } from "../store";
 import ItemComponent from "./ItemComponent";
 
@@ -94,7 +94,7 @@ const index = () => {
                 id="date"
                 placeholder="Start Date"
                 value={params?.start_date ?? null}
-                options={{ dateFormat: "d-m-Y" }}
+                options={{ dateFormat: "m-d-Y" }}
                 onChange={(date) => onChange({ start_date: date[0] })}
               />
             </Col>
@@ -104,7 +104,7 @@ const index = () => {
                 id="date"
                 placeholder="End Date"
                 value={params?.end_date ?? null}
-                options={{ dateFormat: "d-m-Y" }}
+                options={{ dateFormat: "m-d-Y" }}
                 onChange={(date) => onChange({ end_date: date[0] })}
               />
             </Col>
@@ -114,7 +114,7 @@ const index = () => {
                 id="date"
                 placeholder="Tracking Date"
                 value={params?.tracking_date ?? null}
-                options={{ dateFormat: "d-m-Y" }}
+                options={{ dateFormat: "m-d-Y" }}
                 onChange={(date) => onChange({ tracking_date: date[0] })}
               />
             </Col>

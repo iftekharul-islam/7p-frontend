@@ -330,7 +330,7 @@ const index = () => {
                 id="date"
                 placeholder="Order Start Date"
                 value={params?.start_date ?? null}
-                options={{ dateFormat: "d-m-Y" }}
+                options={{ dateFormat: "m-d-Y" }}
                 onChange={(date) => onChange({ start_date: date[0] })}
               />
             </Col>
@@ -340,7 +340,7 @@ const index = () => {
                 id="date"
                 placeholder="Order End Date"
                 value={params?.end_date ?? null}
-                options={{ dateFormat: "d-m-Y" }}
+                options={{ dateFormat: "m-d-Y" }}
                 onChange={(date) => onChange({ end_date: date[0] })}
               />
             </Col>
