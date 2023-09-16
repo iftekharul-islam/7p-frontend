@@ -9,7 +9,7 @@ export const getAllData = createAsyncThunk(
     const response = await Api.get("config-child-sku", {
       params: { ...params, ...searchParams },
     });
-    return response.data;
+    return response?.data;
   }
 );
 
@@ -77,14 +77,10 @@ export const updateChildSkus = createAsyncThunk(
 
 export const updateSingleSku = createAsyncThunk(
   "UnbatchableItems/updateChildSkus",
-  async (id, { getState }) => {
-    const { singleSKU } = getState()?.configchildskus;
-    const response = await Api.post("update-single-sku", {
-      ...singleSKU?.[id],
-      unique_row_value: id,
-    });
+  async (data, { dispatch }) => {
+    const response = await Api.post("update-single-sku", data);
     if (response.data?.status === 201) {
-      dispatch(getAllData())
+      dispatch(getAllData());
     }
   }
 );
@@ -222,6 +218,9 @@ export const ConfigChildSKUSlice = createSlice({
     setSingleSKU: (state, action) => {
       state.singleSKU = action.payload;
     },
+    dataChange: (state, action) => {
+      state.data = { ...state?.data, data: action.payload };
+    },
   },
 });
 
@@ -231,5 +230,6 @@ export const {
   setChildData,
   setSelectedSKU,
   setSingleSKU,
+  dataChange,
 } = ConfigChildSKUSlice.actions;
 export default ConfigChildSKUSlice.reducer;
