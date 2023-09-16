@@ -41,7 +41,7 @@ const index = () => {
 
   const onSearch = async () => {
     setLoading(true);
-    await dispatch(getAllData());
+    await dispatch(setParams({page: 1}));
     setLoading(false);
   };
 

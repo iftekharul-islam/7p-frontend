@@ -24,15 +24,15 @@ import {
   UncontrolledTooltip,
 } from "reactstrap";
 import {
+  dataChange,
   getAllData,
   getBatchRouteOptions,
   getStockWithImageOptions,
   setParams,
   setSearchParams,
   setSelectedSKU,
-  setSingleSKU,
   updateChildSkus,
-  updateSingleSku,
+  updateSingleSku
 } from "../store";
 
 const index = () => {
@@ -94,17 +94,26 @@ const index = () => {
     setLoading(false);
   };
 
-  const setSKU = (data, id) => {
-    dispatch(
-      setSingleSKU({
-        ...store?.singleSKU,
-        [id]: { ...store?.singleSKU?.[id], ...data },
-      })
-    );
+  const onDataChange = (value, index) => {
+    let data = [...store?.data?.data];
+    data[index] = { ...data[index], ...value };
+    dispatch(dataChange(data));
   };
-  const UpdateSingleSKU = async (id) => {
+
+  const UpdateSingleSKU = async (index) => {
     setLoading(true);
-    await dispatch(updateSingleSku(id));
+    const item = { ...store?.data?.data[index] };
+    const data = {
+      frame_size: item?.frame_size,
+      graphic_sku: item?.graphic_sku,
+      mirror: item?.mirror,
+      mix: item?.allow_mixing,
+      orientation: item?.orientation,
+      route: item?.batch_route_id,
+      sure3d: item?.sure3d,
+      unique_row_value: item?.unique_row_value,
+    };
+    await dispatch(updateSingleSku(data));
     setLoading(false);
   };
 
@@ -612,7 +621,7 @@ const index = () => {
                           <Send size={18} className={`text-primary me-50`} />
                         </Link>
                         <UncontrolledTooltip target={`task-${option?.id}`}>
-                          Edit
+                          Task
                         </UncontrolledTooltip>
                       </Col>
                       <Col sm="10">
@@ -635,7 +644,7 @@ const index = () => {
                               href={
                                 "items-list?search_for_first=" +
                                 option?.child_sku +
-                                "&search_in_first=parent_sku"
+                                "&search_in_first=exact_child_sku"
                               }
                               className="text-danger"
                             >
@@ -718,8 +727,14 @@ const index = () => {
                             { value: "0", label: "No" },
                           ]}
                           onChange={(e) =>
-                            setSKU({ mix: e?.value }, option?.unique_row_value)
+                            onDataChange({ allow_mixing: e?.value }, index)
                           }
+                          value={[
+                            { value: "1", label: "Yes" },
+                            { value: "0", label: "No" },
+                          ]?.find(
+                            (itm) => itm?.value == option?.allow_mixing ?? "0"
+                          )}
                         />
                       </Col>
                       <Col sm="2">
@@ -728,26 +743,24 @@ const index = () => {
                           className="react-select"
                           classNamePrefix="select"
                           options={store?.batchRouteOptions}
-                          value={store?.stockwithImageOptions?.find(
-                            (item) => item?.value == 0
+                          value={store?.batchRouteOptions?.find(
+                            (item) => item?.value == option?.batch_route_id
                           )}
                           onChange={(e) =>
-                            setSKU({ route: e?.value }, option?.unique_row_value)
+                            onDataChange({ batch_route_id: e?.value }, index)
                           }
                         />
                       </Col>
                       <Col sm="2">
                         Graphic SKU:
-                        <Select
-                          className="react-select"
-                          classNamePrefix="select"
-                          options={[
-                            { value: "1", label: "Yes" },
-                            { value: "0", label: "No" },
-                          ]}
+                        <Input
                           onChange={(e) =>
-                            setSKU({ graphic_sku: e?.value }, option?.unique_row_value)
+                            onDataChange(
+                              { graphic_sku: e?.target?.value },
+                              index
+                            )
                           }
+                          value={option?.graphic_sku}
                         />
                       </Col>
                       <Col sm="2">
@@ -772,11 +785,12 @@ const index = () => {
                             <Input
                               type="checkbox"
                               onChange={(e) =>
-                                setSKU(
+                                onDataChange(
                                   { sure3d: e?.target?.checked ? 1 : 0 },
-                                  option?.unique_row_value
+                                  index
                                 )
                               }
+                              checked={option?.sure3d}
                             />
                           </Col>
                         </Row>
@@ -790,12 +804,15 @@ const index = () => {
                                 { value: "0", label: "portrait" },
                                 { value: "1", label: "landscape" },
                               ]}
-                              value={{
-                                value: option?.allow_mixing,
-                                label: option?.allow_mixing == 1 ? "Yes" : "No",
-                              }}
+                              value={[
+                                { value: "0", label: "portrait" },
+                                { value: "1", label: "landscape" },
+                              ]?.find(
+                                (itm) =>
+                                  itm?.value == option?.orientation ?? "0"
+                              )}
                               onChange={(e) =>
-                                setSKU({ orientation: e?.value }, option?.unique_row_value)
+                                onDataChange({ orientation: e?.value }, index)
                               }
                             />
                           </Col>
@@ -808,14 +825,12 @@ const index = () => {
                               type="number"
                               name="frame_size_update"
                               onChange={(e) =>
-                                setSKU(
+                                onDataChange(
                                   { frame_size: e?.target?.value },
-                                  option?.unique_row_value
+                                  index
                                 )
                               }
-                              value={
-                                store?.singleSKU?.[option?.unique_row_value]?.frame_size ?? ""
-                              }
+                              value={option?.frame_size}
                             />
                           </Col>
                         </Row>
@@ -826,20 +841,24 @@ const index = () => {
                             <Input
                               type="checkbox"
                               onChange={(e) =>
-                                setSKU(
-                                  { mirror: e?.target?.checked },
-                                  option?.unique_row_value
+                                onDataChange(
+                                  { mirror: e?.target?.checked ? 1 : 0 },
+                                  index
                                 )
                               }
+                              checked={option?.mirror}
                             />
                           </Col>
                         </Row>
                       </Col>
                       <Col sm="1">
-                        <Button color="primary" onClick={(e)=>{
-                          e?.preventDefault()
-                          UpdateSingleSKU(option?.unique_row_value)
-                        }}>
+                        <Button
+                          color="primary"
+                          onClick={(e) => {
+                            e.preventDefault()
+                            UpdateSingleSKU(index);
+                          }}
+                        >
                           {loading ? "Please wait" : "Update"}
                         </Button>
                       </Col>
