@@ -4,11 +4,13 @@ import Api from "@src/http";
 
 export const getAllData = createAsyncThunk(
   "ConfigChildSKU/getAllData",
-  async (_, { getState }) => {
+  async (_, { getState, dispatch }) => {
+    dispatch(toggleLoader())
     const { params, searchParams } = getState()?.configchildskus;
     const response = await Api.get("config-child-sku", {
       params: { ...params, ...searchParams },
     });
+    dispatch(toggleLoader())
     return response?.data;
   }
 );
@@ -89,6 +91,7 @@ export const updateSingleSku = createAsyncThunk(
 export const ConfigChildSKUSlice = createSlice({
   name: "ConfigChildSKU",
   initialState: {
+    loading: false,
     data: [],
     childData: {
       allow_mixing: 0,
@@ -222,6 +225,9 @@ export const ConfigChildSKUSlice = createSlice({
     dataChange: (state, action) => {
       state.data = { ...state?.data, data: action.payload };
     },
+    toggleLoader: (state) => {
+      state.loading = !state.loading;
+    }
   },
 });
 
@@ -232,5 +238,6 @@ export const {
   setSelectedSKU,
   setSingleSKU,
   dataChange,
+  toggleLoader
 } = ConfigChildSKUSlice.actions;
 export default ConfigChildSKUSlice.reducer;

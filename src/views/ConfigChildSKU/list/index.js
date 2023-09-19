@@ -21,6 +21,7 @@ import {
   Col,
   Input,
   Row,
+  Spinner,
   UncontrolledTooltip,
 } from "reactstrap";
 import {
@@ -32,7 +33,7 @@ import {
   setSearchParams,
   setSelectedSKU,
   updateChildSkus,
-  updateSingleSku
+  updateSingleSku,
 } from "../store";
 
 const index = () => {
@@ -363,7 +364,14 @@ const index = () => {
               </Col>
               <Col sm="2" className="d-flex align-items-end flex-column">
                 <Button color="primary" onClick={onSearch} disabled={loading}>
-                  {loading ? "Searching" : "Search"}
+                  {loading ? (
+                    <span>
+                      <Spinner size="sm" />
+                      Searching
+                    </span>
+                  ) : (
+                    "Search"
+                  )}
                 </Button>
               </Col>
             </Row>
@@ -525,7 +533,14 @@ const index = () => {
                   onClick={UpdateSelectedSKU}
                   disabled={loading}
                 >
-                  {loading ? "Please Wait" : "Update Selected SKUs"}
+                  {loading ? (
+                    <span>
+                      <Spinner size="sm" />
+                      Please Wait
+                    </span>
+                  ) : (
+                    "Update Selected SKUs"
+                  )}
                 </Button>
               </Col>
             </Row>
@@ -534,7 +549,12 @@ const index = () => {
 
         <Card>
           <CustomHeader />
-          {store?.data?.data?.length > 0 ? (
+          {store?.loading ? (
+            <span className="d-flex justify-content-center">
+              <Spinner size="sm" />
+              Please wait
+            </span>
+          ) : store?.data?.data?.length > 0 ? (
             <div>
               {store?.data?.data?.map((option, index) => {
                 return (
@@ -855,7 +875,7 @@ const index = () => {
                         <Button
                           color="primary"
                           onClick={(e) => {
-                            e.preventDefault()
+                            e.preventDefault();
                             UpdateSingleSKU(index);
                           }}
                         >
