@@ -64,10 +64,11 @@ export const updateChildSku = createAsyncThunk(
 
 export const updateChildSkus = createAsyncThunk(
   "UnbatchableItems/updateChildSkus",
-  async (_, { getState }) => {
+  async (_, { getState, dispatch }) => {
     const { selectedSKU } = getState()?.configchildskus;
     const response = await Api.post("update-child-skus", selectedSKU);
     if (response.data?.status === 201) {
+      dispatch(getAllData())
       return true;
     } else {
       return false;
