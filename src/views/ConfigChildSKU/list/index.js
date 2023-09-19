@@ -407,7 +407,7 @@ const index = () => {
               </Col>
               <Col sm="2">
                 <Select
-                  placeholder="Graphic SKU"
+                  placeholder="Select Graphic Type"
                   options={store?.typeOptions}
                   value={store?.typeOptions?.find(
                     (item) => item?.value == params?.sure3d_update
@@ -545,17 +545,17 @@ const index = () => {
                           type="checkbox"
                           className="mx-2"
                           checked={store?.selectedSKU?.child_skus?.includes(
-                            option?.id
+                            option?.child_sku
                           )}
                           onChange={(e) => {
                             let selected = [
                               ...(store?.selectedSKU?.child_skus ?? []),
                             ];
                             if (e?.target?.checked) {
-                              selected.push(option?.id);
+                              selected.push(option?.child_sku);
                             } else {
                               selected = selected.filter(
-                                (item) => item != option?.id
+                                (item) => item != option?.child_sku
                               );
                             }
                             dispatch(
